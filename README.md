@@ -32,3 +32,7 @@ Example valid configuration object:
   }, ],
 }
 ```
+
+## Classes
+
+Classes that represent an HTML element have a property called `html`, within which all of its HTML elements reside. The main wrapper is `html.container` and all classes that represent HTML elements have it.
