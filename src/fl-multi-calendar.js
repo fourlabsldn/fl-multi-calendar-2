@@ -1,9 +1,9 @@
 /* globals xController */
 
-import CalendarGroup from './CalendarGroup';
+import MultiCalendar from './MultiCalendar';
 
 xController((xDivEl) => {
-  const cal = new CalendarGroup({
+  const multiCalendar = new MultiCalendar({
     targetElement: xDivEl,
     loadUrl: 'http://localhost:5000',
     calendars: [{
@@ -31,5 +31,9 @@ xController((xDivEl) => {
   ],
   });
 
-  console.log(cal);
+  for (let i = 0; i < 5; i++) {
+    multiCalendar.addDay();
+  }
+
+  console.log(multiCalendar);
 });

@@ -1,11 +1,15 @@
 import assert from './utils/assert';
 import Calendar from './Calendar';
 
-const CALENDAR_GROUP_CLASS = 'js-fl-mc';
+const MULTI_CALENDAR_CLASS = 'js-fl-mc';
 
-export default class CalendarGroup {
+export default class MultiCalendar {
   constructor(config) {
     assert(config, 'No Configuration object provided.');
+
+    assert(typeof config.targetElement === 'object',
+      'No valid targetElement provided.');
+    this.targetElement = config.targetElement;
 
     assert(typeof config.loadUrl === 'string',
       'No loadUrl provided.');
@@ -14,7 +18,9 @@ export default class CalendarGroup {
     // Create HTML
     this.html = {}; // Where we will keep references to html sections.
     this.html.container = document.createElement('main');
-    this.html.container.classList.add(CALENDAR_GROUP_CLASS);
+    this.html.container.classList.add(MULTI_CALENDAR_CLASS);
+
+    this.targetElement.appendChild(this.html.container);
 
     // Add Calendars
     assert(Array.isArray(config.calendars),
@@ -28,8 +34,20 @@ export default class CalendarGroup {
   }
 
   addCalendar(config) {
-    const calendar = new Calendar(config, CALENDAR_GROUP_CLASS);
+    const calendar = new Calendar(config, MULTI_CALENDAR_CLASS);
     this.html.container.appendChild(calendar.html.container);
     this.calendars.push(calendar);
+  }
+
+  addDay() {
+    for (const cal of this.calendars) {
+      cal.addDay();
+    }
+  }
+
+  removeDay() {
+    for (const cal of this.calendars) {
+      cal.removeDay();
+    }
   }
 }

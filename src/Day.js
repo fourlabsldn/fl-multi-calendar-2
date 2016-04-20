@@ -26,7 +26,7 @@ export default class Day {
     this.html.container.appendChild(this.html.header);
 
     this.html.events = document.createElement('div');
-    this.html.events.clasList.add(`${this.class}-events`);
+    this.html.events.classList.add(`${this.class}-events`);
     this.html.container.appendChild(this.html.events);
 
     this.updateHeader();

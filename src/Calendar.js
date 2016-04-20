@@ -1,5 +1,5 @@
 import assert from './utils/assert.js';
-import DateHandler from './Day';
+import DateHandler from './DateHandler';
 import Day from './Day';
 
 const CALENDAR_CLASS = '-cal';
@@ -31,7 +31,7 @@ export default class Calendar {
     this.html.container.appendChild(this.html.title);
 
     this.html.days = document.createElement('div');
-    this.html.days.clasList.add(`${this.class}-days`);
+    this.html.days.classList.add(`${this.class}-days`);
     this.html.container.appendChild(this.html.days);
 
     Object.freeze(this);
