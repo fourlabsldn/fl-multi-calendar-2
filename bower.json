@@ -1,0 +1,22 @@
+{
+  "name": "fl-multi-calendar-2",
+  "description": "Multiple calendars at one",
+  "main": "index.js",
+  "authors": [
+    "Lazamar @ FourLabs"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/fourlabsldn/fl-multi-calendar-2",
+  "moduleType": [],
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "x-div": "~1.0.3"
+  }
+}
