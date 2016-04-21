@@ -1,15 +1,24 @@
 import assert from './utils/assert.js';
 import DateHandler from './DateHandler';
+import ModelView from './ModelView';
 import Day from './Day';
 
 const CALENDAR_CLASS = '-cal';
 
-export default class Calendar {
+export default class Calendar extends ModelView {
   constructor(config, parentClass, startDate = DateHandler.newDate()) {
     assert(config, 'No calendar configuration object provided.');
 
+    // Create HTML part with SuperClass
+    const html = [
+      { name: 'title', tag: 'header' },
+      { name: 'days' },
+    ];
+    super(html, CALENDAR_CLASS, null, 'section');
+
     assert(config.name, 'No calendar name provided for one of the calendars.');
-    this.name = config.name;
+    this.calName = config.name;
+    this.html.title.textContent = this.calName;
 
     assert(config.id, `No ID provided for calendar "${config.name}"`);
     this.id = config.id;
@@ -19,20 +28,6 @@ export default class Calendar {
 
     this.startDate = startDate;
     this.days = [];
-
-    // Create HTML
-    this.html = {}; // Where we will keep references to html sections.
-
-    this.html.container = document.createElement('section');
-    this.html.container.classList.add(this.class);
-
-    this.html.title = document.createElement('header');
-    this.html.title.classList.add(`${this.class}-title`);
-    this.html.container.appendChild(this.html.title);
-
-    this.html.days = document.createElement('div');
-    this.html.days.classList.add(`${this.class}-days`);
-    this.html.container.appendChild(this.html.days);
 
     Object.freeze(this);
   }

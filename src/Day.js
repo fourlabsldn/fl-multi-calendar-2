@@ -1,10 +1,18 @@
 import assert from './utils/assert.js';
 import DateHandler from './DateHandler';
+import ModelView from './ModelView';
 import Event from './Event';
 
 const DAY_CLASS = '-day';
-export default class Day {
+export default class Day extends ModelView {
   constructor(date, parentClass) {
+    // Create HTML part with SuperClass
+    const html = [
+      { name: 'header', tag: 'header' },
+      { name: 'events' },
+    ];
+    super(html, DAY_CLASS, parentClass);
+
     assert(date && typeof date === 'object',
       'No date provided for Day instantiation.');
     this.date = date;
@@ -14,20 +22,6 @@ export default class Day {
 
     // The order of this array doesn't matter.
     this.events = [];
-
-    // Create HTML
-    this.html = {};
-
-    this.html.container = document.createElement('div');
-    this.html.container.classList.add(this.class);
-
-    this.html.header = document.createElement('header');
-    this.html.header.classList.add(`${this.class}-header`);
-    this.html.container.appendChild(this.html.header);
-
-    this.html.events = document.createElement('div');
-    this.html.events.classList.add(`${this.class}-events`);
-    this.html.container.appendChild(this.html.events);
 
     this.updateHeader();
 

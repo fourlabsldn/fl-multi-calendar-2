@@ -1,12 +1,27 @@
 import assert from './utils/assert.js';
 import DateHandler from './DateHandler';
+import ModelView from './ModelView';
 
 const EVENT_CLASS = '-event';
 
-export default class Event {
+export default class Event extends ModelView {
   constructor(eventInfo, parentClass) {
     assert(typeof eventInfo === 'object',
       `Invalid eventInfo provided: ${eventInfo}`);
+
+    // Create HTML part with SuperClass
+    const html = [
+      { name: 'time', tag: 'p', content: eventInfo.time },
+      { name: 'title', tag: 'p', content: eventInfo.title },
+      { name: 'description', tag: 'p', content: eventInfo.description },
+      { name: 'tooltip', tag: 'p', content: eventInfo.tooltip },
+    ];
+    super(html, EVENT_CLASS, parentClass);
+
+    // Fill html fields
+    for (const prop of html) {
+      this.html[prop.name].textContent = eventInfo[prop];
+    }
 
     assert(typeof eventInfo.start === 'string',
       `Invalid event start date provided: ${eventInfo.start}`);
@@ -27,34 +42,18 @@ export default class Event {
     assert(parentClass, 'No parent class provided.');
     this.class = parentClass + EVENT_CLASS;
 
-    // Create HTML
-    this.html = {};
-
-    this.html.container = document.createElement('div');
-    this.html.container.classList.add(parentClass + EVENT_CLASS);
-
-    this.html.time = document.createElement('p');
-    this.html.time.classList.add(`${this.class}-time`);
-
-    // TODO: What if it starts or ends in a different day?
-    this.html.time.innerText =
-     `${DateHandler.getTime(this.startDate)} - ${DateHandler.getTime(this.endDate)}`;
-
-    const properties = ['title', 'description', 'tooltip'];
-    for (const prop of properties) {
-      if (typeof eventInfo[prop] === 'string') {
-        this[prop] = eventInfo[prop];
-        this.html[prop] = document.createElement('p');
-        this.html[prop].classList.add(`${this.class}-prop`);
-        this.html[prop].innerText = this[prop];
-        this.html.container.appendChild(this.html[prop]);
-      }
-    }
+    this.updateTime();
 
     Object.freeze(this);
   }
 
   getStartTime() {
     return this.startDate;
+  }
+
+  updateTime() {
+    // TODO: What if it starts or ends in a different day?
+    this.html.time.textContent =
+     `${DateHandler.getTime(this.startDate)} - ${DateHandler.getTime(this.endDate)}`;
   }
 }

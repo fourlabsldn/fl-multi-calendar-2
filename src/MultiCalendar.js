@@ -1,30 +1,27 @@
 import assert from './utils/assert';
+import ModelView from './ModelView';
 import Calendar from './Calendar';
 
 const MULTI_CALENDAR_CLASS = 'js-fl-mc';
 
-export default class MultiCalendar {
+export default class MultiCalendar extends ModelView {
   constructor(config) {
     assert(config, 'No Configuration object provided.');
+
+    // Create HTML part with SuperClass
+    super(null, MULTI_CALENDAR_CLASS, null, 'main');
 
     assert(typeof config.targetElement === 'object',
       'No valid targetElement provided.');
     this.targetElement = config.targetElement;
+    this.targetElement.appendChild(this.html.container);
 
     assert(typeof config.loadUrl === 'string',
       'No loadUrl provided.');
     this.loadUrl = config.loadUrl;
 
-    // Create HTML
-    this.html = {}; // Where we will keep references to html sections.
-    this.html.container = document.createElement('main');
-    this.html.container.classList.add(MULTI_CALENDAR_CLASS);
-
-    this.targetElement.appendChild(this.html.container);
-
     // Add Calendars
-    assert(Array.isArray(config.calendars),
-      'No valid calendars array provided.');
+    assert(Array.isArray(config.calendars), 'No valid calendars array provided.');
     this.calendars = [];
     for (const cal of config.calendars) {
       this.addCalendar(cal);
