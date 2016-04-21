@@ -1,5 +1,5 @@
 import assert from './utils/assert.js';
-import DateHandler from './DateHandler';
+import DateHandler from './utils/DateHandler';
 import ModelView from './ModelView';
 import Event from './Event';
 
@@ -16,6 +16,8 @@ export default class Day extends ModelView {
     assert(date && typeof date === 'object',
       'No date provided for Day instantiation.');
     this.date = date;
+    this.start = DateHandler.startOf(date, 'day');
+    this.end = DateHandler.endOf(date, 'day');
 
     assert(parentClass, 'No parent class provided.');
     this.class = parentClass + DAY_CLASS;
@@ -40,10 +42,12 @@ export default class Day extends ModelView {
     // Insert new event in the right place in the HTML.
     let insertedBeforeEvent = false;
     for (const event of this.events) {
-      const eventStartsAfter = DateHandler.isGreater(
+      const timeDiff = DateHandler.diff(
         event.getStartTime(),
-        newEvent.getStartTime()
+        newEvent.getStartTime(),
+        'minutes'
       );
+      const eventStartsAfter = timeDiff < 0;
       if (eventStartsAfter) {
         const oldEventIndex = this.events.indexOf(event);
         assert(typeof oldEventIndex === 'number',
@@ -66,5 +70,21 @@ export default class Day extends ModelView {
 
     // Now add it to the events array.
     this.events.push(newEvent);
+  }
+
+  getDate() {
+    return this.date;
+  }
+
+  getStart() {
+    return this.start;
+  }
+
+  getEnd() {
+    return this.end;
+  }
+
+  clearEvents() {
+    // TODO: implement this to empty all day events.
   }
 }

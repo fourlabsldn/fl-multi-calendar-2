@@ -5,7 +5,7 @@ import MultiCalendar from './MultiCalendar';
 xController((xDivEl) => {
   const multiCalendar = new MultiCalendar({
     targetElement: xDivEl,
-    loadUrl: 'http://localhost:5000',
+    loadUrl: 'http://localhost:8000/demo/demoData.json',
     calendars: [{
       name: 'Karl Marx',
       id: '12345',

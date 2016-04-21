@@ -1,5 +1,5 @@
 import assert from './utils/assert.js';
-import DateHandler from './DateHandler';
+import DateHandler from './utils/DateHandler';
 import ModelView from './ModelView';
 
 const EVENT_CLASS = '-event';
