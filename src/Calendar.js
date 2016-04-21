@@ -11,14 +11,26 @@ export default class Calendar extends ModelView {
 
     // Create HTML part with SuperClass
     const html = [
-      { name: 'title', tag: 'header' },
+      { name: 'header', tag: 'header' },
       { name: 'days' },
     ];
     super(html, CALENDAR_CLASS, parentClass, 'section');
 
+    // Inside the header we need some stuff.
     assert(config.name, 'No calendar name provided for one of the calendars.');
     this.title = config.name;
+    this.html.title = document.createElement('h2');
     this.html.title.textContent = this.title;
+    this.html.title.classList.add(`${this.class}-title`);
+    this.html.header.appendChild(this.html.title);
+
+    if (typeof config.description === 'string') {
+      this.description = config.description;
+      this.html.description = document.createElement('p');
+      this.html.description.classList.add(`${this.class}-description`);
+      this.html.description.textContent = this.description;
+      this.html.header.appendChild(this.html.description);
+    }
 
     assert(config.id, `No ID provided for calendar "${config.name}"`);
     this.id = config.id;

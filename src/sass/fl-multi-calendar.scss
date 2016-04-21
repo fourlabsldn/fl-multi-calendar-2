@@ -1,4 +1,4 @@
-@import url(https://fonts.googleapis.com/css?family=Lato:400,400italic,700);
+@import url(https://fonts.googleapis.com/css?family=Lato:400,300,400italic,700);
 
 // Colors
 $c-main: #3b95b0;
@@ -56,10 +56,21 @@ $c-inactive-text: #999;
   }
 }
 
-.fl-mc-cal-title {
+.fl-mc-cal-header {
   display: block;
   flex: 0 0 15em;
   padding: 1em;
+}
+
+.fl-mc-cal-title {
+  font-size: inherit;
+  margin: 0 0 .2em;
+}
+
+.fl-mc-cal-description {
+  font-size: inherit;
+  font-weight: lighter;
+  margin: 0;
 }
 
 .fl-mc-cal-days {
