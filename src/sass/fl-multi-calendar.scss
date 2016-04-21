@@ -1,0 +1,167 @@
+@import url(https://fonts.googleapis.com/css?family=Lato:400,400italic,700);
+
+// Colors
+$c-main: #3b95b0;
+$c-secondary: #2a5e7e;
+$c-accent: #39ac6f;
+$c-inactive: #eee;
+$c-background: #fff;
+
+$c-main-text: #fff;
+$c-seconday-text: #fff;
+$c-accent-text: #fff;
+$c-inactive-text: #999;
+
+@mixin color-children($color) {
+  &:nth-child(1) { background-color: darken($color, 30%); }
+  &:nth-child(2) { background-color: darken($color, 20%); }
+  &:nth-child(3) { background-color: darken($color, 10%); }
+  &:nth-child(4) { background-color: lighten($color, 0%); }
+  &:nth-child(5) { background-color: lighten($color, 10%); }
+  &:nth-child(6) { background-color: lighten($color, 20%); }
+  &:nth-child(7) { background-color: lighten($color, 30%); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translate3d(0, 100%, 0); }
+  to { opacity: 1; transform: none; }
+}
+
+.fl-mc {
+  display: block;
+  font-family: 'Lato';
+  padding: 0;
+  box-sizing: border-box;
+  background-color: $c-background;
+  border: 1px solid $c-inactive;
+  border-radius: 5px;
+
+  * {
+    box-sizing: border-box;
+  }
+}
+
+// A Calendar Object
+.fl-mc-cal {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: stretch;
+  background-color: inherit;
+
+  width: 100%;
+  min-height: 5em;
+
+  &:nth-child(even) {
+    background-color: lighten($c-inactive, 4%);
+  }
+}
+
+.fl-mc-cal-title {
+  display: block;
+  flex: 0 0 15em;
+  padding: 1em;
+}
+
+.fl-mc-cal-days {
+  flex: 1 1 auto;
+
+  display: flex;
+  flex-flow: row nowrap;
+}
+
+.fl-mc-cal-day {
+  display: block;
+  width: 0; // Makes all days be the same width.
+  flex: 1 1 auto;
+
+  min-width: 10em;
+  border: 1px solid $c-inactive;
+}
+
+.fl-mc-cal-day-header {
+  text-align: center;
+  font-weight: bold;
+  border-bottom: 1px solid $c-inactive;
+  padding: 0 0 .2em;
+  background: linear-gradient(180deg, lighten($c-inactive, 3%), transparent 50%);
+}
+
+// Events container
+.fl-mc-cal-day-events {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: flex-start;
+  padding: .1em;
+  font-size: .8em;
+}
+
+.fl-mc-cal-day-event {
+  display: block;
+  position: relative; // for the tooltip.
+  padding: .5em;
+  border-radius: 5px;
+  margin: 0 0 .1em;
+
+  background-color: $c-main;
+  color: $c-main-text;
+
+  animation: fadeInUp;
+  animation-duration: .5s;
+  animation-fill-mode: forwards;
+  animation-delay: 0;
+
+  &:hover {
+    filter: brightness(105%);
+    cursor: pointer;
+  }
+}
+
+.fl-mc-cal-day-event-time {
+  font-weight: bold;
+  margin: inherit;
+}
+
+.fl-mc-cal-day-event-title {
+  margin: inherit;
+  font-weight: bold;
+}
+
+.fl-mc-cal-day-event-description {
+  margin: inherit;
+}
+
+// Show long text on hover?
+// .fl-mc-cal-day-event-description {
+//   text-overflow: ellipsis;
+//   white-space: nowrap;
+//   overflow: hidden;
+// }
+// .fl-mc-cal-day-event:hover .fl-mc-cal-day-event-description {
+//   text-overflow: inherit;
+//   white-space: normal;
+//   overflow: auto;
+//   transition: height .5s ease;
+// }
+
+// TODO: Add arrow to tooltip
+.fl-mc-cal-day-event-tooltip {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+
+  padding: inherit;
+  border-radius: inherit;
+  background-color: $c-secondary;
+  color: $c-seconday-text;
+
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility linear .2s, opacity linear .1s, translate linear .2s;
+}
+// Tooltip showing on hover
+.fl-mc-cal-day-event:hover .fl-mc-cal-day-event-tooltip {
+  visibility: visible;
+  opacity: 1;
+  transition-delay: 0s;
+}

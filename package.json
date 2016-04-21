@@ -10,10 +10,13 @@
   "author": "Lazamar @ FourLabs",
   "license": "ISC",
   "devDependencies": {
+    "autoprefixer": "^6.3.6",
     "babel-preset-es2015-rollup": "^1.1.1",
     "bower": "^1.7.9",
     "gulp": "^3.9.1",
+    "gulp-postcss": "^6.1.0",
     "gulp-rollup": "^1.8.0",
+    "gulp-sass": "^2.3.0",
     "gulp-server-livereload": "^1.7.4",
     "gulp-sourcemaps": "^1.6.0",
     "rollup-plugin-babel": "^2.4.0"

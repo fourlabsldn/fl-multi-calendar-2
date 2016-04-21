@@ -14,7 +14,7 @@ export default class Calendar extends ModelView {
       { name: 'title', tag: 'header' },
       { name: 'days' },
     ];
-    super(html, CALENDAR_CLASS, null, 'section');
+    super(html, CALENDAR_CLASS, parentClass, 'section');
 
     assert(config.name, 'No calendar name provided for one of the calendars.');
     this.title = config.name;
@@ -22,9 +22,6 @@ export default class Calendar extends ModelView {
 
     assert(config.id, `No ID provided for calendar "${config.name}"`);
     this.id = config.id;
-
-    assert(parentClass, 'No parent class provided.');
-    this.class = parentClass + CALENDAR_CLASS;
 
     assert(startDate, 'No start date provided.');
     this.startDate = startDate;
@@ -39,7 +36,7 @@ export default class Calendar extends ModelView {
   // The Object will decide what is the date of the day to be added.
   addDay() {
     const newDate = DateHandler.addDays(this.date, this.days.length);
-    const newDay = new Day(newDate, CALENDAR_CLASS);
+    const newDay = new Day(newDate, this.class);
     assert(newDay && newDay.html && newDay.html.container,
         'New Day instance initialised without an HTML container.');
     this.days.push(newDay);

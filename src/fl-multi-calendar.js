@@ -28,6 +28,22 @@ xController((xDivEl) => {
       // dayHeaderClick: dayHeaderClick,
       // eventClick: eventClick,
     },
+    {
+      name: 'Soren Kierkegaard',
+      id: '3456',
+      description: 'Research and Revelopement', // optional
+      // titleClick: titleClick, //optional
+      // dayHeaderClick: dayHeaderClick,
+      // eventClick: eventClick,
+    },
+    {
+      name: 'Jacques Derrida',
+      id: '4567',
+      description: 'Research and Revelopement', // optional
+      // titleClick: titleClick, //optional
+      // dayHeaderClick: dayHeaderClick,
+      // eventClick: eventClick,
+    },
   ],
   });
 

@@ -5,6 +5,18 @@ const sourcemaps = require('gulp-sourcemaps');
 const babel = require('rollup-plugin-babel');
 const rollup = require('gulp-rollup');
 const server = require('gulp-server-livereload');
+const sass = require('gulp-sass');
+const postcss = require('gulp-postcss');
+const autoprefixer = require('autoprefixer');
+
+gulp.task('sass', () => {
+  return gulp.src(['./src/sass/**/*.scss', '!./src/sass/**/_*.*'])
+    .pipe(sourcemaps.init())
+    .pipe(sass().on('error', sass.logError))
+    .pipe(postcss([autoprefixer({ browsers: ['last 15 versions'] })]))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('./build/'));
+});
 
 gulp.task('rollup-module', () => {
   gulp.src([
@@ -42,7 +54,8 @@ gulp.task('rollup-tests', () => {
 });
 
 gulp.task('watch', () => {
-  gulp.watch('./src/**/*.*', ['build']);
+  gulp.watch('./src/**/*.js', ['build']);
+  gulp.watch('./src/sass/*.*', ['sass']);
 });
 
 gulp.task('webserver', () => {
@@ -56,6 +69,6 @@ gulp.task('webserver', () => {
 });
 
 gulp.task('rollup', ['rollup-module', 'rollup-tests']);
-gulp.task('build', ['rollup']);
+gulp.task('build', ['rollup', 'sass']);
 
-gulp.task('dev', ['rollup', 'watch', 'webserver']);
+gulp.task('dev', ['rollup', 'sass', 'watch', 'webserver']);

@@ -9,28 +9,28 @@
       },
       {
          "id":"2345",
-         "title":"09:00 &ndash; 18:00<br \/><strong><i class=\"fa fa-suitcase\"><\/i> Jonny<\/strong>",
+         "title":"Awesome meeting",
          "start":"2016-04-21 09:00:00",
          "end":"2016-04-21 18:00:00",
          "tooltip":"LOdsfL"
       },
       {
          "id":"3456",
-         "title":"09:00 &ndash; 18:00<br \/><strong><i class=\"fa fa-suitcase\"><\/i> Jonny<\/strong>",
+         "title":"Awesome meeting",
          "start":"2016-04-21 09:00:00",
          "end":"2016-04-21 18:00:00",
          "tooltip":"LoooOL"
       },
       {
          "id":"456",
-         "title":"09:00 &ndash; 18:00<br \/><strong><i class=\"fa fa-suitcase\"><\/i> Jonny<\/strong>",
+         "title":"Awesome meeting",
          "start":"2016-04-21 09:00:00",
          "end":"2016-04-21 18:00:00",
          "tooltip":"LOoooL"
       },
       {
          "id":"567",
-         "title":"09:00 &ndash; 18:00<br \/><strong><i class=\"fa fa-suitcase\"><\/i> Jonny<\/strong>",
+         "title":"Awesome meeting",
          "start":"2016-04-21 09:00:00",
          "end":"2016-04-21 18:00:00",
          "tooltip":"LlololololololOL"
@@ -39,7 +39,8 @@
    "7899":[
       {
          "id":"7899",
-         "title":"09:00 &ndash; 10:00<br \/><strong>46 Hanover House,  London E14 8RH<\/strong><br \/>JLL - Canary Wharf - Sales - 204501CW<br \/><span class=\"comment magenta\">MICHAEL SAID ITS OK FOR THEM NOT TO BE SENT B&hellip;<\/span>",
+         "title":"46 Hanover House,  London E14 8RH ",
+         "description":"JLL - Canary Wharf - Sales - 204501CW / MICHAEL SAID ITS OK FOR THEM NOT TO BE SENT B&hellip",
          "start":"2016-04-22T09:00:00",
          "end":"2016-04-22T10:00:00",
          "cid":"852",
@@ -58,14 +59,15 @@
       },
       {
          "id":"567",
-         "title":"09:00 &ndash; 18:00<br \/><strong><i class=\"fa fa-suitcase\"><\/i> Jonny<\/strong>",
+         "title":"Awesome meeting",
          "start":"2016-04-21 09:00:00",
          "end":"2016-04-21 10:00:00",
          "tooltip":"LlololololololOL"
       },
       {
          "id":"7899",
-         "title":"09:00 &ndash; 10:00<br \/><strong>46 Hanover House,  London E14 8RH<\/strong><br \/>JLL - Canary Wharf - Sales - 204501CW<br \/><span class=\"comment magenta\">MICHAEL SAID ITS OK FOR THEM NOT TO BE SENT B&hellip;<\/span>",
+         "title":"46 Hanover House,  London E14 8RH",
+         "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. .",
          "start":"2016-04-21 10:00:00",
          "end":"2016-04-21 11:00:00",
          "cid":"852",
@@ -84,14 +86,14 @@
       },
       {
          "id":"3456",
-         "title":"09:00 &ndash; 18:00<br \/><strong><i class=\"fa fa-suitcase\"><\/i> Jonny<\/strong>",
+         "title":"Awesome meeting",
          "start":"2016-04-21 12:00:00",
          "end":"2016-04-21 13:00:00",
          "tooltip":"LoooOL"
       },
       {
          "id":"456",
-         "title":"09:00 &ndash; 18:00<br \/><strong><i class=\"fa fa-suitcase\"><\/i> Jonny<\/strong>",
+         "title":"Awesome meeting",
          "start":"2016-04-21 09:00:00",
          "end":"2016-04-21 18:00:00",
          "tooltip":"LOoooL"
@@ -100,7 +102,7 @@
    "23456":[
       {
          "id":"23456",
-         "title":"09:00 &ndash; 18:00<br \/><strong><i class=\"fa fa-suitcase\"><\/i> Jonny<\/strong>",
+         "title":"Awesome meeting",
          "start":"2016-04-21 09:00:00",
          "end":"2016-04-21 18:00:00",
          "tooltip":"LOL"

@@ -23,11 +23,6 @@ export default class Event extends ModelView {
 
     super(html, EVENT_CLASS, parentClass);
 
-    // // Fill html fields
-    // for (const prop of html) {
-    //   this.html[prop.name].textContent = eventInfo[prop];
-    // }
-
     assert(typeof eventInfo.start === 'string',
       `Invalid event start date provided: ${eventInfo.start}`);
     this.startDate = DateHandler.newDate(eventInfo.start);
@@ -43,9 +38,6 @@ export default class Event extends ModelView {
     assert(!eventInfo.tooltip || typeof eventInfo.tooltip === 'string',
         `Invalid tooltip type: ${eventInfo.tooltip}`);
     this.tooltip = eventInfo.tooltip;
-
-    assert(parentClass, 'No parent class provided.');
-    this.class = parentClass + EVENT_CLASS;
 
     this.updateTime();
 

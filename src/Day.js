@@ -19,9 +19,6 @@ export default class Day extends ModelView {
     this.start = DateHandler.startOf(date, 'day');
     this.end = DateHandler.endOf(date, 'day');
 
-    assert(parentClass, 'No parent class provided.');
-    this.class = parentClass + DAY_CLASS;
-
     // The order of this array doesn't matter.
     this.events = [];
 
@@ -35,7 +32,7 @@ export default class Day extends ModelView {
   }
 
   addEvent(eventInfo) {
-    const newEvent = new Event(eventInfo, DAY_CLASS);
+    const newEvent = new Event(eventInfo, this.class);
     assert(newEvent && newEvent.html && newEvent.html.container,
       'New Event instance initialised without an HTML container.');
 

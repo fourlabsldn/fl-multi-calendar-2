@@ -3,14 +3,14 @@ import DateHandler from './utils/DateHandler';
 import ModelView from './ModelView';
 import Calendar from './Calendar';
 
-const MULTI_CALENDAR_CLASS = 'js-fl-mc';
+const MULTI_CALENDAR_CLASS = 'fl-mc';
 
 export default class MultiCalendar extends ModelView {
   constructor(config) {
     assert(config, 'No Configuration object provided.');
 
     // Create HTML part with SuperClass
-    super(null, MULTI_CALENDAR_CLASS, null, 'main');
+    super(null, MULTI_CALENDAR_CLASS, '', 'main');
 
     assert(typeof config.targetElement === 'object',
       'No valid targetElement provided.');
