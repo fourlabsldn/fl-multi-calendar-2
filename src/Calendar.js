@@ -84,12 +84,16 @@ export default class Calendar extends ModelView {
    */
   findDaysInRange(start, end, days = this.days) {
     const foundDays = [];
+
     if (DateHandler.sameDay(start, end)) {
+      // If the range comprises just one day, we can run the find
+      // function as it will just return one result
       const dayFound = days.find((day) => {
         const sameDay = DateHandler.sameDay(start, day.getDate());
         return sameDay;
       });
-      foundDays.push(dayFound);
+
+      if (dayFound) { foundDays.push(dayFound); }
     } else {
       for (const day of days) {
         if (DateHandler.rangesOverlap(

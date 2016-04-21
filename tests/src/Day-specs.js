@@ -24,4 +24,6 @@ describe('A Day class\'s instance should', () => {
 
   xit('update all events on date change');
   xit('update all events without date change when requested');
+
+  xit('clear all events when requested');
 });

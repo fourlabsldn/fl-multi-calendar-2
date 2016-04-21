@@ -31,7 +31,7 @@ export default class Day extends ModelView {
   }
 
   updateHeader() {
-    this.html.header.innerHTML = DateHandler.format(this.date);
+    this.html.header.textContent = DateHandler.format(this.date);
   }
 
   addEvent(eventInfo) {
@@ -84,7 +84,12 @@ export default class Day extends ModelView {
     return this.end;
   }
 
-  clearEvents() {
-    // TODO: implement this to empty all day events.
+  clearEvents(events = this.events) {
+    const eventsNo = events.length;
+    for (let i = 0; i < eventsNo; i++) {
+      let event = events.pop(); // Remove JS reference
+      event.html.container.remove(); // Remove DOM reference
+      event = null; // Make object available to be garbage collected
+    }
   }
 }

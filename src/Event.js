@@ -10,18 +10,23 @@ export default class Event extends ModelView {
       `Invalid eventInfo provided: ${eventInfo}`);
 
     // Create HTML part with SuperClass
-    const html = [
-      { name: 'time', tag: 'p', content: eventInfo.time },
-      { name: 'title', tag: 'p', content: eventInfo.title },
-      { name: 'description', tag: 'p', content: eventInfo.description },
-      { name: 'tooltip', tag: 'p', content: eventInfo.tooltip },
-    ];
+    // The html elements to be created are 'time'
+    // and whatever info comes in the eventInfo
+    const html = [{ name: 'time', tag: 'p', content: eventInfo.time }];
+
+    const fields = ['title', 'description', 'tooltip'];
+    for (const field of fields) {
+      if (eventInfo[field]) {
+        html.push({ name: field, tag: 'p', content: eventInfo[field] });
+      }
+    }
+
     super(html, EVENT_CLASS, parentClass);
 
-    // Fill html fields
-    for (const prop of html) {
-      this.html[prop.name].textContent = eventInfo[prop];
-    }
+    // // Fill html fields
+    // for (const prop of html) {
+    //   this.html[prop.name].textContent = eventInfo[prop];
+    // }
 
     assert(typeof eventInfo.start === 'string',
       `Invalid event start date provided: ${eventInfo.start}`);
