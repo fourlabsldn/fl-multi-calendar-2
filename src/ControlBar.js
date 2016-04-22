@@ -58,7 +58,7 @@ export default class ControlBar extends ModelView {
    * @param {Date} date
    */
   setWeekpickerDate(date) {
-    this.html.weekpicker.value = DateHandler.format(date, 'YYYY-[W]W');
+    this.html.weekpicker.value = DateHandler.format(date, 'YYYY-[W]WW');
   }
 
   /**
