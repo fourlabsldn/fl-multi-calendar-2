@@ -40,7 +40,7 @@ $cal-header-width: 15em;
   background-color: $c-background;
   border: 1px solid $c-inactive;
   border-radius: 5px;
-  font-size: 14px;
+  font-size: .9em;
 
   * {
     box-sizing: border-box;
@@ -66,11 +66,6 @@ $cal-header-width: 15em;
 .fl-mc-ctrl-refresh,
 .fl-mc-ctrl-show-weekend {
   vertical-align: middle;
-
-  :before {
-    display: inline-block;
-    transform: translateY(.15em);
-  }
 }
 
 .fl-mc-ctrl-show-weekend {
@@ -79,7 +74,7 @@ $cal-header-width: 15em;
 
 .fl-mc-ctrl-weekpicker {
   font-size: inherit;
-  min-width: calc($cal-header-width + 1px); // This 1px is magic and just works.
+  min-width: calc(#{$cal-header-width} + 1px); // This 1px is magic and just works.
   font-family: inherit;
   padding-left: 1em;
 }
@@ -141,6 +136,7 @@ $cal-header-width: 15em;
   width: 0; // Makes all days be the same width.
   flex: 1 1 auto;
   background-color: inherit; //For the day-header effect
+  font-size: .8em;
 
   min-width: 10em;
   border: 1px solid $c-inactive;
@@ -167,7 +163,6 @@ $cal-header-width: 15em;
   flex-flow: column nowrap;
   justify-content: flex-start;
   padding: .1em;
-  font-size: .8em;
 }
 
 //--------------------------------
