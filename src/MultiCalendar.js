@@ -92,9 +92,14 @@ export default class MultiCalendar extends ModelView {
     });
 
     controlBar.listenTo('show-weekend', () => {
-      const vm = this.viewModes;
-      const newModeName = this.currViewMode === vm.fullWeek ? 'weekdays' : 'fullWeek';
-      this.setViewMode(newModeName);
+      if (this.currViewMode === this.viewModes.fullWeek) {
+        this.setViewMode('weekdays');
+        controlBar.setShowWeekendActive(true);
+      } else {
+        this.setViewMode('fullWeek');
+        controlBar.setShowWeekendActive(false);
+      }
+      return true;
     });
   }
 

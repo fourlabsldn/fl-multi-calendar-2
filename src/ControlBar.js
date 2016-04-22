@@ -40,7 +40,7 @@ export default class ControlBar extends ModelView {
       if (el.tag !== 'button') { continue; }
       this.html[el.name].addEventListener('click', (e) => {
         assert(e.target, `Error in ${el.name}'s change event`);
-        this.trigger(el.name, e.target.value);
+        this.trigger(el.name, e);
       });
     }
   }
@@ -83,6 +83,17 @@ export default class ControlBar extends ModelView {
     if (!this.eventListeners[eventName]) { return; }
     for (const callback of this.eventListeners[eventName]) {
       callback.apply({}, parameters);
+    }
+  }
+
+  setShowWeekendActive(active) {
+    const activeClass = 'fl-mc-active';
+    if (active) {
+      this.html['show-weekend'].classList.add(activeClass);
+      this.html['show-weekend'].textContent = 'Show weekends';
+    } else {
+      this.html['show-weekend'].classList.add(activeClass);
+      this.html['show-weekend'].textContent = 'Hide weekends';
     }
   }
 }
