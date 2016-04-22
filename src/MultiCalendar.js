@@ -90,6 +90,12 @@ export default class MultiCalendar extends ModelView {
     controlBar.listenTo('refresh', () => {
       this.loadEvents();
     });
+
+    controlBar.listenTo('show-weekend', () => {
+      const vm = this.viewModes;
+      const newModeName = this.currViewMode === vm.fullWeek ? 'weekdays' : 'fullWeek';
+      this.setViewMode(newModeName);
+    });
   }
 
   // TODO: Add calendar when other calendars already have days
