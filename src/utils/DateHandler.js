@@ -45,4 +45,8 @@ export default class DateHandler {
   static endOf(date, criterion) {
     return moment(date).endOf(criterion);
   }
+
+  static isValid(date) {
+    return date.isValid();
+  }
 }

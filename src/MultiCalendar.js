@@ -64,10 +64,13 @@ export default class MultiCalendar extends ModelView {
   }
 
   initControlBar(controlBar = this.controlBar) {
-
     controlBar.listenTo('weekpicker', () => {
       const weekpickerDate = this.controlBar.getWeekpickerDate();
-      this.setStartDate(weekpickerDate);
+      if (DateHandler.isValid(weekpickerDate)) {
+        this.setStartDate(weekpickerDate);
+      } else {
+        controlBar.setWeekpickerDate(this.startDate);
+      }
     });
 
     controlBar.listenTo('forward', () => {

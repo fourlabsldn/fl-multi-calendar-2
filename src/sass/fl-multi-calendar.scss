@@ -136,7 +136,6 @@ $cal-header-width: 15em;
   width: 0; // Makes all days be the same width.
   flex: 1 1 auto;
   background-color: inherit; //For the day-header effect
-  font-size: .8em;
 
   min-width: 10em;
   border: 1px solid $c-inactive;
@@ -174,6 +173,7 @@ $cal-header-width: 15em;
   padding: .5em;
   border-radius: 5px;
   margin: 0 0 .1em;
+  font-size: .8em;
 
   transition: all .1s ease;
   background-color: $c-main;

@@ -21,4 +21,5 @@ describe('A ControlBar class\'s instance should', () => {
   xit('emmit change correct event when refresh button is pressed');
   xit('emmit change correct event when the weekpicker is changed');
   xit('change title when an appropriate event is fired.');
+  xit('handle invalid dates');
 });
