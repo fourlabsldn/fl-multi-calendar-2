@@ -1,9 +1,14 @@
 import assert from './utils/assert.js';
 import ModelView from './ModelView';
+import DateHandler from './utils/DateHandler';
 
 const CONTROL_CLASS = '-ctrl';
 
 export default class ControlBar extends ModelView {
+  /**
+   * @constructor
+   * @param  {String} parentClass
+   */
   constructor(parentClass) {
     const html = [
       { name: 'weekpicker', tag: 'input' },
@@ -15,6 +20,11 @@ export default class ControlBar extends ModelView {
       { name: 'show-weekend', tag: 'button', content: 'Show Weekend' },
     ];
     super(html, CONTROL_CLASS, parentClass, 'nav');
+
+    this.eventListeners = {};
+
+    Object.preventExtensions(this);
+    // --------- end of attribute creation ----------
 
     this.html.weekpicker.setAttribute('type', 'week');
     this.html.weekpicker.addEventListener('change', (e) => {
@@ -30,18 +40,42 @@ export default class ControlBar extends ModelView {
         this.trigger(el.name, e.target.value);
       });
     }
-
-    this.eventListeners = {};
-
-    Object.preventExtensions(this);
   }
 
+  /**
+   * @method getWeekpickerDate
+   * @return {Date}
+   */
+  getWeekpickerDate() {
+    return DateHandler.newDate(this.html.weekpicker.value);
+  }
+
+  /**
+   * @method setWeekpickerDate
+   * @param {Date} date
+   */
+  setWeekpickerDate(date) {
+    this.html.weekpicker.value = DateHandler.format(date, 'YYYY-[W]W');
+  }
+
+  /**
+   * @method listenTo
+   * @param  {String}   eventName
+   * @param  {Function} callback
+   * @return {void}
+   */
   listenTo(eventName, callback) {
     assert(typeof callback === 'function', 'Invalid callback.');
     this.eventListeners[eventName] = this.eventListeners[eventName] || [];
     this.eventListeners[eventName].push(callback);
   }
 
+  /**
+   * @method trigger
+   * @param  {String} eventName
+   * @param  {Anything} ...parameters
+   * @return {void}
+   */
   trigger(eventName, ...parameters) {
     if (!this.eventListeners[eventName]) { return; }
     for (const callback of this.eventListeners[eventName]) {

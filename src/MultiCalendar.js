@@ -75,6 +75,11 @@ export default class MultiCalendar extends ModelView {
       });
     }
 
+    controlBar.listenTo('weekpicker', () => {
+      const weekpickerDate = this.controlBar.getWeekpickerDate();
+      this.setStartDate(weekpickerDate);
+    });
+
     controlBar.listenTo('forward', () => {
       const newDate = DateHandler.add(this.startDate, 1, 'week');
       this.setStartDate(newDate);
@@ -146,7 +151,7 @@ export default class MultiCalendar extends ModelView {
   }
 
   setStartDate(date, calendars = this.calendars) {
-    // Prepare this for changing one day at a time in mobile view.
+    // TODO: Prepare this for changing one day at a time in mobile view.
     const newDate = DateHandler.startOf(date, 'isoweek');
     for (const cal of calendars) {
       cal.setStartDate(newDate);
@@ -162,6 +167,7 @@ export default class MultiCalendar extends ModelView {
       this.endDate = this.startDate;
     }
 
+    this.controlBar.setWeekpickerDate(newDate);
     this.setEvents(this.lastLoadedEvents);
   }
 
