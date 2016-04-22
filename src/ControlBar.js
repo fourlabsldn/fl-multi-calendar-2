@@ -89,7 +89,7 @@ export default class ControlBar extends ModelView {
   setShowWeekendActive(active) {
     const activeClass = 'fl-mc-active';
     if (active) {
-      this.html['show-weekend'].classList.add(activeClass);
+      this.html['show-weekend'].classList.remove(activeClass);
       this.html['show-weekend'].textContent = 'Show weekends';
     } else {
       this.html['show-weekend'].classList.add(activeClass);

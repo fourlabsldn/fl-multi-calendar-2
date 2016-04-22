@@ -38,7 +38,7 @@ export default class MultiCalendar extends ModelView {
       fullWeek: { dayCount: 7 },
       oneDay: { dayCount: 1 },
     };
-    this.currViewMode = this.viewModes.weekdays;
+    this.currViewMode = null;
 
     // Nothing else will be added to the object from here on.
     Object.preventExtensions(this);
@@ -190,13 +190,14 @@ export default class MultiCalendar extends ModelView {
    * @return {void}
    */
   setViewMode(modeName, calendars = this.calendars) {
-    const newMode = this.viewModes[modeName];
+    let newMode = this.viewModes[modeName];
     if (newMode === undefined) {
-      assert(false, `Invalid view mode: ${newMode}`);
-      return;
-    } else if (newMode === this.currViewMode) {
-      return;
+      const fallbackMode = 'weekdays';
+      assert.warn(false, `Invalid view mode: ${newMode}. Defaulting to ${fallbackMode}`);
+      newMode = this.viewModes[fallbackMode];
     }
+
+    if (newMode === this.currViewMode) { return; }
 
     // It might be the first time that the mode is being set
     // and the number of days in each calendar could be different
@@ -214,6 +215,7 @@ export default class MultiCalendar extends ModelView {
       }
     }
 
+    this.setEvents(this.lastLoadedEvents);
     this.currViewMode = newMode;
   }
 
