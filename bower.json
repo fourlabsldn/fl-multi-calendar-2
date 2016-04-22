@@ -18,5 +18,8 @@
   ],
   "dependencies": {
     "x-div": "~1.0.3"
+  },
+  "devDependencies": {
+    "webcomponentsjs": "~0.7.22"
   }
 }

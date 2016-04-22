@@ -13,6 +13,8 @@ $c-seconday-text: #fff;
 $c-accent-text: #fff;
 $c-inactive-text: #999;
 
+$cal-header-width: 15em;
+
 @mixin color-children($color) {
   &:nth-child(1) { background-color: darken($color, 30%); }
   &:nth-child(2) { background-color: darken($color, 20%); }
@@ -27,7 +29,9 @@ $c-inactive-text: #999;
   from { opacity: 0; transform: translate3d(0, 20%, 0); }
   to { opacity: 1; transform: none; }
 }
-
+//--------------------------------
+//      MultiCalendar
+//--------------------------------
 .fl-mc {
   display: block;
   font-family: 'Lato';
@@ -36,13 +40,60 @@ $c-inactive-text: #999;
   background-color: $c-background;
   border: 1px solid $c-inactive;
   border-radius: 5px;
+  font-size: 14px;
 
   * {
     box-sizing: border-box;
   }
 }
+//--------------------------------
+//      ControlBar
+//--------------------------------
+.fl-mc-ctrl {
+  display: flex;
+  flex-flow: row wrap;
+  align-content: flex-start;
+  align-items: stretch;
+  font-size: inherit;
 
-// A Calendar Object
+  width: 100%;
+}
+
+.fl-mc-ctrl-weekpicker,
+.fl-mc-ctrl-back,
+.fl-mc-ctrl-forward,
+.fl-mc-ctrl-today,
+.fl-mc-ctrl-refresh,
+.fl-mc-ctrl-show-weekend {
+  vertical-align: middle;
+
+  :before {
+    display: inline-block;
+    transform: translateY(.15em);
+  }
+}
+
+.fl-mc-ctrl-show-weekend {
+  white-space: nowrap;
+}
+
+.fl-mc-ctrl-weekpicker {
+  font-size: inherit;
+  min-width: calc($cal-header-width + 1px); // This 1px is magic and just works.
+  font-family: inherit;
+  padding-left: 1em;
+}
+
+.fl-mc-ctrl-date-range {
+  flex: 1 7 13em;
+  text-align: center;
+  margin: auto; // This pushes other elements to the sides.
+}
+
+
+//--------------------------------
+//       Calendar
+//--------------------------------
 .fl-mc-cal {
   display: flex;
   flex-flow: row nowrap;
@@ -59,7 +110,7 @@ $c-inactive-text: #999;
 
 .fl-mc-cal-header {
   display: block;
-  flex: 0 0 15em;
+  flex: 0 0 $cal-header-width;
   padding: 1em;
 }
 
@@ -82,6 +133,9 @@ $c-inactive-text: #999;
   flex-flow: row nowrap;
 }
 
+//--------------------------------
+//      Day
+//--------------------------------
 .fl-mc-cal-day {
   display: block;
   width: 0; // Makes all days be the same width.
@@ -116,6 +170,9 @@ $c-inactive-text: #999;
   font-size: .8em;
 }
 
+//--------------------------------
+//      Event
+//--------------------------------
 .fl-mc-cal-day-event {
   display: block;
   position: relative; // for the tooltip.

@@ -47,9 +47,7 @@ xController((xDivEl) => {
   ],
   });
 
-  for (let i = 0; i < 5; i++) {
-    multiCalendar.addDay();
-  }
+  multiCalendar.setViewMode('fullWeek');
 
   console.log(multiCalendar);
 });

@@ -33,6 +33,12 @@ export default class MultiCalendar extends ModelView {
     this.endDate = null;
     this.calendars = [];
     this.lastLoadedEvents = {};
+    this.viewModes = {
+      weekdays: { dayCount: 5 },
+      fullWeek: { dayCount: 7 },
+      oneDay: { dayCount: 1 },
+    };
+    this.currViewMode = this.viewModes.weekdays;
 
     // Nothing else will be added to the object from here on.
     Object.preventExtensions(this);
@@ -58,22 +64,6 @@ export default class MultiCalendar extends ModelView {
   }
 
   initControlBar(controlBar = this.controlBar) {
-    // Add listeners to controlBar
-    const els = [
-      'weekpicker',
-      'back',
-      'forward',
-      'today',
-      'refresh',
-      'date-range',
-      'show-weekend',
-    ];
-
-    for (const el of els) {
-      controlBar.listenTo(el, () => {
-        console.log(el);
-      });
-    }
 
     controlBar.listenTo('weekpicker', () => {
       const weekpickerDate = this.controlBar.getWeekpickerDate();
@@ -118,6 +108,16 @@ export default class MultiCalendar extends ModelView {
     }
   }
 
+  /**
+   * @method getDayCount Amount of days being shown in each calendar.
+   * @param  {Array[Calendar]} calendars [optional]
+   * @return {Int} If there are no calendars it returns 0;
+   */
+  getDayCount(calendars = this.calendars) {
+    if (calendars.length === 0) { return 0; }
+    return calendars[0].getDayCount();
+  }
+
   // Loads server events into calendars
   loadEvents(loadUrl = this.loadUrl, calendars = this.calendars) {
     return fetch(loadUrl)
@@ -158,17 +158,49 @@ export default class MultiCalendar extends ModelView {
     }
 
     this.startDate = newDate;
-    if (calendars.length > 0) {
-      const daysInCalendar = calendars[0].getDayCount();
-      // Make sure endDate will never be negative. even if there are 0 days in calendar
-      const daysToEnd = Math.max(daysInCalendar - 1, 0);
-      this.endDate = DateHandler.addDays(newDate, daysToEnd);
-    } else {
-      this.endDate = this.startDate;
-    }
+    const daysInCalendar = this.getDayCount();
+
+    // Make sure endDate will never be negative.
+    // even if there are 0 days in each calendar
+    const daysToEnd = Math.max(daysInCalendar - 1, 0);
+    this.endDate = DateHandler.addDays(newDate, daysToEnd);
 
     this.controlBar.setWeekpickerDate(newDate);
     this.setEvents(this.lastLoadedEvents);
+  }
+
+  /**
+   * @method setViewMode
+   * @param {String} newMode
+   * @param {Array[Calendar]} calendars [optional]
+   * @return {void}
+   */
+  setViewMode(modeName, calendars = this.calendars) {
+    const newMode = this.viewModes[modeName];
+    if (newMode === undefined) {
+      assert(false, `Invalid view mode: ${newMode}`);
+      return;
+    } else if (newMode === this.currViewMode) {
+      return;
+    }
+
+    // It might be the first time that the mode is being set
+    // and the number of days in each calendar could be different
+    // from all of the viewModes, that's why we are using this.getDayCount
+    // instead of this.currViewMode.dayCount.
+    const currDayCount = this.getDayCount();
+
+    const dayCountDiff = Math.abs(newMode.dayCount - currDayCount);
+    const method = (newMode.dayCount < currDayCount) ? 'removeDay' : 'addDay';
+
+    // Add or remove the needed amount of days from the calendar.
+    for (const cal of calendars) {
+      for (let i = 0; i < dayCountDiff; i++) {
+        cal[method]();
+      }
+    }
+
+    this.currViewMode = newMode;
   }
 
 }

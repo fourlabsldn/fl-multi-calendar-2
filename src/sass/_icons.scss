@@ -36,6 +36,8 @@
   line-height: 1;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  display: inline-block;
+  transform: translateY(.15em);
 }
 
 .icon-refresh:before {
@@ -52,4 +54,7 @@
 }
 .icon-chevron-right:before {
   content: '\63';
+}
+.icon-calendar:before {
+  content: "\66";
 }

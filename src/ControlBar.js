@@ -32,6 +32,9 @@ export default class ControlBar extends ModelView {
       this.trigger('weekpicker', e.target.value);
     });
 
+    // TODO: Remove this statement
+    this.html['date-range'].innerHTML = 'Apr 04 - Apr 05';
+
     // Add listener to buttons
     for (const el of html) {
       if (el.tag !== 'button') { continue; }
