@@ -9,6 +9,12 @@ const sass = require('gulp-sass');
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 
+gulp.task('assets', () => {
+  return gulp.src(['./src/assets/**/*.*'])
+    .pipe(gulp.dest('./build/assets'));
+});
+
+
 gulp.task('sass', () => {
   return gulp.src(['./src/sass/**/*.scss', '!./src/sass/**/_*.*'])
     .pipe(sourcemaps.init())
@@ -56,6 +62,7 @@ gulp.task('rollup-tests', () => {
 gulp.task('watch', () => {
   gulp.watch('./src/**/*.js', ['build']);
   gulp.watch('./src/sass/*.*', ['sass']);
+  gulp.watch('./src/assets/*.*', ['assets']);
 });
 
 gulp.task('webserver', () => {
@@ -69,6 +76,6 @@ gulp.task('webserver', () => {
 });
 
 gulp.task('rollup', ['rollup-module', 'rollup-tests']);
-gulp.task('build', ['rollup', 'sass']);
+gulp.task('build', ['rollup', 'sass', 'assets']);
 
-gulp.task('dev', ['rollup', 'sass', 'watch', 'webserver']);
+gulp.task('dev', ['build', 'watch', 'webserver']);

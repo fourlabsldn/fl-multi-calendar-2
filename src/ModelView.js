@@ -26,7 +26,7 @@ export default class ModelView {
       this.html[propName] = document.createElement(propTag);
       this.html[propName].classList.add(`${this.class}-${propName}`);
       if (prop.content) {
-        this.html[propName].textContent = prop.content;
+        this.html[propName].innerHTML = prop.content;
       }
 
       this.html.container.appendChild(this.html[propName]);

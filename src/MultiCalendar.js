@@ -1,6 +1,7 @@
 import assert from './utils/assert';
 import DateHandler from './utils/DateHandler';
 import ModelView from './ModelView';
+import ControlBar from './ControlBar';
 import Calendar from './Calendar';
 
 const MULTI_CALENDAR_CLASS = 'fl-mc';
@@ -23,6 +24,10 @@ export default class MultiCalendar extends ModelView {
 
     this.startDate = DateHandler.newDate();
     this.endDate = this.startDate;
+
+    // Create control bar
+    this.controlBar = new ControlBar(this.class);
+    this.html.container.appendChild(this.controlBar.html.container);
 
     // Add Calendars
     assert(Array.isArray(config.calendars), 'No valid calendars array provided.');
