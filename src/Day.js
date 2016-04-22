@@ -63,6 +63,12 @@ export default class Day extends ModelView {
     this.events.push(newEvent);
   }
 
+  setEvents() {
+    // TODO: Implement this instead of addEvent and clearEvents
+    // and make sure that it doesn't reload the HTML for the same set
+    // of events.
+  }
+
   getDate() {
     return this.date;
   }

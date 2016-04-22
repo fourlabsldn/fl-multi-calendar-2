@@ -76,20 +76,21 @@ export default class MultiCalendar extends ModelView {
     }
 
     controlBar.listenTo('forward', () => {
-      console.log('Adding a week');
       const newDate = DateHandler.add(this.startDate, 1, 'week');
       this.setStartDate(newDate);
     });
 
     controlBar.listenTo('back', () => {
-      console.log('Removing a week');
       const newDate = DateHandler.add(this.startDate, -1, 'week');
       this.setStartDate(newDate);
     });
 
     controlBar.listenTo('today', () => {
-      console.log('Going to today');
       this.setStartDate(DateHandler.newDate());
+    });
+
+    controlBar.listenTo('refresh', () => {
+      this.loadEvents();
     });
   }
 
