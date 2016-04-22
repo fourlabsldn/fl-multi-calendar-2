@@ -24,6 +24,8 @@ export default class Day extends ModelView {
 
     this.updateHeader();
 
+    this.todayColor();
+
     Object.freeze(this);
   }
 
@@ -87,6 +89,14 @@ export default class Day extends ModelView {
       let event = events.pop(); // Remove JS reference
       event.html.container.remove(); // Remove DOM reference
       event = null; // Make object available to be garbage collected
+    }
+  }
+
+  // Assigns a different color to the container if
+  // this instance represents today's date
+  todayColor(date = this.date) {
+    if (DateHandler.sameDay(date, new Date())) {
+      this.html.container.classList.add(`${this.class}-today`);
     }
   }
 }
