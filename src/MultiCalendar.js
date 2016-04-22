@@ -8,27 +8,57 @@ const MULTI_CALENDAR_CLASS = 'fl-mc';
 
 export default class MultiCalendar extends ModelView {
   constructor(config) {
+    // ----------------------------------------------------------------
+    // --------------------- Property creation  -----------------------
+    // ----------------------------------------------------------------
     assert(config, 'No Configuration object provided.');
 
     // Create HTML part with SuperClass
     super(null, MULTI_CALENDAR_CLASS, '', 'main');
 
     assert(typeof config.targetElement === 'object',
-      'No valid targetElement provided.');
+        'No valid targetElement provided.');
     this.targetElement = config.targetElement;
-    this.targetElement.appendChild(this.html.container);
-
-    assert(typeof config.loadUrl === 'string',
-      'No loadUrl provided.');
-    this.loadUrl = config.loadUrl;
-
-    this.startDate = DateHandler.newDate();
-    this.endDate = this.startDate;
 
     // Create control bar
     this.controlBar = new ControlBar(this.class);
     this.html.container.appendChild(this.controlBar.html.container);
 
+    assert(typeof config.loadUrl === 'string',
+      'No loadUrl provided.');
+    this.loadUrl = config.loadUrl;
+
+    // Dates will be initialised in this.setStartDate
+    this.startDate = null;
+    this.endDate = null;
+    this.calendars = [];
+    this.lastLoadedEvents = {};
+
+    // Nothing else will be added to the object from here on.
+    Object.preventExtensions(this);
+
+    // ----------------------------------------------------------------
+    // --------------- ControlBar & Calendars setup -- ----------------
+    // ----------------------------------------------------------------
+
+    this.initControlBar(this.controlBar);
+
+    this.setStartDate(DateHandler.newDate());
+
+    // Add Calendars
+    assert(Array.isArray(config.calendars), 'No valid calendars array provided.');
+    for (const cal of config.calendars) {
+      this.addCalendar(cal, this.startDate);
+    }
+
+    this.loadEvents();
+
+    // Add everything to the DOM
+    this.targetElement.appendChild(this.html.container);
+  }
+
+  initControlBar(controlBar = this.controlBar) {
+    // Add listeners to controlBar
     const els = [
       'weekpicker',
       'back',
@@ -40,36 +70,32 @@ export default class MultiCalendar extends ModelView {
     ];
 
     for (const el of els) {
-      this.controlBar.listenTo(el, () => {
+      controlBar.listenTo(el, () => {
         console.log(el);
       });
     }
 
-    this.controlBar.listenTo('forward', () => {
-      console.log('Adding days');
-      this.setStartDate(DateHandler.addDays(this.startDate, 1));
+    controlBar.listenTo('forward', () => {
+      console.log('Adding a week');
+      const newDate = DateHandler.add(this.startDate, 1, 'week');
+      this.setStartDate(newDate);
     });
 
-    this.controlBar.listenTo('back', () => {
-      console.log('Removing days');
-      this.setStartDate(DateHandler.addDays(this.startDate, -1));
+    controlBar.listenTo('back', () => {
+      console.log('Removing a week');
+      const newDate = DateHandler.add(this.startDate, -1, 'week');
+      this.setStartDate(newDate);
     });
 
-    // Add Calendars
-    assert(Array.isArray(config.calendars), 'No valid calendars array provided.');
-    this.calendars = [];
-    for (const cal of config.calendars) {
-      this.addCalendar(cal);
-    }
-
-    this.loadEvents();
-
-    Object.preventExtensions(this);
+    controlBar.listenTo('today', () => {
+      console.log('Going to today');
+      this.setStartDate(DateHandler.newDate());
+    });
   }
 
   // TODO: Add calendar when other calendars already have days
-  addCalendar(config) {
-    const calendar = new Calendar(config, this.startDate, MULTI_CALENDAR_CLASS);
+  addCalendar(config, startDate = this.startDate) {
+    const calendar = new Calendar(config, startDate, MULTI_CALENDAR_CLASS);
     this.html.container.appendChild(calendar.html.container);
     this.calendars.push(calendar);
   }
@@ -93,14 +119,25 @@ export default class MultiCalendar extends ModelView {
     // The loaded object is indexed by calendar id and each element contains
     // an array of event objects.
     .then((loadedCalEvents) => {
-      const loadedIds = Object.keys(loadedCalEvents);
-
-      // Send each array of event objects to the corresponding calendar
-      for (const loadedId of loadedIds) {
-        const cal = this.findCalendar(loadedId, calendars);
-        if (cal) { cal.setEvents(loadedCalEvents[loadedId]); }
-      }
+      this.setEvents(loadedCalEvents, calendars);
     });
+  }
+
+  setEvents(calEvents = this.lastLoadedEvents, calendars = this.calendars) {
+    if (typeof calEvents !== 'object') {
+      assert.warn(false, 'Trying to set events with invalid object');
+      return;
+    }
+
+    const loadedIds = Object.keys(calEvents);
+
+    // Send each array of event objects to the corresponding calendar
+    for (const loadedId of loadedIds) {
+      const cal = this.findCalendar(loadedId, calendars);
+      if (cal) { cal.setEvents(calEvents[loadedId]); }
+    }
+
+    this.lastLoadedEvents = calEvents;
   }
 
   findCalendar(calId, calendars = this.calendars) {
@@ -108,7 +145,8 @@ export default class MultiCalendar extends ModelView {
   }
 
   setStartDate(date, calendars = this.calendars) {
-    const newDate = DateHandler.newDate(date);
+    // Prepare this for changing one day at a time in mobile view.
+    const newDate = DateHandler.startOf(date, 'isoweek');
     for (const cal of calendars) {
       cal.setStartDate(newDate);
     }
@@ -122,6 +160,8 @@ export default class MultiCalendar extends ModelView {
     } else {
       this.endDate = this.startDate;
     }
+
+    this.setEvents(this.lastLoadedEvents);
   }
 
 }

@@ -47,7 +47,7 @@ export default class Calendar extends ModelView {
   // Always adds to the end
   // The Object will decide what is the date of the day to be added.
   addDay() {
-    const newDate = DateHandler.addDays(this.date, this.days.length);
+    const newDate = DateHandler.addDays(this.startDate, this.days.length);
     const newDay = new Day(newDate, this.class);
     assert(newDay && newDay.html && newDay.html.container,
         'New Day instance initialised without an HTML container.');

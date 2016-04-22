@@ -2,8 +2,12 @@
 
 // This class serves mainly to wrap moment.js
 export default class DateHandler {
+  static add(date, amount, unit) {
+    return moment(date).add(amount, unit);
+  }
+
   static addDays(date, amount) {
-    return moment(date).add(amount, 'day');
+    return this.add(date, amount, 'day');
   }
 
   // Will return today's date if no date is given
