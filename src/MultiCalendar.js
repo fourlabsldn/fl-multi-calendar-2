@@ -29,6 +29,32 @@ export default class MultiCalendar extends ModelView {
     this.controlBar = new ControlBar(this.class);
     this.html.container.appendChild(this.controlBar.html.container);
 
+    const els = [
+      'weekpicker',
+      'back',
+      'forward',
+      'today',
+      'refresh',
+      'date-range',
+      'show-weekend',
+    ];
+
+    for (const el of els) {
+      this.controlBar.listenTo(el, () => {
+        console.log(el);
+      });
+    }
+
+    this.controlBar.listenTo('forward', () => {
+      console.log('Adding days');
+      this.setStartDate(DateHandler.addDays(this.startDate, 1));
+    });
+
+    this.controlBar.listenTo('back', () => {
+      console.log('Removing days');
+      this.setStartDate(DateHandler.addDays(this.startDate, -1));
+    });
+
     // Add Calendars
     assert(Array.isArray(config.calendars), 'No valid calendars array provided.');
     this.calendars = [];
@@ -38,7 +64,7 @@ export default class MultiCalendar extends ModelView {
 
     this.loadEvents();
 
-    Object.freeze(this);
+    Object.preventExtensions(this);
   }
 
   // TODO: Add calendar when other calendars already have days
@@ -48,14 +74,14 @@ export default class MultiCalendar extends ModelView {
     this.calendars.push(calendar);
   }
 
-  addDay() {
-    for (const cal of this.calendars) {
+  addDay(calendars = this.calendars) {
+    for (const cal of calendars) {
       cal.addDay();
     }
   }
 
-  removeDay() {
-    for (const cal of this.calendars) {
+  removeDay(calendars = this.calendars) {
+    for (const cal of calendars) {
       cal.removeDay();
     }
   }
@@ -81,5 +107,21 @@ export default class MultiCalendar extends ModelView {
     return calendars.find((cal) => { return cal.id === calId; });
   }
 
+  setStartDate(date, calendars = this.calendars) {
+    const newDate = DateHandler.newDate(date);
+    for (const cal of calendars) {
+      cal.setStartDate(newDate);
+    }
+
+    this.startDate = newDate;
+    if (calendars.length > 0) {
+      const daysInCalendar = calendars[0].getDayCount();
+      // Make sure endDate will never be negative. even if there are 0 days in calendar
+      const daysToEnd = Math.max(daysInCalendar - 1, 0);
+      this.endDate = DateHandler.addDays(newDate, daysToEnd);
+    } else {
+      this.endDate = this.startDate;
+    }
+  }
 
 }

@@ -41,7 +41,7 @@ export default class Calendar extends ModelView {
     // The days array is ordered chronologically.
     this.days = [];
 
-    Object.freeze(this);
+    Object.preventExtensions(this);
   }
 
   // Always adds to the end
@@ -64,6 +64,10 @@ export default class Calendar extends ModelView {
 
     // Remove last reference to the element
     dayToBeRemoved = null;
+  }
+
+  getDayCount(days = this.days) {
+    return days.length;
   }
 
   setEvents(eventsArray) {
@@ -116,5 +120,13 @@ export default class Calendar extends ModelView {
     }
 
     return foundDays;
+  }
+
+  setStartDate(date, days = this.days) {
+    let counter = 0;
+    for (const day of days) {
+      day.setDate(DateHandler.addDays(date, counter));
+      counter++;
+    }
   }
 }

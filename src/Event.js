@@ -41,7 +41,7 @@ export default class Event extends ModelView {
 
     this.updateTime();
 
-    Object.freeze(this);
+    Object.preventExtensions(this);
   }
 
   getStartTime() {

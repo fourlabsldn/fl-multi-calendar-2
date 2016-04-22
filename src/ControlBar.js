@@ -33,7 +33,7 @@ export default class ControlBar extends ModelView {
 
     this.eventListeners = {};
 
-    Object.freeze(this);
+    Object.preventExtensions(this);
   }
 
   listenTo(eventName, callback) {

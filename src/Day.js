@@ -13,20 +13,12 @@ export default class Day extends ModelView {
     ];
     super(html, DAY_CLASS, parentClass);
 
-    assert(date && typeof date === 'object',
-      'No date provided for Day instantiation.');
-    this.date = date;
-    this.start = DateHandler.startOf(date, 'day');
-    this.end = DateHandler.endOf(date, 'day');
+    this.setDate(date);
 
     // The order of this array doesn't matter.
     this.events = [];
 
-    this.updateHeader();
-
-    this.todayColor();
-
-    Object.freeze(this);
+    Object.preventExtensions(this);
   }
 
   updateHeader() {
@@ -83,6 +75,16 @@ export default class Day extends ModelView {
     return this.end;
   }
 
+  // Expects a date object
+  setDate(newDate) {
+    assert(typeof newDate === 'object', 'No date object provided.');
+    this.date = newDate;
+    this.start = DateHandler.startOf(this.date, 'day');
+    this.end = DateHandler.endOf(this.date, 'day');
+    this.updateHeader();
+    this.todayColor();
+  }
+
   clearEvents(events = this.events) {
     const eventsNo = events.length;
     for (let i = 0; i < eventsNo; i++) {
@@ -97,6 +99,8 @@ export default class Day extends ModelView {
   todayColor(date = this.date) {
     if (DateHandler.sameDay(date, new Date())) {
       this.html.container.classList.add(`${this.class}-today`);
+    } else {
+      this.html.container.classList.remove(`${this.class}-today`);
     }
   }
 }
