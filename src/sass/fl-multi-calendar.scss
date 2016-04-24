@@ -57,7 +57,7 @@ $border-size: 2px;
   box-sizing: border-box;
   background-color: $c-background;
   border-radius: 5px;
-  font-size: .9em;
+  font-size: 14px;
 
   * {
     box-sizing: border-box;
@@ -235,7 +235,7 @@ $border-size: 2px;
   padding: .5em;
   border-radius: 5px;
   margin: 0 0 .1em;
-  font-size: .8em;
+  font-size: ms(-1);
 
   background-color: $c-main;
   color: $c-main-text;
@@ -293,8 +293,8 @@ $border-size: 2px;
 
   padding: inherit;
   border-radius: inherit;
-  background-color: $c-secondary;
-  color: $c-seconday-text;
+  background-color: $c-background-invert;
+  color: $c-main-text;
 
   visibility: hidden;
   opacity: 0;
