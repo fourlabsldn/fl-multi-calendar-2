@@ -6,26 +6,29 @@
 $ms-ratio: $fourth;
 $ms-base: 1em;
 
+$base-color: #e7e7e7;
+
 // Colors
 $c-main: #d45240;
 $c-secondary: #2a5e7e;
 $c-accent: #39ac6f;
-$c-background: #fafafa;
-$c-background-invert: #424545;
-$c-inactive: #f2f2f2;
-$c-border: #cbcbcb;
-$c-background-2: #e7e7e7;
+$c-background: lighten($base-color, 7.4510);
+$c-inactive: lighten($base-color, 4.3137);
+$c-inactive-2: $base-color;
+$c-border: darken($base-color, 10.9804);
+$c-background-invert: darken($base-color, 57.2549);
+$c-highlight: #F7F6BC;
 
-$c-background-text: #555;
+$c-background-text: $c-background-invert;
 $c-main-text: $c-background;
 $c-seconday-text: $c-background;
 $c-accent-text: $c-background;
 $c-inactive-text: $c-border;
 
 $cal-header-width: 15em;
-
+$border-size: 2px;
 @mixin main-border() {
-  border: 2px solid $c-border;
+  border: $border-size solid $c-border;
 }
 
 @mixin color-children($color) {
@@ -39,7 +42,7 @@ $cal-header-width: 15em;
 }
 
 @keyframes fadeInUp {
-  from { opacity: 0; transform: translate3d(0, 20%, 0); }
+  from { opacity: 0; transform: translate3d(0, 100%, 0); }
   to { opacity: 1; transform: none; }
 }
 //--------------------------------
@@ -63,6 +66,10 @@ $cal-header-width: 15em;
 //      ControlBar
 //--------------------------------
 .fl-mc-ctrl {
+  @include main-border();
+  border-width: 0 0 $border-size;
+  color: $c-background-text;
+
   display: flex;
   flex-flow: row wrap;
   align-content: flex-start;
@@ -79,6 +86,7 @@ $cal-header-width: 15em;
 .fl-mc-ctrl-refresh,
 .fl-mc-ctrl-show-weekend {
   vertical-align: middle;
+  color: inherit;
 }
 
 .fl-mc-ctrl-show-weekend {
@@ -86,14 +94,16 @@ $cal-header-width: 15em;
 }
 
 .fl-mc-ctrl-weekpicker {
+  @include main-border();
+  border-width: 0 $border-size 0 0;
+
   background-color: inherit;
   color: $c-background-text;
   font-size: inherit;
-  min-width: calc(#{$cal-header-width} + 1px); // This 1px is magic and just works.
+  min-width: calc(#{$cal-header-width} + #{$border-size});
   font-family: inherit;
   padding-left: 1em;
   box-shadow: none;
-  border: inherit;
 }
 
 .fl-mc-ctrl-date-range {
@@ -117,6 +127,10 @@ $cal-header-width: 15em;
 
   &:nth-child(even) {
     background-color: $c-inactive;
+  }
+
+  &:first-of-type .fl-mc-cal-day {
+    border-top: 0;
   }
 }
 
@@ -162,8 +176,7 @@ $cal-header-width: 15em;
 }
 
 .fl-mc-cal-day-today {
-  background-color: rgba(255, 237, 82, .1); //scss-lint:disable ColorVariable
-  // background-color: rgb(255, 253, 238);
+  background-color: $c-highlight;
 }
 
 .fl-mc-cal-day-header {
@@ -175,7 +188,7 @@ $cal-header-width: 15em;
   text-align: center;
   font-weight: bold;
   padding: 0 0 .2em;
-  background-color: $c-background-2;
+  background-color: $c-inactive-2;
   color: $c-background-text;
 }
 
@@ -198,15 +211,19 @@ $cal-header-width: 15em;
   margin: 0 0 .1em;
   font-size: .8em;
 
-  transition: all .1s ease;
   background-color: $c-main;
   color: $c-main-text;
 
+  transition: all .1s ease;
   animation: fadeInUp;
   animation-duration: .5s;
-  animation-fill-mode: forwards;
+  animation-fill-mode: both;
   animation-delay: 0;
-
+  @for $i from 2 through 10 {
+    &:nth-child(#{$i}) {
+      animation-delay: 0s + ($i / 10);
+    }
+  }
   &:hover {
     filter: brightness(110%);
     cursor: pointer;
