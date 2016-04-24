@@ -14,7 +14,7 @@ export default class ControlBar extends ModelView {
       { name: 'weekpicker', tag: 'input' },
       { name: 'back', tag: 'button', content: '<i class=icon-chevron-left></i>' },
       { name: 'forward', tag: 'button', content: '<i class=icon-chevron-right></i>' },
-      { name: 'today', tag: 'button', content: 'today' },
+      { name: 'today', tag: 'button', content: 'Today' },
       { name: 'refresh', tag: 'button', content: '<i class=icon-refresh></i>' },
       { name: 'date-range', tag: 'p' },
       { name: 'show-weekend', tag: 'button', content: 'Show Weekend' },

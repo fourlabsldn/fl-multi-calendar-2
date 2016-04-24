@@ -17,7 +17,7 @@ $c-inactive: lighten($base-color, 4.3137);
 $c-inactive-2: $base-color;
 $c-border: darken($base-color, 10.9804);
 $c-background-invert: darken($base-color, 57.2549);
-$c-highlight: #F7F6BC;
+$c-highlight: #f7f6bc;
 
 $c-background-text: $c-background-invert;
 $c-main-text: $c-background;
@@ -27,6 +27,7 @@ $c-inactive-text: $c-border;
 
 $cal-header-width: 15em;
 $border-size: 2px;
+
 @mixin main-border() {
   border: $border-size solid $c-border;
 }
@@ -79,18 +80,42 @@ $border-size: 2px;
   width: 100%;
 }
 
-.fl-mc-ctrl-weekpicker,
 .fl-mc-ctrl-back,
 .fl-mc-ctrl-forward,
 .fl-mc-ctrl-today,
 .fl-mc-ctrl-refresh,
 .fl-mc-ctrl-show-weekend {
+  @include main-border();
+  border-width: 0 $border-size 0 0;
+
   vertical-align: middle;
   color: inherit;
+  background-color: $c-inactive;
+  font-weight: bold;
+
+  cursor: pointer;
+
+  $hover-color: $c-main;
+
+  &:focus {
+    outline: 0;
+    background-color: $c-inactive-2;
+  }
+
+  &:hover {
+    background-color: $hover-color;
+    color: $c-main-text;
+  }
+
+  &:active {
+    background-image: linear-gradient(grayscale($hover-color), grayscale($hover-color));
+    background-blend-mode: color-burn;
+  }
 }
 
 .fl-mc-ctrl-show-weekend {
   white-space: nowrap;
+  border-width: 0 0 0 $border-size;
 }
 
 .fl-mc-ctrl-weekpicker {
@@ -98,7 +123,7 @@ $border-size: 2px;
   border-width: 0 $border-size 0 0;
 
   background-color: inherit;
-  color: $c-background-text;
+  color: inherit;
   font-size: inherit;
   min-width: calc(#{$cal-header-width} + #{$border-size});
   font-family: inherit;
@@ -108,6 +133,7 @@ $border-size: 2px;
 
 .fl-mc-ctrl-date-range {
   flex: 1 7 13em;
+  color: inherit;
   text-align: center;
   margin: auto; // This pushes other elements to the sides.
 }
@@ -224,6 +250,7 @@ $border-size: 2px;
       animation-delay: 0s + ($i / 10);
     }
   }
+
   &:hover {
     filter: brightness(110%);
     cursor: pointer;
