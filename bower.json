@@ -20,6 +20,7 @@
     "x-div": "~1.0.3"
   },
   "devDependencies": {
-    "webcomponentsjs": "~0.7.22"
+    "webcomponentsjs": "~0.7.22",
+    "modular-scale": "~2.1.3"
   }
 }

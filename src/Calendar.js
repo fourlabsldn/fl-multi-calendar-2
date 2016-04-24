@@ -73,6 +73,7 @@ export default class Calendar extends ModelView {
   setEvents(eventsArray) {
     assert(Array.isArray(eventsArray), 'The parameter provided is not an array.');
     this.clearEvents();
+    debugger; // Continue from here
 
     for (const newEvent of eventsArray) {
       const eventDays = this.findDaysInRange(newEvent.start, newEvent.end);

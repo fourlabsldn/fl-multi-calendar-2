@@ -1,19 +1,32 @@
 @import url(https://fonts.googleapis.com/css?family=Lato:400,300,400italic,700);
 @import './_icons'; // scss-lint:disable ImportPath
+@import '../../bower_components/modular-scale/stylesheets/_modular-scale'; // scss-lint:disable ImportPath
+
+// Modular Scale variables
+$ms-ratio: $fourth;
+$ms-base: 1em;
 
 // Colors
-$c-main: #3b95b0;
+$c-main: #d45240;
 $c-secondary: #2a5e7e;
 $c-accent: #39ac6f;
-$c-inactive: #eee;
-$c-background: #fff;
+$c-background: #fafafa;
+$c-background-invert: #424545;
+$c-inactive: #f2f2f2;
+$c-border: #cbcbcb;
+$c-background-2: #e7e7e7;
 
-$c-main-text: #fff;
-$c-seconday-text: #fff;
-$c-accent-text: #fff;
-$c-inactive-text: #999;
+$c-background-text: #555;
+$c-main-text: $c-background;
+$c-seconday-text: $c-background;
+$c-accent-text: $c-background;
+$c-inactive-text: $c-border;
 
 $cal-header-width: 15em;
+
+@mixin main-border() {
+  border: 2px solid $c-border;
+}
 
 @mixin color-children($color) {
   &:nth-child(1) { background-color: darken($color, 30%); }
@@ -33,12 +46,12 @@ $cal-header-width: 15em;
 //      MultiCalendar
 //--------------------------------
 .fl-mc {
+  @include main-border();
   display: block;
   font-family: 'Lato';
   padding: 0;
   box-sizing: border-box;
   background-color: $c-background;
-  border: 1px solid $c-inactive;
   border-radius: 5px;
   font-size: .9em;
 
@@ -73,10 +86,14 @@ $cal-header-width: 15em;
 }
 
 .fl-mc-ctrl-weekpicker {
+  background-color: inherit;
+  color: $c-background-text;
   font-size: inherit;
   min-width: calc(#{$cal-header-width} + 1px); // This 1px is magic and just works.
   font-family: inherit;
   padding-left: 1em;
+  box-shadow: none;
+  border: inherit;
 }
 
 .fl-mc-ctrl-date-range {
@@ -99,7 +116,7 @@ $cal-header-width: 15em;
   min-height: 5em;
 
   &:nth-child(even) {
-    background-color: lighten($c-inactive, 4%);
+    background-color: $c-inactive;
   }
 }
 
@@ -132,13 +149,16 @@ $cal-header-width: 15em;
 //      Day
 //--------------------------------
 .fl-mc-cal-day {
+  @include main-border();
+  border-bottom: 0;
+  border-right: 0;
+
   display: block;
   width: 0; // Makes all days be the same width.
   flex: 1 1 auto;
   background-color: inherit; //For the day-header effect
 
   min-width: 10em;
-  border: 1px solid $c-inactive;
 }
 
 .fl-mc-cal-day-today {
@@ -147,13 +167,16 @@ $cal-header-width: 15em;
 }
 
 .fl-mc-cal-day-header {
+  @include main-border();
+  border-top: 0;
+  border-right: 0;
+  border-left: 0;
+
   text-align: center;
   font-weight: bold;
-  border-bottom: 1px solid $c-inactive;
   padding: 0 0 .2em;
-  background-color: inherit;
-  background-image: linear-gradient(180deg, transparentize($c-inactive, .95), transparent 50%);
-  background-blend-mode: difference;
+  background-color: $c-background-2;
+  color: $c-background-text;
 }
 
 // Events container

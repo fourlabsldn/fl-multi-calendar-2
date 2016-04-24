@@ -3,6 +3,17 @@ import DateHandler from './utils/DateHandler';
 import ModelView from './ModelView';
 import Event from './Event';
 
+// Checks whether obj1 and obj2 have the same property values.
+function shallowIsSame(obj1, obj2) {
+  const keys = Object.keys(obj1).concat(Object.keys(obj2));
+  for (const key of keys) {
+    if (obj1[key].toString() !== obj2[key].toString()) {
+      return false;
+    }
+  }
+  return true;
+}
+
 const DAY_CLASS = '-day';
 export default class Day extends ModelView {
   constructor(date, parentClass) {
@@ -13,12 +24,20 @@ export default class Day extends ModelView {
     ];
     super(html, DAY_CLASS, parentClass);
 
-    this.setDate(date);
+    this.date = null;
+    this.start = null;
+    this.end = null;
 
     // The order of this array doesn't matter.
     this.events = [];
 
+    // This is where the events config object will be stored.
+    this.eventsObj = {};
+
     Object.preventExtensions(this);
+    // -------- end of attribute creation ---------
+
+    this.setDate(date);
   }
 
   updateHeader() {
@@ -63,10 +82,20 @@ export default class Day extends ModelView {
     this.events.push(newEvent);
   }
 
-  setEvents() {
+  setEvents(newEventsObj) {
+    assert.warn(typeof newEventsObj === 'object',
+      `Invalid events object, clearing all events from day ${this.date.toString()}.`);
     // TODO: Implement this instead of addEvent and clearEvents
     // and make sure that it doesn't reload the HTML for the same set
     // of events.
+
+    // The day is being updated to have the same events, so we don't
+    // have to change anything.
+    if (shallowIsSame(this.eventsObj, newEventsObj)) { return; }
+    this.clearEvents();
+    for (const event of newEventsObj) {
+      this.addEvent(event);
+    }
   }
 
   getDate() {
