@@ -5,35 +5,40 @@
          "title":"Simple title",
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 18:00:00",
-         "tooltip":"LOL"
+         "tooltip":"LOL",
+         "color": "red"
       },
       {
          "id":"2345",
          "title":"Awesome meeting",
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 18:00:00",
-         "tooltip":"LOdsfL"
+         "tooltip":"LOdsfL",
+         "color": "green"
       },
       {
          "id":"3456",
          "title":"Awesome meeting",
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 18:00:00",
-         "tooltip":"LoooOL"
+         "tooltip":"LoooOL",
+         "color": "blue"
       },
       {
          "id":"456",
          "title":"Awesome meeting",
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 18:00:00",
-         "tooltip":"LOoooL"
+         "tooltip":"LOoooL",
+         "color": "yellow"
       },
       {
          "id":"567",
          "title":"Awesome meeting",
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 18:00:00",
-         "tooltip":"LlololololololOL"
+         "tooltip":"LlololololololOL",
+         "color": "orange"
       }
    ],
    "7899":[

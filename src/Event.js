@@ -4,6 +4,14 @@ import ModelView from './ModelView';
 
 const EVENT_CLASS = '-event';
 
+const possibleColors = {
+  blue: 'fl-mc-event-color-blue',
+  green: 'fl-mc-event-color-green',
+  yellow: 'fl-mc-event-color-yellow',
+  red: 'fl-mc-event-color-red',
+  orange: 'fl-mc-event-color-orange',
+};
+
 export default class Event extends ModelView {
   constructor(eventConfig, parentClass, callbacks = {}) {
     assert(typeof eventConfig === 'object',
@@ -42,6 +50,13 @@ export default class Event extends ModelView {
     assert(!eventConfig.tooltip || typeof eventConfig.tooltip === 'string',
         `Invalid tooltip type: ${eventConfig.tooltip}`);
     this.tooltip = eventConfig.tooltip;
+
+    if (eventConfig.color) {
+      assert(possibleColors[eventConfig.color],
+        `Invalid color: ${eventConfig.color}`);
+      const colorClass = possibleColors[eventConfig.color];
+      this.html.container.classList.add(colorClass);
+    }
 
     this.updateTime();
 
