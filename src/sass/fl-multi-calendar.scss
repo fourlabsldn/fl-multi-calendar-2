@@ -59,6 +59,8 @@ $border-size: 2px;
   border-radius: 5px;
   font-size: 14px;
 
+  // TODO: Remove that and solve wrapper issue
+  min-width: 63em;
   * {
     box-sizing: border-box;
   }
