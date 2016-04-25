@@ -6,6 +6,34 @@ import Calendar from './Calendar';
 
 const MULTI_CALENDAR_CLASS = 'fl-mc';
 
+const viewModes = {
+  weekdays: {
+    dayCount: 5,
+    className: 'fl-mc-view-weekdays',
+    pickerType: 'week',
+    newDateCallback: (newDate) => { return DateHandler.startOf(newDate, 'isoweek'); },
+    dateForwardCallback: (oldDate) => { return DateHandler.add(oldDate, 1, 'week'); },
+    dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'week'); },
+  },
+  fullWeek: {
+    dayCount: 7,
+    className:
+    'fl-mc-view-fullWeek',
+    pickerType: 'week',
+    newDateCallback: (newDate) => { return DateHandler.startOf(newDate, 'isoweek'); },
+    dateForwardCallback: (oldDate) => { return DateHandler.add(oldDate, 1, 'week'); },
+    dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'week'); },
+  },
+  oneDay: {
+    dayCount: 1,
+    className: 'fl-mc-view-oneDay',
+    pickerType: 'date',
+    newDateCallback: (newDate) => { return DateHandler.newDate(newDate); },
+    dateForwardCallback: (oldDate) => { return DateHandler.add(oldDate, 1, 'day'); },
+    dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'day'); },
+  },
+};
+
 export default class MultiCalendar extends ModelView {
   constructor(config) {
     // ----------------------------------------------------------------
@@ -33,11 +61,6 @@ export default class MultiCalendar extends ModelView {
     this.endDate = null;
     this.calendars = [];
     this.lastLoadedEvents = {};
-    this.viewModes = {
-      weekdays: { dayCount: 5, className: 'fl-mc-view-weekdays' },
-      fullWeek: { dayCount: 7, className: 'fl-mc-view-fullWeek' },
-      oneDay: { dayCount: 1, className: 'fl-mc-view-oneDay' },
-    };
     this.currViewMode = null;
 
     // Nothing else will be added to the object from here on.
@@ -74,12 +97,12 @@ export default class MultiCalendar extends ModelView {
     });
 
     controlBar.listenTo('forward', () => {
-      const newDate = DateHandler.add(this.startDate, 1, 'week');
+      const newDate = this.currViewMode.dateForwardCallback(this.startDate);
       this.setStartDate(newDate);
     });
 
     controlBar.listenTo('back', () => {
-      const newDate = DateHandler.add(this.startDate, -1, 'week');
+      const newDate = this.currViewMode.dateBackCallback(this.startDate);
       this.setStartDate(newDate);
     });
 
@@ -92,7 +115,7 @@ export default class MultiCalendar extends ModelView {
     });
 
     controlBar.listenTo('show-weekend', () => {
-      if (this.currViewMode === this.viewModes.fullWeek) {
+      if (this.currViewMode === viewModes.fullWeek) {
         this.setViewMode('weekdays');
         controlBar.setShowWeekendActive(true);
       } else {
@@ -165,8 +188,15 @@ export default class MultiCalendar extends ModelView {
   }
 
   setStartDate(date, calendars = this.calendars) {
-    // TODO: Prepare this for changing one day at a time in mobile view.
-    const newDate = DateHandler.startOf(date, 'isoweek');
+    // This function may be called before a view mode is set. In this clase
+    // the only acceptable start date is Today.
+    let newDate;
+    if (!this.currViewMode) {
+      newDate = DateHandler.newDate();
+    } else {
+      newDate = this.currViewMode.newDateCallback(date);
+    }
+
     for (const cal of calendars) {
       cal.setStartDate(newDate);
     }
@@ -190,11 +220,11 @@ export default class MultiCalendar extends ModelView {
    * @return {void}
    */
   setViewMode(modeName, calendars = this.calendars) {
-    let newMode = this.viewModes[modeName];
+    let newMode = viewModes[modeName];
     if (newMode === undefined) {
       const fallbackMode = 'weekdays';
       assert.warn(false, `Invalid view mode: ${newMode}. Defaulting to ${fallbackMode}`);
-      newMode = this.viewModes[fallbackMode];
+      newMode = viewModes[fallbackMode];
     }
 
     if (newMode === this.currViewMode) { return; }
@@ -215,12 +245,15 @@ export default class MultiCalendar extends ModelView {
       }
     }
 
-    // Remove any other view's class
-    for (const view of Object.keys(this.viewModes)) {
-      this.html.container.classList.remove(this.viewModes[view].className);
+    // Remove any other view's class and add the one for this view.
+    for (const view of Object.keys(viewModes)) {
+      this.html.container.classList.remove(viewModes[view].className);
     }
-
     this.html.container.classList.add(newMode.className);
+
+    // Set the weekpicker type correctly
+    this.controlBar.setPickerType(newMode.pickerType);
+
     this.setEvents(this.lastLoadedEvents);
     this.currViewMode = newMode;
   }

@@ -3,6 +3,10 @@ import ModelView from './ModelView';
 import DateHandler from './utils/DateHandler';
 
 const CONTROL_CLASS = '-ctrl';
+const datePickerFormats = {
+  week: 'YYYY-[W]WW',
+  date: 'YYYY-MM-DD',
+};
 
 export default class ControlBar extends ModelView {
   /**
@@ -58,7 +62,27 @@ export default class ControlBar extends ModelView {
    * @param {Date} date
    */
   setWeekpickerDate(date) {
-    this.html.weekpicker.value = DateHandler.format(date, 'YYYY-[W]WW');
+    // Make sure we set it using the correct format.
+    const format = datePickerFormats[this.html.weekpicker.type];
+    this.html.weekpicker.value = DateHandler.format(date, format);
+  }
+
+  /**
+   * @method setPickerType
+   * @param {String} type 'week' or 'day';
+   */
+  setPickerType(dateType) {
+    if (!(typeof dateType === 'string' && datePickerFormats[dateType])) {
+      assert.warn(false, `Invalid datepicker type to be set: ${dateType}`);
+      return;
+    }
+
+    if (this.html.weekpicker.type === dateType) { return; }
+
+    // Change picker type and set the date in the correct format.
+    const currDate = this.getWeekpickerDate();
+    this.html.weekpicker.type = dateType;
+    this.setWeekpickerDate(currDate);
   }
 
   /**
