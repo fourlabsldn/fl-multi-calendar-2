@@ -212,6 +212,12 @@ $border-size: 2px;
   display: block;
   flex: 0 0 $cal-header-width;
   padding: 1em;
+  cursor: pointer;
+  background-color: inherit;
+
+  &:hover {
+    filter: brightness(95%);
+  }
 }
 
 .fl-mc-view-oneDay .fl-mc-cal-header{
@@ -284,6 +290,12 @@ $border-size: 2px;
   padding: 0 0 .2em;
   background-color: $c-inactive-2;
   color: $c-background-text;
+  cursor: pointer;
+
+  &:hover {
+    filter: brightness(90%);
+  }
+
 }
 
 // Events container
