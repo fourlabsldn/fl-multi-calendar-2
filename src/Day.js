@@ -71,7 +71,6 @@ export default class Day extends ModelView {
     this.events.push(newEvent);
   }
 
-  // TODO: make calendar use this function
   setEvents(newEventsConfig) {
     assert.warn(Array.isArray(newEventsConfig),
       `Invalid array of configuration events,
@@ -151,53 +150,6 @@ export default class Day extends ModelView {
     } else {
       this.html.container.classList.remove(`${this.class}-today`);
     }
-  }
-
-  /**
-   * Events in this.events but not in eventsConfig.
-   * @method missingEventsIn
-   * @param  {Array[Object]} eventsConfig Array of event configurations
-   * @return {Array[Object]}              Config objects that are not in this.events
-   */
-  missingEventsIn(eventsConfig) {
-    return Day.eventsNotInSecondArray(this.events, eventsConfig);
-  }
-
-  /**
-   * Events in eventsConfig but not in this.events.
-   * @method newEventsIn
-   * @param  {Array[Object]} eventsConfig
-   * @return {Array[Object]}
-   */
-  newEventsIn(eventsConfig) {
-    return Day.eventsNotInSecondArray(eventsConfig, this.events);
-  }
-
-  /**
-   *
-   * I know it is a bad method name, but at least it is meaningful.
-   * @method eventsNotInSecondArray
-   * @param  {Array[Event or Object]} events1 An array of Event or of
-   * 																		event configuraiton objects
-   * @param  {Array[Event or Object]} events2
-   * @return {Array[Event or Object]}
-   */
-  static eventsNotInSecondArray(events1, events2) {
-    const missing = [];
-    // for all of events1
-    for (const ev1 of events1) {
-      // let's see if it exists in events2
-      const found = events2.some((ev2) => {
-        return Event.areSame(ev1, ev2);
-      });
-
-      // if it doesn't exist in this.events then it is a new Event.
-      if (!found) {
-        missing.push(event);
-      }
-    }
-
-    return missing;
   }
 
   hasEvent(eventConfig) {
