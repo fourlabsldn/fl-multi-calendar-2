@@ -5,7 +5,7 @@ import Event from './Event';
 
 const DAY_CLASS = '-day';
 export default class Day extends ModelView {
-  constructor(date, parentClass) {
+  constructor(date, parentClass, callbacks = {}) {
     // Create HTML part with SuperClass
     const html = [
       { name: 'header', tag: 'header' },
@@ -17,14 +17,21 @@ export default class Day extends ModelView {
     this.start = null;
     this.end = null;
 
+    this.callbacks = callbacks;
+
     // The order of this array doesn't matter.
     this.events = [];
 
-    // Store a set with event configs
-    this.eventsConfigSet = null;
-
     Object.preventExtensions(this);
     // -------- end of attribute creation ---------
+
+    if (typeof callbacks.dayHeaderClick === 'function') {
+      this.html.header.addEventListener('click', () => {
+        const eventConfigs = [];
+        this.events.forEach((ev) => { eventConfigs.push(ev.getConfig()); });
+        this.callbacks.dayHeaderClick(this.date, eventConfigs);
+      });
+    }
 
     this.setDate(date);
   }
@@ -34,7 +41,7 @@ export default class Day extends ModelView {
   }
 
   addEvent(eventInfo) {
-    const newEvent = new Event(eventInfo, this.class);
+    const newEvent = new Event(eventInfo, this.class, this.callbacks);
     assert(newEvent && newEvent.html && newEvent.html.container,
       'New Event instance initialised without an HTML container.');
 
@@ -145,7 +152,7 @@ export default class Day extends ModelView {
   // Assigns a different color to the container if
   // this instance represents today's date
   todayColor(date = this.date) {
-    if (DateHandler.sameDay(date, new Date())) {
+    if (DateHandler.sameDay(date, DateHandler.newDate())) {
       this.html.container.classList.add(`${this.class}-today`);
     } else {
       this.html.container.classList.remove(`${this.class}-today`);

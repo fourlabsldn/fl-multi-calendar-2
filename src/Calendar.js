@@ -6,7 +6,7 @@ import Day from './Day';
 const CALENDAR_CLASS = '-cal';
 
 export default class Calendar extends ModelView {
-  constructor(config, startDate, parentClass) {
+  constructor(config, startDate, parentClass, callbacks = {}) {
     assert(config, 'No calendar configuration object provided.');
 
     // Create HTML part with SuperClass
@@ -38,17 +38,26 @@ export default class Calendar extends ModelView {
     assert(startDate, 'No start date provided.');
     this.startDate = startDate;
 
+    this.callbacks = callbacks;
+
     // The days array is ordered chronologically.
     this.days = [];
 
     Object.preventExtensions(this);
+
+    // Prepare title click callback
+    if (typeof this.callbacks.titleClick === 'function') {
+      this.html.title.addEventListener('click', () => {
+        callbacks.titleClick(config);
+      });
+    }
   }
 
   // Always adds to the end
   // The Object will decide what is the date of the day to be added.
   addDay() {
     const newDate = DateHandler.addDays(this.startDate, this.days.length);
-    const newDay = new Day(newDate, this.class);
+    const newDay = new Day(newDate, this.class, this.callbacks);
     assert(newDay && newDay.html && newDay.html.container,
         'New Day instance initialised without an HTML container.');
     this.days.push(newDay);

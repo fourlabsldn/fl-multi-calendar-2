@@ -13,4 +13,5 @@ describe('An instance of the Event class should', () => {
   // Functionality
   // ===================
   xit('trigger the eventClick when clicked upon');
+  xit('should fire the click event when clicked.')
 });

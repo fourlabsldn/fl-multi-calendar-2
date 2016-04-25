@@ -5,7 +5,7 @@ import ModelView from './ModelView';
 const EVENT_CLASS = '-event';
 
 export default class Event extends ModelView {
-  constructor(eventConfig, parentClass) {
+  constructor(eventConfig, parentClass, callbacks = {}) {
     assert(typeof eventConfig === 'object',
       `Invalid event configuration object provided: ${eventConfig}`);
 
@@ -24,6 +24,8 @@ export default class Event extends ModelView {
     super(html, EVENT_CLASS, parentClass);
 
     this.config = eventConfig;
+
+    this.callbacks = callbacks;
 
     assert(typeof eventConfig.start === 'string',
       `Invalid event start date provided: ${eventConfig.start}`);
@@ -44,6 +46,13 @@ export default class Event extends ModelView {
     this.updateTime();
 
     Object.preventExtensions(this);
+
+    // Setup eventClick callback
+    if (typeof this.callbacks.eventClick === 'function') {
+      this.html.container.addEventListener('click', () => {
+        this.callbacks.eventClick(this.getConfig());
+      });
+    }
   }
 
   getStartTime() {

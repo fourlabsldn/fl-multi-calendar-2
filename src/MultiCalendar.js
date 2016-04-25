@@ -131,7 +131,13 @@ export default class MultiCalendar extends ModelView {
 
   // TODO: Add calendar when other calendars already have days
   addCalendar(config, startDate = this.startDate) {
-    const calendar = new Calendar(config, startDate, MULTI_CALENDAR_CLASS);
+    const calendarCallbacks = {
+      titleClick: config.titleClick,
+      dayHeaderClick: config.dayHeaderClick,
+      eventClick: config.eventClick,
+    }
+
+    const calendar = new Calendar(config, startDate, MULTI_CALENDAR_CLASS, calendarCallbacks);
     this.html.container.appendChild(calendar.html.container);
     this.calendars.push(calendar);
   }
