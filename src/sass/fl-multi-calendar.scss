@@ -151,11 +151,12 @@ $border-size: 2px;
   flex-wrap: wrap;
 
   .fl-mc-ctrl-weekpicker {
-    width: 100%;
     @include main-border();
+    width: 100%;
     border-width: 0 0 $border-size;
     text-align: center;
     font-weight: bold;
+    min-height: 3em;
   }
 
   .fl-mc-ctrl-back,
