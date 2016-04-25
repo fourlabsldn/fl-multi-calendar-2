@@ -47,7 +47,7 @@ export default class Calendar extends ModelView {
 
     // Prepare title click callback
     if (typeof this.callbacks.titleClick === 'function') {
-      this.html.title.addEventListener('click', () => {
+      this.html.header.addEventListener('click', () => {
         callbacks.titleClick(config);
       });
     }
