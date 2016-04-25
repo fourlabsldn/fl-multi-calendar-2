@@ -27,5 +27,7 @@ describe('A Day class\'s instance should', () => {
 
   xit('clear all events when requested');
 
-  xit('should not change HTML if setEvents is called with the same events as last call.')
+  xit('not change HTML if setEvents is called with the same events as last call.');
+  xit('add new Event without deleting other ones that should stay.');
+  xit('remove events that are not present in the new array of events configuration.');
 });
