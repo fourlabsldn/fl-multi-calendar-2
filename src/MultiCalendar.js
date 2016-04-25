@@ -12,6 +12,7 @@ const viewModes = {
     dayCount: 5,
     className: 'fl-mc-view-weekdays',
     pickerType: 'week',
+    showWeekendActiveState: true,
     newDateCallback: (newDate) => { return DateHandler.startOf(newDate, 'isoweek'); },
     dateForwardCallback: (oldDate) => { return DateHandler.add(oldDate, 1, 'week'); },
     dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'week'); },
@@ -21,6 +22,7 @@ const viewModes = {
     dayCount: 7,
     className: 'fl-mc-view-fullWeek',
     pickerType: 'week',
+    showWeekendActiveState: false,
     newDateCallback: (newDate) => { return DateHandler.startOf(newDate, 'isoweek'); },
     dateForwardCallback: (oldDate) => { return DateHandler.add(oldDate, 1, 'week'); },
     dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'week'); },
@@ -30,6 +32,7 @@ const viewModes = {
     dayCount: 1,
     className: 'fl-mc-view-oneDay',
     pickerType: 'date',
+    showWeekendActiveState: false, // The button will be hidden by css in this view mode
     newDateCallback: (newDate) => { return DateHandler.newDate(newDate); },
     dateForwardCallback: (oldDate) => { return DateHandler.add(oldDate, 1, 'day'); },
     dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'day'); },
@@ -119,10 +122,8 @@ export default class MultiCalendar extends ModelView {
     controlBar.listenTo('show-weekend', () => {
       if (this.currViewMode === viewModes.fullWeek) {
         this.setViewMode('weekdays');
-        controlBar.setShowWeekendActive(true);
       } else {
         this.setViewMode('fullWeek');
-        controlBar.setShowWeekendActive(false);
       }
       return true;
     });
@@ -256,6 +257,9 @@ export default class MultiCalendar extends ModelView {
 
     // Set the weekpicker type correctly
     this.controlBar.setPickerType(newMode.pickerType);
+
+    // Set 'Show Weekends' button state correctly
+    this.controlBar.setShowWeekendActive(newMode.showWeekendActiveState);
 
     this.currViewMode = newMode;
 
