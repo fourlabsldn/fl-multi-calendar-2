@@ -10,6 +10,8 @@ const possibleColors = {
   yellow: 'fl-mc-event-color-yellow',
   red: 'fl-mc-event-color-red',
   orange: 'fl-mc-event-color-orange',
+  white: 'fl-mc-event-color-white',
+  black: 'fl-mc-event-color-black',
 };
 
 export default class Event extends ModelView {

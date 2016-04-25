@@ -55,6 +55,7 @@
          "duration":"60",
          "timespan-end":"12:00",
          "appointment":false,
+         "color": "black",
          "photographers":[
             59
          ],
@@ -67,7 +68,8 @@
          "title":"Awesome meeting",
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 10:00:00",
-         "tooltip":"LlololololololOL"
+         "tooltip":"LlololololololOL",
+         "color": "white"
       },
       {
          "id":"7899",

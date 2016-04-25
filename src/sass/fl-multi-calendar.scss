@@ -11,6 +11,14 @@ $ms-base: 1em;
 $base-color: #e7e7e7;
 
 // Colors
+$c-blue: #2E9498;
+$c-green: #A7B531;
+$c-yellow: #D4AD40;
+$c-red: #C43232;
+$c-orange: #DA5730;
+$c-black: #303030;
+$c-white: white;
+
 $c-main: #d45240;
 $c-secondary: #2a5e7e;
 $c-accent: #39ac6f;
@@ -337,6 +345,29 @@ $border-size: 2px;
   }
 }
 
+.fl-mc-event-color-blue {
+  background-color: $c-blue;
+}
+.fl-mc-event-color-green {
+  background-color: $c-green;
+}
+.fl-mc-event-color-yellow {
+  background-color: $c-yellow;
+}
+.fl-mc-event-color-red {
+  background-color: $c-red;
+}
+.fl-mc-event-color-orange {
+  background-color: $c-orange;
+}
+.fl-mc-event-color-black {
+  background-color: $c-black;
+}
+.fl-mc-event-color-white {
+  background-color: $c-white;
+  color: inherit;
+  border: 1px solid $c-black;
+}
 .fl-mc-cal-day-event-time {
   font-weight: bold;
   margin: inherit;
