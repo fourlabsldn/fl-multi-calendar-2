@@ -47,7 +47,15 @@ xController((xDivEl) => {
   ],
   });
 
-  multiCalendar.setViewMode('oneDay');
+  function setViewModeBasedOnWindowSize() {
+    const currViewMode = multiCalendar.getViewMode();
+    if (window.innerWidth < 850 && currViewMode !== 'oneDay') {
+      multiCalendar.setViewMode('oneDay');
+    } else if (window.innerWidth > 850 && currViewMode === 'oneDay' || !currViewMode) {
+      multiCalendar.setViewMode('weekdays');
+    }
+  }
 
-  console.log(multiCalendar);
+  setViewModeBasedOnWindowSize();
+  window.addEventListener('resize', setViewModeBasedOnWindowSize);
 });

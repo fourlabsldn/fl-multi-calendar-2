@@ -8,6 +8,7 @@ const MULTI_CALENDAR_CLASS = 'fl-mc';
 
 const viewModes = {
   weekdays: {
+    name: 'weekdays',
     dayCount: 5,
     className: 'fl-mc-view-weekdays',
     pickerType: 'week',
@@ -16,15 +17,16 @@ const viewModes = {
     dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'week'); },
   },
   fullWeek: {
+    name: 'fullWeek',
     dayCount: 7,
-    className:
-    'fl-mc-view-fullWeek',
+    className: 'fl-mc-view-fullWeek',
     pickerType: 'week',
     newDateCallback: (newDate) => { return DateHandler.startOf(newDate, 'isoweek'); },
     dateForwardCallback: (oldDate) => { return DateHandler.add(oldDate, 1, 'week'); },
     dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'week'); },
   },
   oneDay: {
+    name: 'oneDay',
     dayCount: 1,
     className: 'fl-mc-view-oneDay',
     pickerType: 'date',
@@ -134,6 +136,7 @@ export default class MultiCalendar extends ModelView {
   }
 
   addDay(calendars = this.calendars) {
+    console.log('Adding days');
     for (const cal of calendars) {
       cal.addDay();
     }
@@ -254,8 +257,19 @@ export default class MultiCalendar extends ModelView {
     // Set the weekpicker type correctly
     this.controlBar.setPickerType(newMode.pickerType);
 
-    this.setEvents(this.lastLoadedEvents);
     this.currViewMode = newMode;
+
+    // Make sure the beginning startDate will be in accordance
+    // with the new viewMode.
+    this.setStartDate(this.startDate);
+    this.setEvents(this.lastLoadedEvents);
+  }
+
+  getViewMode() {
+    if (this.currViewMode) {
+      return this.currViewMode.name;
+    }
+    return null;
   }
 
 }
