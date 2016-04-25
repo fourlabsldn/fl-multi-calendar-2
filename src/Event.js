@@ -53,4 +53,21 @@ export default class Event extends ModelView {
     this.html.time.textContent =
      `${DateHandler.getTime(this.startDate)} - ${DateHandler.getTime(this.endDate)}`;
   }
+
+  /**
+   * @method areSame Whether two configurations would create the same event.
+   * @param  {Object} config1 Object to generate an event.
+   * @param  {Object} config2
+   * @return {Boolean}
+   */
+  static areSame(config1, config2) {
+    // Keys of both object
+    const keys = Object.keys(config1).concat(Object.keys(config2));
+    for (const key in keys) {
+      if (config1[key].toString() !== config2[key].toString()) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
