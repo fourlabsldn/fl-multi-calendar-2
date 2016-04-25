@@ -1,3 +1,5 @@
+// scss-lint:disable SelectorFormat
+
 @import url(https://fonts.googleapis.com/css?family=Lato:400,300,400italic,700);
 @import './_icons'; // scss-lint:disable ImportPath
 @import '../../bower_components/modular-scale/stylesheets/_modular-scale'; // scss-lint:disable ImportPath
@@ -64,6 +66,10 @@ $border-size: 2px;
   * {
     box-sizing: border-box;
   }
+}
+
+.fl-mc-view-oneDay.fl-mc {
+  min-width: 0;
 }
 //--------------------------------
 //      ControlBar
@@ -151,7 +157,6 @@ $border-size: 2px;
   background-color: inherit;
 
   width: 100%;
-  min-height: 5em;
 
   &:nth-child(even) {
     background-color: $c-inactive;
@@ -162,10 +167,24 @@ $border-size: 2px;
   }
 }
 
+.fl-mc-view-oneDay .fl-mc-cal{
+  flex-flow: column nowrap;
+
+  &:first-of-type .fl-mc-cal-header{
+    border-top: 0;
+  }
+}
+
 .fl-mc-cal-header {
   display: block;
   flex: 0 0 $cal-header-width;
   padding: 1em;
+}
+
+.fl-mc-view-oneDay .fl-mc-cal-header{
+  flex: auto;
+  @include main-border();
+  border-width: $border-size 0;
 }
 
 .fl-mc-cal-title {
@@ -173,10 +192,19 @@ $border-size: 2px;
   margin: 0 0 .2em;
 }
 
+.fl-mc-view-oneDay .fl-mc-cal-title {
+  font-size: ms(2);
+  text-align: center;
+}
+
 .fl-mc-cal-description {
   font-size: inherit;
   font-weight: lighter;
   margin: 0;
+}
+
+.fl-mc-view-oneDay .fl-mc-cal-description {
+  display: none;
 }
 
 .fl-mc-cal-days {
@@ -201,6 +229,11 @@ $border-size: 2px;
   background-color: inherit; //For the day-header effect
 
   min-width: 9em;
+  min-height: 5em;
+}
+
+.fl-mc-view-oneDay .fl-mc-cal-day{
+  border: 0;
 }
 
 .fl-mc-cal-day-today {
