@@ -247,7 +247,7 @@ $border-size: 2px;
   animation-delay: 0;
   @for $i from 2 through 10 {
     &:nth-child(#{$i}) {
-      animation-delay: 0s + ($i / 10);
+      animation-delay: 0s + ($i / 15);
     }
   }
 
