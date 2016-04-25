@@ -34,9 +34,9 @@ export default class MultiCalendar extends ModelView {
     this.calendars = [];
     this.lastLoadedEvents = {};
     this.viewModes = {
-      weekdays: { dayCount: 5 },
-      fullWeek: { dayCount: 7 },
-      oneDay: { dayCount: 1 },
+      weekdays: { dayCount: 5, className: 'fl-mc-view-weekdays' },
+      fullWeek: { dayCount: 7, className: 'fl-mc-view-fullWeek' },
+      oneDay: { dayCount: 1, className: 'fl-mc-view-oneDay' },
     };
     this.currViewMode = null;
 
@@ -215,6 +215,12 @@ export default class MultiCalendar extends ModelView {
       }
     }
 
+    // Remove any other view's class
+    for (const view of Object.keys(this.viewModes)) {
+      this.html.container.classList.remove(this.viewModes[view].className);
+    }
+
+    this.html.container.classList.add(newMode.className);
     this.setEvents(this.lastLoadedEvents);
     this.currViewMode = newMode;
   }
