@@ -3,17 +3,6 @@ import DateHandler from './utils/DateHandler';
 import ModelView from './ModelView';
 import Event from './Event';
 
-// Checks whether obj1 and obj2 have the same property values.
-function shallowIsSame(obj1, obj2) {
-  const keys = Object.keys(obj1).concat(Object.keys(obj2));
-  for (const key of keys) {
-    if (obj1[key].toString() !== obj2[key].toString()) {
-      return false;
-    }
-  }
-  return true;
-}
-
 const DAY_CLASS = '-day';
 export default class Day extends ModelView {
   constructor(date, parentClass) {
@@ -31,8 +20,8 @@ export default class Day extends ModelView {
     // The order of this array doesn't matter.
     this.events = [];
 
-    // This is where the events config object will be stored.
-    this.eventsObj = {};
+    // Store a set with event configs
+    this.eventsConfigSet = null;
 
     Object.preventExtensions(this);
     // -------- end of attribute creation ---------
@@ -82,19 +71,31 @@ export default class Day extends ModelView {
     this.events.push(newEvent);
   }
 
-  setEvents(newEventsObj) {
-    assert.warn(typeof newEventsObj === 'object',
-      `Invalid events object, clearing all events from day ${this.date.toString()}.`);
-    // TODO: Implement this instead of addEvent and clearEvents
-    // and make sure that it doesn't reload the HTML for the same set
-    // of events.
+  // TODO: make calendar use this function
+  setEvents(newEventsConfig) {
+    assert.warn(Array.isArray(newEventsConfig),
+      `Invalid array of configuration events,
+      clearing all events from day ${this.date.toString()}.`);
 
-    // The day is being updated to have the same events, so we don't
-    // have to change anything.
-    if (shallowIsSame(this.eventsObj, newEventsObj)) { return; }
-    this.clearEvents();
-    for (const event of newEventsObj) {
-      this.addEvent(event);
+    const diff = arrayDifference(this.events, newEventsConfig, Event.areSame);
+
+    // Events that we have and newEventsConfig doesn't.
+    const missingEvents = diff.missingFromArr2;
+
+    // If all events must be removed.
+    if (missingEvents.length === this.events.length) {
+      // Use the crearEvents method as it performs better than removeEvent
+      this.clearEvents();
+    } else {
+      for (const eventConfig of missingEvents) {
+        this.removeEvent(eventConfig);
+      }
+    }
+
+    // Events that newEventsConfig has and we don't.
+    const newEvents = diff.missingFromArr1;
+    for (const eventConfig of newEvents) {
+      this.addEvent(eventConfig);
     }
   }
 
@@ -129,6 +130,19 @@ export default class Day extends ModelView {
     }
   }
 
+  removeEvent(event) {
+    const idx = this.events.indexOf(event);
+    if (idx >= 0) {
+      this.events.splice(idx, 1);
+    } else {
+      assert.warn(`Trying to remove an event that was not in day.
+                  Event starting ${event.start} for id ${event.id}.`);
+      return;
+    }
+    event.html.container.remove(); // Remove DOM reference
+    event = null; // Make object available to be garbage collected
+  }
+
   // Assigns a different color to the container if
   // this instance represents today's date
   todayColor(date = this.date) {
@@ -138,4 +152,94 @@ export default class Day extends ModelView {
       this.html.container.classList.remove(`${this.class}-today`);
     }
   }
+
+  /**
+   * Events in this.events but not in eventsConfig.
+   * @method missingEventsIn
+   * @param  {Array[Object]} eventsConfig Array of event configurations
+   * @return {Array[Object]}              Config objects that are not in this.events
+   */
+  missingEventsIn(eventsConfig) {
+    return Day.eventsNotInSecondArray(this.events, eventsConfig);
+  }
+
+  /**
+   * Events in eventsConfig but not in this.events.
+   * @method newEventsIn
+   * @param  {Array[Object]} eventsConfig
+   * @return {Array[Object]}
+   */
+  newEventsIn(eventsConfig) {
+    return Day.eventsNotInSecondArray(eventsConfig, this.events);
+  }
+
+  /**
+   *
+   * I know it is a bad method name, but at least it is meaningful.
+   * @method eventsNotInSecondArray
+   * @param  {Array[Event or Object]} events1 An array of Event or of
+   * 																		event configuraiton objects
+   * @param  {Array[Event or Object]} events2
+   * @return {Array[Event or Object]}
+   */
+  static eventsNotInSecondArray(events1, events2) {
+    const missing = [];
+    // for all of events1
+    for (const ev1 of events1) {
+      // let's see if it exists in events2
+      const found = events2.some((ev2) => {
+        return Event.areSame(ev1, ev2);
+      });
+
+      // if it doesn't exist in this.events then it is a new Event.
+      if (!found) {
+        missing.push(event);
+      }
+    }
+
+    return missing;
+  }
+
+  hasEvent(eventConfig) {
+    return this.events.some((x) => {
+      return Event.isSame(x.config(), eventConfig);
+    });
+  }
+}
+
+
+function arrayDifference(arr1, arr2, compare) {
+  // We will use a surrogate array because we will
+  // modify the values that are found so they are not compared again.
+  const sArr2 = Array.from(arr2);
+
+  const missingFromArr2 = [];
+  for (const el1 of arr1) {
+    const el2Idx = sArr2.findIndex((el2) => {
+      return compare(el1, el2);
+    });
+
+    if (el2Idx >= 0) {
+      sArr2[el2Idx] = null;
+    } else {
+      missingFromArr2.push(el1);
+    }
+  }
+
+  const missingFromArr1 = [];
+  for (const el2 of sArr2) {
+    // if it is one of the elements we set to null, then just skip it.
+    if (!el2) { continue; }
+
+    const match = arr1.find((el1) => {
+      return compare(el1, el2);
+    });
+
+    if (!match) { missingFromArr1.push(el2); }
+  }
+
+  return {
+    missingFromArr2,
+    missingFromArr1,
+  };
 }

@@ -5,39 +5,41 @@ import ModelView from './ModelView';
 const EVENT_CLASS = '-event';
 
 export default class Event extends ModelView {
-  constructor(eventInfo, parentClass) {
-    assert(typeof eventInfo === 'object',
-      `Invalid eventInfo provided: ${eventInfo}`);
+  constructor(eventConfig, parentClass) {
+    assert(typeof eventConfig === 'object',
+      `Invalid event configuration object provided: ${eventConfig}`);
 
     // Create HTML part with SuperClass
     // The html elements to be created are 'time'
-    // and whatever info comes in the eventInfo
-    const html = [{ name: 'time', tag: 'p', content: eventInfo.time }];
+    // and whatever info comes in the eventConfig
+    const html = [{ name: 'time', tag: 'p', content: eventConfig.time }];
 
     const fields = ['title', 'description', 'tooltip'];
     for (const field of fields) {
-      if (eventInfo[field]) {
-        html.push({ name: field, tag: 'p', content: eventInfo[field] });
+      if (eventConfig[field]) {
+        html.push({ name: field, tag: 'p', content: eventConfig[field] });
       }
     }
 
     super(html, EVENT_CLASS, parentClass);
 
-    assert(typeof eventInfo.start === 'string',
-      `Invalid event start date provided: ${eventInfo.start}`);
-    this.startDate = DateHandler.newDate(eventInfo.start);
+    this.config = eventConfig;
 
-    assert(typeof eventInfo.end === 'string',
-      `Invalid event end date provided: ${eventInfo.end}`);
-    this.endDate = DateHandler.newDate(eventInfo.end);
+    assert(typeof eventConfig.start === 'string',
+      `Invalid event start date provided: ${eventConfig.start}`);
+    this.startDate = DateHandler.newDate(eventConfig.start);
 
-    assert(!eventInfo.description || typeof eventInfo.description === 'string',
-        `Invalid description type: ${eventInfo.description}`);
-    this.description = eventInfo.description;
+    assert(typeof eventConfig.end === 'string',
+      `Invalid event end date provided: ${eventConfig.end}`);
+    this.endDate = DateHandler.newDate(eventConfig.end);
 
-    assert(!eventInfo.tooltip || typeof eventInfo.tooltip === 'string',
-        `Invalid tooltip type: ${eventInfo.tooltip}`);
-    this.tooltip = eventInfo.tooltip;
+    assert(!eventConfig.description || typeof eventConfig.description === 'string',
+        `Invalid description type: ${eventConfig.description}`);
+    this.description = eventConfig.description;
+
+    assert(!eventConfig.tooltip || typeof eventConfig.tooltip === 'string',
+        `Invalid tooltip type: ${eventConfig.tooltip}`);
+    this.tooltip = eventConfig.tooltip;
 
     this.updateTime();
 
@@ -54,20 +56,38 @@ export default class Event extends ModelView {
      `${DateHandler.getTime(this.startDate)} - ${DateHandler.getTime(this.endDate)}`;
   }
 
+  getConfig() {
+    return this.config;
+  }
+
   /**
    * @method areSame Whether two configurations would create the same event.
-   * @param  {Object} config1 Object to generate an event.
-   * @param  {Object} config2
+   * @param  {Object} e1 Event object or event configuration object
+   * @param  {Object} e2
    * @return {Boolean}
    */
-  static areSame(config1, config2) {
-    // Keys of both object
-    const keys = Object.keys(config1).concat(Object.keys(config2));
-    for (const key in keys) {
-      if (config1[key].toString() !== config2[key].toString()) {
-        return false;
-      }
-    }
-    return true;
+  static areSame(e1, e2) {
+    if (!e1 || !e2) { return false; }
+    const event1 = (e1 instanceof Event) ? e1.getConfig() : e1;
+    const event2 = (e2 instanceof Event) ? e2.getConfig() : e2;
+    return JSON.stringify(event1) === JSON.stringify(event2);
+
+    // TODO: Check properties properly, using a properties array with the
+    // name and of every relevant property.
+
+    // const keysEvent1 = Object.keys(event1);
+    // const keysEvent2 = Object.keys(event2);
+    // if (keysEvent1.length !== keysEvent2.length) { return false; }
+    //
+    // // Keys of both object
+    // const keys = keysEvent1.concat(keysEvent1);
+    // const keySet = new Set(keys); // So we don't compare the same thing twice.
+    // for (const key of keySet) {
+    //   if (!event1[key] || !event2[key]) { return false; }
+    //   if (event1[key].toString() !== event2[key].toString()) {
+    //     return false;
+    //   }
+    // }
+    // return true;
   }
 }

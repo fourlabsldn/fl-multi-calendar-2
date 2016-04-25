@@ -72,13 +72,23 @@ export default class Calendar extends ModelView {
 
   setEvents(eventsArray) {
     assert(Array.isArray(eventsArray), 'The parameter provided is not an array.');
-    this.clearEvents();
+    // this.clearEvents();
+
+    // Create a map indexed by day
+    const daysMap = new Map();
+    this.days.forEach((d) => { return daysMap.set(d, []); });
+
 
     for (const newEvent of eventsArray) {
       const eventDays = this.findDaysInRange(newEvent.start, newEvent.end);
+
       for (const day of eventDays) {
-        day.addEvent(newEvent);
+        daysMap.get(day).push(newEvent);
       }
+    }
+
+    for (const keyVal of daysMap) {
+      keyVal[0].setEvents(keyVal[1]);
     }
   }
 
