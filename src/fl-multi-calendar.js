@@ -47,7 +47,7 @@ xController((xDivEl) => {
   ],
   });
 
-  multiCalendar.setViewMode('weekdays');
+  multiCalendar.setViewMode('oneDay');
 
   console.log(multiCalendar);
 });

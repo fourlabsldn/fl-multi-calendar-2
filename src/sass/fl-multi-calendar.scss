@@ -146,6 +146,38 @@ $border-size: 2px;
   margin: auto; // This pushes other elements to the sides.
 }
 
+// ----- ONE DAY Control Bar styles
+.fl-mc-view-oneDay .fl-mc-ctrl {
+  flex-wrap: wrap;
+
+  .fl-mc-ctrl-weekpicker {
+    width: 100%;
+    @include main-border();
+    border-width: 0 0 $border-size;
+    text-align: center;
+    font-weight: bold;
+  }
+
+  .fl-mc-ctrl-back,
+  .fl-mc-ctrl-forward,
+  .fl-mc-ctrl-today,
+  .fl-mc-ctrl-refresh {
+    flex: 1 1 auto;
+    min-height: 2em;
+  }
+
+  .fl-mc-ctrl-refresh {
+    border-right: 0;
+  }
+
+  .fl-mc-ctrl-date-range  {
+    display: none;
+  }
+
+  .fl-mc-ctrl-show-weekend {
+    display: none;
+  }
+}
 
 //--------------------------------
 //       Calendar
