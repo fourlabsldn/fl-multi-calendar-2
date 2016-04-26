@@ -1465,6 +1465,9 @@ var MultiCalendar = function (_ModelView) {
     _this.lastLoadedEvents = {};
     _this.currViewMode = null;
 
+    // Tell last requests whether they were cancelled.
+    _this.lastRequest = { cancelled: false };
+
     // Nothing else will be added to the object from here on.
     Object.preventExtensions(_this);
 
@@ -1686,8 +1689,14 @@ var MultiCalendar = function (_ModelView) {
           end: DateHandler.format(this.endDate, 'X')
         }
       };
-      console.log('Start: ' + this.startDate.toString());
-      console.log('End: ' + this.endDate.toString());
+
+      // Cancel last request. The function that made the request
+      // will preserve this object in a closure so we can safely
+      // assign a new object to this.lastRequest.
+      this.lastRequest.cancelled = true;
+      var thisRequest = { cancelled: false };
+      this.lastRequest = thisRequest;
+
       // TODO: develop a timeout mechanism
       return fetch(loadUrl, requestConfig).then(function (data) {
         return data.json();
@@ -1695,9 +1704,15 @@ var MultiCalendar = function (_ModelView) {
       // The loaded object is indexed by calendar id and each element contains
       // an array of event objects.
       .then(function (loadedCalEvents) {
+        if (thisRequest.cancelled) {
+          return;
+        }
         _this3.setEvents(loadedCalEvents, calendars);
         controlBar.setLoadingState('success');
       }).catch(function () {
+        if (thisRequest.cancelled) {
+          return;
+        }
         controlBar.setLoadingState('error');
       });
     }

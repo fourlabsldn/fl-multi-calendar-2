@@ -57,6 +57,9 @@ export default class MultiCalendar extends ModelView {
     this.lastLoadedEvents = {};
     this.currViewMode = null;
 
+    // Tell last requests whether they were cancelled.
+    this.lastRequest = { cancelled: false };
+
     // Nothing else will be added to the object from here on.
     Object.preventExtensions(this);
 
@@ -180,18 +183,26 @@ export default class MultiCalendar extends ModelView {
         end: DateHandler.format(this.endDate, 'X'),
       },
     };
-    console.log(`Start: ${this.startDate.toString()}`);
-    console.log(`End: ${this.endDate.toString()}`);
+
+    // Cancel last request. The function that made the request
+    // will preserve this object in a closure so we can safely
+    // assign a new object to this.lastRequest.
+    this.lastRequest.cancelled = true;
+    const thisRequest = { cancelled: false };
+    this.lastRequest = thisRequest;
+
     // TODO: develop a timeout mechanism
     return fetch(loadUrl, requestConfig)
     .then((data) => { return data.json(); })
     // The loaded object is indexed by calendar id and each element contains
     // an array of event objects.
     .then((loadedCalEvents) => {
+      if (thisRequest.cancelled) { return; }
       this.setEvents(loadedCalEvents, calendars);
       controlBar.setLoadingState('success');
     })
     .catch(() => {
+      if (thisRequest.cancelled) { return; }
       controlBar.setLoadingState('error');
     });
   }
