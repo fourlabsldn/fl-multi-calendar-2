@@ -26,6 +26,12 @@ export default class ControlBar extends ModelView {
     ];
     super(html, CONTROL_CLASS, parentClass, 'nav');
 
+    this.refreshLoadingController = new ButtonLoadingController(
+      this.html.refresh,
+      'fl-mc-loading',
+      'fl-mc-loading-complete',
+      'fl-mc-loading-error'
+    );
     this.eventListeners = {};
 
     Object.preventExtensions(this);
@@ -74,24 +80,20 @@ export default class ControlBar extends ModelView {
     }
   }
 
-  setLoadingState(loading) {
-    const loadingClass = 'fl-mc-loading';
-    const completeClass = 'fl-mc-loading-complete';
-    const refreshClass = this.html.refresh.classList;
-
-    if (loading) {
-      refreshClass.add(loadingClass);
-    } else if (refreshClass.contains(loadingClass)) {
-      refreshClass.remove(loadingClass);
-      refreshClass.add(completeClass);
-
-      setTimeout(() => {
-        if (!refreshClass.contains(completeClass)) {
-          assert.warn(false, 'Icon loading interrupted before due time.');
-          return;
-        }
-        refreshClass.remove(completeClass);
-      }, 1500);
+  setLoadingState(state) {
+    switch (state) {
+      case 'loading':
+        this.refreshLoadingController.setLoading();
+        break;
+      case 'success':
+        this.refreshLoadingController.setLoadingSuccess();
+        break;
+      case 'error':
+        this.refreshLoadingController.setLoadingError();
+        break;
+      default:
+        assert.warn(false, `Unexpected loading state: ${state}`);
+        break;
     }
   }
 
@@ -172,18 +174,17 @@ export default class ControlBar extends ModelView {
 }
 
 
-class buttonLoadingHandler {
-  constructor(button) {
-
+class ButtonLoadingController {
+  constructor(button, loadingClass, successClass, errorClass) {
     // Make sure we never handle a button twice.
     if (button.loadingIsHandled) { return; }
     button.loadingIsHandled = true;
 
     this.button = button;
 
-    this.loadingClass = 'fl-mc-loading';
-    this.completeClass = 'fl-mc-loading-complete';
-    this.completeClass = 'fl-mc-loading-error';
+    this.loadingClass = loadingClass;
+    this.successClass = successClass;
+    this.errorClass = errorClass;
 
     this._removeAllLoadingClasses();
 
@@ -193,7 +194,8 @@ class buttonLoadingHandler {
     this.complete = true;
 
     // Minimum time showing 'complete' or 'error' symbol.
-    this.minTimeout = 1500;
+    this.minAnimationTimeout = 500;
+    this.minIconTimeout = 1500;
 
     // Time button was set to loading
     this.loadingStartTime = null;
@@ -213,7 +215,15 @@ class buttonLoadingHandler {
     this.loadingStartTime = DateHandler.newDate();
   }
 
-  setLoadingComplete() {
+  setLoadingSuccess() {
+    this._completeLoadingWithSuccessStatus(true);
+  }
+
+  setLoadingError() {
+    this._completeLoadingWithSuccessStatus(false);
+  }
+
+  _completeLoadingWithSuccessStatus(success) {
     if (this.complete) { // That is, if it wasn't loading.
       assert(false,
         `Cannot set loading to complete when
@@ -221,58 +231,40 @@ class buttonLoadingHandler {
       return;
     }
 
-    if (this.locked) { return; }
 
-    // Time remaining to minimumTimeout
-    // const remainingDelay = timeNow - (timeLoadingStart + timeout)
-    const timeNow = DateHandler.newDate();
-    const minDelayEnd = DateHandler.add(this.loadingStartTime, this.minTimeout, 'miliseconds');
-    const remainingDelay = DateHandler.diff(
-      timeNow,
-      minDelayEnd,
-      'miliseconds'
-    );
+    if (this.locked) { return; }
+    this.locked = true;
+
+    const outcomeClass = success ? this.successClass : this.errorClass;
+    const remainingDelay = this._timeToAnimationTimeoutEnd();
 
     setTimeout(() => {
-
-    });
-    this._removeAllLoadingClasses();
-    this.button.classList.add(this.completeClass);
-    this.complete = true;
-  }
-
-  setLoadingError() {
-    if (this.locked) { return; }
-
-    this._removeAllLoadingClasses();
-    this.button.classList.add(this.errorClass);
-    this.complete = true;
+      this._removeAllLoadingClasses();
+      // Show with the completed class for at least minTimeout miliseconds
+      this.button.classList.add(outcomeClass);
+      setTimeout(() => { this._unlockAndComplete(); }, this.minIconTimeout);
+    }, remainingDelay);
   }
 
   _removeAllLoadingClasses() {
     this.button.classList.remove(this.loadingClass);
-    this.button.classList.remove(this.completeClass);
+    this.button.classList.remove(this.successClass);
     this.button.classList.remove(this.errorClass);
   }
-}
 
-setLoadingState(loading) {
-  const loadingClass = 'fl-mc-loading';
-  const completeClass = 'fl-mc-loading-complete';
-  const refreshClass = this.html.refresh.classList;
+  // Time remaining to minTimeout
+  _timeToAnimationTimeoutEnd(
+      timeoutStart = this.loadingStartTime,
+      minTimeout = this.minAnimationTimeout,
+      now = DateHandler.newDate()) {
+    const delayEndTime = DateHandler.add(timeoutStart, minTimeout, 'milliseconds');
+    const remainingDelay = DateHandler.diff(delayEndTime, now, 'milliseconds');
+    return Math.max(remainingDelay, 0);
+  }
 
-  if (loading) {
-    refreshClass.add(loadingClass);
-  } else if (refreshClass.contains(loadingClass)) {
-    refreshClass.remove(loadingClass);
-    refreshClass.add(completeClass);
-
-    setTimeout(() => {
-      if (!refreshClass.contains(completeClass)) {
-        assert.warn(false, 'Icon loading interrupted before due time.');
-        return;
-      }
-      refreshClass.remove(completeClass);
-    }, 1500);
+  _unlockAndComplete() {
+    this._removeAllLoadingClasses();
+    this.complete = true;
+    this.locked = false;
   }
 }
