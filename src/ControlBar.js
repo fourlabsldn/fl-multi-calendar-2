@@ -20,7 +20,7 @@ export default class ControlBar extends ModelView {
       { name: 'forward', tag: 'button', content: '<i class=icon-chevron-right></i>' },
       { name: 'today', tag: 'button', content: 'Today' },
       { name: 'refresh', tag: 'button',
-        content: '<i class=icon-refresh></i><i class=icon-check></i>' },
+        content: '<i class=icon-refresh></i><i class=icon-check></i><i class=icon-times></i>' },
       { name: 'titleBar', tag: 'p' },
       { name: 'show-weekend', tag: 'button', content: 'Show Weekend' },
     ];
@@ -89,6 +89,7 @@ export default class ControlBar extends ModelView {
         this.refreshLoadingController.setLoadingSuccess();
         break;
       case 'error':
+      console.log('errpr');
         this.refreshLoadingController.setLoadingError();
         break;
       default:

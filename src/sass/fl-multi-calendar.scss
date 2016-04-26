@@ -154,6 +154,7 @@ $border-size: 2px;
 
     // Hide the tick when not loading.
   .icon-check { display: none; }
+  .icon-times { display: none; }
   .icon-refresh { display: inline-block; }
 
   &.fl-mc-loading {
@@ -171,6 +172,15 @@ $border-size: 2px;
 
     .icon-refresh { display: none; }
     .icon-check { display: inline-block; }
+  }
+
+  &.fl-mc-loading-error {
+    background-color: $c-red;
+    color: $c-main-text;
+    pointer-events: none; // Disallow multiple clicks
+
+    .icon-refresh { display: none; }
+    .icon-times { display: inline-block; }
   }
 }
 
