@@ -15,7 +15,7 @@ export default class ControlBar extends ModelView {
    */
   constructor(parentClass) {
     const html = [
-      { name: 'weekpicker', tag: 'input' },
+      { name: 'datePicker', tag: 'input' },
       { name: 'back', tag: 'button', content: '<i class=icon-chevron-left></i>' },
       { name: 'forward', tag: 'button', content: '<i class=icon-chevron-right></i>' },
       { name: 'today', tag: 'button', content: 'Today' },
@@ -30,10 +30,10 @@ export default class ControlBar extends ModelView {
     Object.preventExtensions(this);
     // --------- end of attribute creation ----------
 
-    this.html.weekpicker.setAttribute('type', 'week');
-    this.html.weekpicker.addEventListener('change', (e) => {
-      assert(e.target, 'Error in weekpicker\'s change event');
-      this.trigger('weekpicker', e.target.value);
+    this.html.datePicker.setAttribute('type', 'week');
+    this.html.datePicker.addEventListener('change', (e) => {
+      assert(e.target, 'Error in datePicker\'s change event');
+      this.trigger('datePicker', e.target.value);
     });
 
     // TODO: Remove this statement
@@ -50,39 +50,39 @@ export default class ControlBar extends ModelView {
   }
 
   /**
-   * @method getWeekpickerDate
+   * @method getDatePickerDate
    * @return {Date}
    */
-  getWeekpickerDate() {
-    return DateHandler.newDate(this.html.weekpicker.value);
+  getDatePickerDate() {
+    return DateHandler.newDate(this.html.datePicker.value);
   }
 
   /**
-   * @method setWeekpickerDate
+   * @method setDatePickerDate
    * @param {Date} date
    */
-  setWeekpickerDate(date) {
+  setDatePickerDate(date) {
     // Make sure we set it using the correct format.
-    const format = datePickerFormats[this.html.weekpicker.type];
-    this.html.weekpicker.value = DateHandler.format(date, format);
+    const format = datePickerFormats[this.html.datePicker.type];
+    this.html.datePicker.value = DateHandler.format(date, format);
   }
 
   /**
    * @method setPickerType
    * @param {String} type 'week' or 'day';
    */
-  setPickerType(dateType) {
+  setDatePickerType(dateType) {
     if (!(typeof dateType === 'string' && datePickerFormats[dateType])) {
       assert.warn(false, `Invalid datepicker type to be set: ${dateType}`);
       return;
     }
 
-    if (this.html.weekpicker.type === dateType) { return; }
+    if (this.html.datePicker.type === dateType) { return; }
 
     // Change picker type and set the date in the correct format.
-    const currDate = this.getWeekpickerDate();
-    this.html.weekpicker.type = dateType;
-    this.setWeekpickerDate(currDate);
+    const currDate = this.getDatePickerDate();
+    this.html.datePicker.type = dateType;
+    this.setDatePickerDate(currDate);
   }
 
   /**

@@ -134,7 +134,7 @@ $border-size: 2px;
   border-width: 0 0 0 $border-size;
 }
 
-.fl-mc-ctrl-weekpicker {
+.fl-mc-ctrl-datePicker {
   @include main-border();
   border-width: 0 $border-size 0 0;
 
@@ -158,7 +158,7 @@ $border-size: 2px;
 .fl-mc-view-oneDay .fl-mc-ctrl {
   flex-wrap: wrap;
 
-  .fl-mc-ctrl-weekpicker {
+  .fl-mc-ctrl-datePicker {
     @include main-border();
     width: 100%;
     border-width: 0 0 $border-size;

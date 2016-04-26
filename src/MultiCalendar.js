@@ -92,12 +92,12 @@ export default class MultiCalendar extends ModelView {
   }
 
   initControlBar(controlBar = this.controlBar) {
-    controlBar.listenTo('weekpicker', () => {
-      const weekpickerDate = this.controlBar.getWeekpickerDate();
-      if (DateHandler.isValid(weekpickerDate)) {
-        this.setStartDate(weekpickerDate);
+    controlBar.listenTo('datePicker', () => {
+      const datePickerDate = this.controlBar.getDatePickerDate();
+      if (DateHandler.isValid(datePickerDate)) {
+        this.setStartDate(datePickerDate);
       } else {
-        controlBar.setWeekpickerDate(this.startDate);
+        controlBar.setDatePickerDate(this.startDate);
       }
     });
 
@@ -219,7 +219,7 @@ export default class MultiCalendar extends ModelView {
     const daysToEnd = Math.max(daysInCalendar - 1, 0);
     this.endDate = DateHandler.addDays(newDate, daysToEnd);
 
-    this.controlBar.setWeekpickerDate(newDate);
+    this.controlBar.setDatePickerDate(newDate);
     this.setEvents(this.lastLoadedEvents);
   }
 
@@ -261,8 +261,8 @@ export default class MultiCalendar extends ModelView {
     }
     this.html.container.classList.add(newMode.className);
 
-    // Set the weekpicker type correctly
-    this.controlBar.setPickerType(newMode.pickerType);
+    // Set the datePicker type correctly
+    this.controlBar.setDatePickerType(newMode.pickerType);
 
     // Set 'Show Weekends' button state correctly
     this.controlBar.setShowWeekendActive(newMode.showWeekendActiveState);
