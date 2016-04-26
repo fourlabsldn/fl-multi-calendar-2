@@ -59,7 +59,77 @@ xController((xDivEl) => {
       titleClick,
       dayHeaderClick,
       eventClick,
-    },
+    },{
+      name: 'Karl Marx',
+      id: '12345',
+      description: 'Software Developer', // optional
+      titleClick,
+      dayHeaderClick,
+      eventClick,
+    }, {
+      name: 'Friedrich Hegel',
+      id: '7899',
+      description: 'HR Manager', // optional
+      titleClick,
+      dayHeaderClick,
+      eventClick,
+    }, {
+      name: 'Immanuel Kant',
+      id: '23456',
+      description: 'Research and Revelopement', // optional
+      titleClick,
+      dayHeaderClick,
+      eventClick,
+    }, {
+      name: 'Soren Kierkegaard',
+      id: '3456',
+      description: 'Research and Revelopement', // optional
+      titleClick,
+      dayHeaderClick,
+      eventClick,
+    }, {
+      name: 'Jacques Derrida',
+      id: '4567',
+      description: 'Research and Revelopement', // optional
+      titleClick,
+      dayHeaderClick,
+      eventClick,
+    },{
+      name: 'Karl Marx',
+      id: '12345',
+      description: 'Software Developer', // optional
+      titleClick,
+      dayHeaderClick,
+      eventClick,
+    }, {
+      name: 'Friedrich Hegel',
+      id: '7899',
+      description: 'HR Manager', // optional
+      titleClick,
+      dayHeaderClick,
+      eventClick,
+    }, {
+      name: 'Immanuel Kant',
+      id: '23456',
+      description: 'Research and Revelopement', // optional
+      titleClick,
+      dayHeaderClick,
+      eventClick,
+    }, {
+      name: 'Soren Kierkegaard',
+      id: '3456',
+      description: 'Research and Revelopement', // optional
+      titleClick,
+      dayHeaderClick,
+      eventClick,
+    }, {
+      name: 'Jacques Derrida',
+      id: '4567',
+      description: 'Research and Revelopement', // optional
+      titleClick,
+      dayHeaderClick,
+      eventClick,
+    }
   ],
   });
 
