@@ -285,24 +285,26 @@ export default class MultiCalendar extends ModelView {
     const container = this.html.container;
     const bar = controlBar.html.container;
 
+    // Make sure we don't set the listeners twice.
+    if (bar.isSticky) { return; }
+    bar.isSticky = true;
+
     let initialPadTop = '';
     let initialBarWidth = '';
     window.addEventListener('scroll', () => {
       const cBox = container.getBoundingClientRect();
       const barHeight = bar.clientHeight;
 
-      if (cBox.top + barHeight <= 0 && cbPosition !== 'sticky') {
-        cbPosition = 'sticky';
+      if (cBox.top + barHeight <= 0 && !bar.classList.contains('sticky')) {
         bar.classList.add('sticky');
 
         const containerWidth = container.clientWidth;
         initialBarWidth = bar.style.width;
         bar.style.width = `${containerWidth}px`;
 
-        initialPadTop = container.style.paddingTop;
+        initialPadTop = parseInt(container.style.paddingTop, 10) || 0;
         container.style.paddingTop = `${barHeight + initialPadTop}px`;
-      } else if (cBox.top + barHeight > 0 && cbPosition === 'sticky') {
-        cbPosition = '';
+      } else if (cBox.top + barHeight > 0 && bar.classList.contains('sticky')) {
         bar.classList.remove('sticky');
 
         bar.style.width = initialBarWidth;
@@ -312,5 +314,3 @@ export default class MultiCalendar extends ModelView {
     });
   }
 }
-
-let cbPosition;
