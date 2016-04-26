@@ -75,6 +75,7 @@ gulp.task('webserver', () => {
     }));
 });
 
+gulp.task('demo', ['webserver']);
 gulp.task('rollup', ['rollup-module', 'rollup-tests']);
 gulp.task('build', ['rollup', 'sass', 'assets']);
 

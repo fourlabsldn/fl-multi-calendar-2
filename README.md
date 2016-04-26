@@ -1,5 +1,8 @@
-# fl-multi-calendar
+# fl-multi-calendar-2
 [![Build Status](https://travis-ci.org/fourlabsldn/fl-multi-calendar-2.svg?branch=master)](https://travis-ci.org/fourlabsldn/fl-multi-calendar-2)
+
+Visualise multiple calendars at once
+
 
 ## Configuration object
 
@@ -109,4 +112,31 @@ Example calendar markup:
         </div>
     </section>
 </main>
+```
+
+## Dependencies
+
+It only depends on the [x-div](https://github.com/fourlabsldn/x-div) web component.
+
+## Tasks
+
+### Demo
+Will run a server and open the demo page in the browser
+```
+npm run demo
+```
+
+### Build
+```
+npm run build
+```
+### Dev
+Runs build, demo and watches changes to build again.
+```
+npm run dev
+```
+
+### Test
+```
+npm run test
 ```

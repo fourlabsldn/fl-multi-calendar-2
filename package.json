@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"No tests specified\" && exit 0",
-    "dev": "gulp dev"
+    "dev": "gulp dev",
+    "build": "gulp build",
+    "demo": "gulp demo"
   },
   "author": "Lazamar @ FourLabs",
   "license": "ISC",
