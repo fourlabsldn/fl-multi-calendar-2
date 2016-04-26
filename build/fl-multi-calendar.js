@@ -1141,11 +1141,16 @@ var Calendar = function (_ModelView) {
     return _this;
   }
 
-  // Always adds to the end
-  // The Object will decide what is the date of the day to be added.
-
-
   babelHelpers.createClass(Calendar, [{
+    key: 'getId',
+    value: function getId() {
+      return this.id;
+    }
+
+    // Always adds to the end
+    // The Object will decide what is the date of the day to be added.
+
+  }, {
     key: 'addDay',
     value: function addDay() {
       var newDate = DateHandler.addDays(this.startDate, this.days.length);
@@ -1483,6 +1488,8 @@ var MultiCalendar = function (_ModelView) {
 
         _this.addCalendar(cal, _this.startDate);
       }
+
+      // Add everything to the DOM
     } catch (err) {
       _didIteratorError = true;
       _iteratorError = err;
@@ -1498,9 +1505,6 @@ var MultiCalendar = function (_ModelView) {
       }
     }
 
-    _this.loadEvents();
-
-    // Add everything to the DOM
     _this.targetElement.appendChild(_this.html.container);
     return _this;
   }
@@ -1663,10 +1667,29 @@ var MultiCalendar = function (_ModelView) {
       var controlBar = arguments.length <= 2 || arguments[2] === undefined ? this.controlBar : arguments[2];
 
       controlBar.setLoadingState('loading');
+
+      var calIds = [];
+      this.calendars.forEach(function (cal) {
+        calIds.push(cal.getId());
+      });
+
+      var requestConfig = {
+        method: 'GET',
+        cache: 'no-cache',
+        credentials: 'include',
+        headers: new Headers({
+          'Content-Type': 'application/json'
+        }),
+        body: {
+          ids: calIds,
+          start: DateHandler.format(this.startDate, 'X'),
+          end: DateHandler.format(this.endDate, 'X')
+        }
+      };
+      console.log('Start: ' + this.startDate.toString());
+      console.log('End: ' + this.endDate.toString());
       // TODO: develop a timeout mechanism
-      return fetch(loadUrl, {
-        credentials: 'include'
-      }).then(function (data) {
+      return fetch(loadUrl, requestConfig).then(function (data) {
         return data.json();
       })
       // The loaded object is indexed by calendar id and each element contains
@@ -1780,7 +1803,7 @@ var MultiCalendar = function (_ModelView) {
       this.endDate = DateHandler.addDays(newDate, daysToEnd);
 
       this.controlBar.setDate(newDate);
-      this.setEvents(this.lastLoadedEvents);
+      this.loadEvents();
     }
 
     /**
@@ -1882,7 +1905,6 @@ var MultiCalendar = function (_ModelView) {
       // Make sure the beginning startDate will be in accordance
       // with the new viewMode.
       this.setStartDate(this.startDate);
-      this.setEvents(this.lastLoadedEvents);
     }
   }, {
     key: 'getViewMode',

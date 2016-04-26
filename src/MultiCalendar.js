@@ -74,8 +74,6 @@ export default class MultiCalendar extends ModelView {
       this.addCalendar(cal, this.startDate);
     }
 
-    this.loadEvents();
-
     // Add everything to the DOM
     this.targetElement.appendChild(this.html.container);
   }
@@ -163,10 +161,29 @@ export default class MultiCalendar extends ModelView {
   // Loads server events into calendars
   loadEvents(loadUrl = this.loadUrl, calendars = this.calendars, controlBar = this.controlBar) {
     controlBar.setLoadingState('loading');
-    // TODO: develop a timeout mechanism
-    return fetch(loadUrl, {
+
+    const calIds = [];
+    this.calendars.forEach((cal) => {
+      calIds.push(cal.getId());
+    });
+
+    const requestConfig = {
+      method: 'GET',
+      cache: 'no-cache',
       credentials: 'include',
-    })
+      headers: new Headers({
+        'Content-Type': 'application/json',
+      }),
+      body: {
+        ids: calIds,
+        start: DateHandler.format(this.startDate, 'X'),
+        end: DateHandler.format(this.endDate, 'X'),
+      },
+    };
+    console.log(`Start: ${this.startDate.toString()}`);
+    console.log(`End: ${this.endDate.toString()}`);
+    // TODO: develop a timeout mechanism
+    return fetch(loadUrl, requestConfig)
     .then((data) => { return data.json(); })
     // The loaded object is indexed by calendar id and each element contains
     // an array of event objects.
@@ -224,7 +241,7 @@ export default class MultiCalendar extends ModelView {
     this.endDate = DateHandler.addDays(newDate, daysToEnd);
 
     this.controlBar.setDate(newDate);
-    this.setEvents(this.lastLoadedEvents);
+    this.loadEvents();
   }
 
   /**
@@ -275,7 +292,6 @@ export default class MultiCalendar extends ModelView {
     // Make sure the beginning startDate will be in accordance
     // with the new viewMode.
     this.setStartDate(this.startDate);
-    this.setEvents(this.lastLoadedEvents);
   }
 
   getViewMode() {

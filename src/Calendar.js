@@ -53,6 +53,10 @@ export default class Calendar extends ModelView {
     }
   }
 
+  getId() {
+    return this.id;
+  }
+
   // Always adds to the end
   // The Object will decide what is the date of the day to be added.
   addDay() {
