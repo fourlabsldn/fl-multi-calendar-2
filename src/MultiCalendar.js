@@ -129,7 +129,7 @@ export default class MultiCalendar extends ModelView {
       titleClick: config.titleClick,
       dayHeaderClick: config.dayHeaderClick,
       eventClick: config.eventClick,
-    }
+    };
 
     const calendar = new Calendar(config, startDate, MULTI_CALENDAR_CLASS, calendarCallbacks);
     this.html.container.appendChild(calendar.html.container);
