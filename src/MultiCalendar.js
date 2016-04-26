@@ -12,27 +12,18 @@ const viewModes = {
     dateRange: 'isoweek',
     dateGapUnit: 'week', // Gap when pressing forward or back
     dayCount: 5,
-
-    pickerType: 'week',
-    showWeekendActiveState: true,
   },
   fullWeek: {
     name: 'fullWeek',
     dateRange: 'week',
     dateGapUnit: 'week', // Gap when pressing forward or back
     dayCount: 7,
-
-    pickerType: 'week',
-    showWeekendActiveState: false,
   },
   oneDay: {
     name: 'oneDay',
     dateRange: 'day',
     dateGapUnit: 'day', // Gap when pressing forward or back
     dayCount: 1,
-
-    pickerType: 'date',
-    showWeekendActiveState: false, // The button will be hidden by css in this view mode
   },
 };
 
@@ -90,11 +81,11 @@ export default class MultiCalendar extends ModelView {
 
   initControlBar(controlBar = this.controlBar) {
     controlBar.listenTo('datePicker', () => {
-      const datePickerDate = this.controlBar.getDatePickerDate();
+      const datePickerDate = this.controlBar.getDate();
       if (DateHandler.isValid(datePickerDate)) {
         this.setStartDate(datePickerDate);
       } else {
-        controlBar.setDatePickerDate(this.startDate);
+        controlBar.setDate(this.startDate);
       }
     });
 
@@ -221,7 +212,7 @@ export default class MultiCalendar extends ModelView {
     const daysToEnd = Math.max(daysInCalendar - 1, 0);
     this.endDate = DateHandler.addDays(newDate, daysToEnd);
 
-    this.controlBar.setDatePickerDate(newDate);
+    this.controlBar.setDate(newDate);
     this.setEvents(this.lastLoadedEvents);
   }
 
@@ -265,11 +256,8 @@ export default class MultiCalendar extends ModelView {
     const viewClass = this._viewModeClassName(newMode);
     this.html.container.classList.add(viewClass);
 
-    // Set the datePicker type correctly
-    this.controlBar.setDatePickerType(newMode.pickerType);
-
-    // Set 'Show Weekends' button state correctly
-    this.controlBar.setShowWeekendActive(newMode.showWeekendActiveState);
+    // This will set the datepicker type and all buttons correctly
+    this.controlBar.setDateRange(newMode.dateRange);
 
     this.currViewMode = newMode;
 

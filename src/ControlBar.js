@@ -58,11 +58,14 @@ export default class ControlBar extends ModelView {
   }
 
   setDateRange(range) {
-    // TODO: Take care of show-weekends here.
     switch (range) {
       case 'isoweek':
+        this._setDatePickerType('week');
+        this._setShowWeekendActive(true);
+        break;
       case 'week':
         this._setDatePickerType('week');
+        this._setShowWeekendActive(false);
         break;
       case 'day':
         this._setDatePickerType('date');
@@ -73,28 +76,28 @@ export default class ControlBar extends ModelView {
   }
 
   /**
-   * @method getDatePickerDate
+   * @method _getDatePickerDate
    * @return {Date}
    */
-  getDatePickerDate() {
+  _getDatePickerDate() {
     return DateHandler.newDate(this.html.datePicker.value);
   }
 
   /**
-   * @method setDatePickerDate
+   * @method _setDatePickerDate
    * @param {Date} date
    */
-  setDatePickerDate(date) {
+  _setDatePickerDate(date) {
     // Make sure we set it using the correct format.
     const format = datePickerFormats[this.html.datePicker.type];
     this.html.datePicker.value = DateHandler.format(date, format);
   }
 
   /**
-   * @method setPickerType
+   * @method _setDatePickerType
    * @param {String} type 'week' or 'day';
    */
-  setDatePickerType(dateType) {
+  _setDatePickerType(dateType) {
     if (!(typeof dateType === 'string' && datePickerFormats[dateType])) {
       assert.warn(false, `Invalid datepicker type to be set: ${dateType}`);
       return;
@@ -103,9 +106,9 @@ export default class ControlBar extends ModelView {
     if (this.html.datePicker.type === dateType) { return; }
 
     // Change picker type and set the date in the correct format.
-    const currDate = this.getDatePickerDate();
+    const currDate = this._getDatePickerDate();
     this.html.datePicker.type = dateType;
-    this.setDatePickerDate(currDate);
+    this._setDatePickerDate(currDate);
   }
 
   /**
@@ -133,7 +136,7 @@ export default class ControlBar extends ModelView {
     }
   }
 
-  setShowWeekendActive(active) {
+  _setShowWeekendActive(active) {
     const activeClass = 'fl-mc-active';
     if (active) {
       this.html['show-weekend'].classList.remove(activeClass);
