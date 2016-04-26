@@ -55,6 +55,9 @@
 .icon-check:before {
   content: "\67"; }
 
+.icon-times:before {
+  content: "\68"; }
+
 @-webkit-keyframes fadeInUp {
   from {
     opacity: 0;
@@ -199,6 +202,9 @@
 .fl-mc-ctrl-refresh .icon-check {
   display: none; }
 
+.fl-mc-ctrl-refresh .icon-times {
+  display: none; }
+
 .fl-mc-ctrl-refresh .icon-refresh {
   display: inline-block; }
 
@@ -217,6 +223,15 @@
   .fl-mc-ctrl-refresh.fl-mc-loading-complete .icon-refresh {
     display: none; }
   .fl-mc-ctrl-refresh.fl-mc-loading-complete .icon-check {
+    display: inline-block; }
+
+.fl-mc-ctrl-refresh.fl-mc-loading-error {
+  background-color: #C43232;
+  color: #fafafa;
+  pointer-events: none; }
+  .fl-mc-ctrl-refresh.fl-mc-loading-error .icon-refresh {
+    display: none; }
+  .fl-mc-ctrl-refresh.fl-mc-loading-error .icon-times {
     display: inline-block; }
 
 .fl-mc-ctrl-show-weekend {
@@ -352,8 +367,8 @@
 
 .fl-mc-cal-day {
   border: 2px solid #cbcbcb;
-  border-bottom: 0;
-  border-right: 0;
+  border-bottom-width: 0;
+  border-right-width: 0;
   display: block;
   width: 0;
   -webkit-box-flex: 1;
@@ -371,9 +386,7 @@
 
 .fl-mc-cal-day-header {
   border: 2px solid #cbcbcb;
-  border-top: 0;
-  border-right: 0;
-  border-left: 0;
+  border-width: 0 0 2px;
   text-align: center;
   font-weight: bold;
   white-space: nowrap;

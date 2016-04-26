@@ -323,8 +323,8 @@ $border-size: 2px;
 //--------------------------------
 .fl-mc-cal-day {
   @include main-border();
-  border-bottom: 0;
-  border-right: 0;
+  border-bottom-width: 0;
+  border-right-width: 0;
 
   display: block;
   width: 0; // Makes all days be the same width.
@@ -347,9 +347,7 @@ $border-size: 2px;
 
 .fl-mc-cal-day-header {
   @include main-border();
-  border-top: 0;
-  border-right: 0;
-  border-left: 0;
+  border-width: 0 0 $border-size;
 
   text-align: center;
   font-weight: bold;

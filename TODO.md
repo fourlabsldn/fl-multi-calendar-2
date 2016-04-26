@@ -1,0 +1,2 @@
+ - Add events
+ - Use border-width instead of just border property.

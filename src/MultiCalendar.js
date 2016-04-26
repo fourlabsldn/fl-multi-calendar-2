@@ -3,6 +3,7 @@ import DateHandler from './utils/DateHandler';
 import ModelView from './ModelView';
 import ControlBar from './ControlBar';
 import Calendar from './Calendar';
+import debounce from './utils/debounce';
 
 const MULTI_CALENDAR_CLASS = 'fl-mc';
 const viewModeClassPrefix = 'fl-mc-view-';
@@ -299,7 +300,8 @@ export default class MultiCalendar extends ModelView {
 
     let initialPadTop = '';
     let initialBarWidth = '';
-    window.addEventListener('scroll', () => {
+
+    function stickyCheck() {
       const cBox = container.getBoundingClientRect();
       const barHeight = bar.clientHeight;
 
@@ -319,6 +321,9 @@ export default class MultiCalendar extends ModelView {
 
         container.style.paddingTop = initialPadTop;
       }
-    });
+    }
+
+    const stickyCheckDebounded = debounce(stickyCheck, 50);
+    window.addEventListener('scroll', stickyCheckDebounded);
   }
 }
