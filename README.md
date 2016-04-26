@@ -3,10 +3,40 @@
 
 ## Configuration object
 
+In the HTML, add your `x-div` element with `fl-multi-calendar-2.js` as the `data-controller`
+and make sure to add the name of your configuration object name to `data-config`.
+ The configuration object must be in the global scope and must be defined before the `x-div`.
+
+Like this:
+
+``` html
+<x-div data-controller="/build/fl-multi-calendar" data-config="myConfigObject"></x-div>
+```
+
+Your configuration object must specify a URL where the events will be fetched and an
+array of objects where each represent the configuration for one calendar in
+MultiCalendar.
+
 Example valid configuration object:
 
 ``` javascript
-{
+// //Callbacks
+function dayHeaderClick(date, events) {
+  console.log('Day header click.');
+  console.dir(arguments);
+}
+
+function eventClick(eventConfig) {
+  console.log('Event click.');
+  console.dir(arguments);
+}
+
+function titleClick(calendarConfig) {
+  console.log('Title click.');
+  console.dir(arguments);
+}
+
+myConfigObject = {
   loadUrl: 'http://localhost:5000',
   calendars: [{
     name: 'Karl Marx',
@@ -41,35 +71,42 @@ Classes that represent an HTML element have a property called `html`, within whi
 
 Example calendar markup:
 ``` html
-<!-- Main  -->
-<main class="fl-mc">
-  <!-- Calendar  -->
-  <section class="fl-mc-cal">
-    <header class="fl-mc-cal-title">
+<!-- MultiCalendar -->
+<main class="fl-mc fl-mc-view-weekdays">
 
-    </header>
-    <section class="fl-mc-cal-days">
+    <!-- ControlBar -->
+    <nav class="fl-mc-ctrl">
+        <input class="fl-mc-ctrl-datePicker" type="week">
+        <button class="fl-mc-ctrl-back"><i class="icon-chevron-left"></i></button>
+        <button class="fl-mc-ctrl-forward"><i class="icon-chevron-right"></i></button>
+        <button class="fl-mc-ctrl-today">Today</button>
+        <button class="fl-mc-ctrl-refresh"><i class="icon-refresh"></i><i class="icon-check"></i></button>
+        <p class="fl-mc-ctrl-titleBar">2016</p>
+        <button class="fl-mc-ctrl-show-weekend">Show weekends</button>
+    </nav>
 
-      <!-- Day  -->
-      <div class="fl-mc-cal-days-day">
-        <header class="fl-mc-cal-days-day-header">
-          5th, Feb 2015
+    <!-- Calendar -->
+    <section class="fl-mc-cal">
+        <header class="fl-mc-cal-header">
+            <h2 class="fl-mc-cal-title">Karl Marx</h2>
+            <p class="fl-mc-cal-description">Software Developer</p>
         </header>
-        <div class="fl-mc-cal-days-day-events">
+        <div class="fl-mc-cal-days">
 
-          <!-- Event  -->
-          <div class="fl-mc-cal-days-day-events-event">
-            <h1 class="fl-mc-cal-days-day-events-event-time">12:09 - 12:30</h1>
-            <h2 class="fl-mc-cal-days-day-events-event-title">My event</h2>
-            <p class="fl-mc-cal-days-day-events-event-description">This is a nice event description</p>
-            <p class="fl-mc-cal-days-day-events-event-tooltip">Tooltip info</p>
-          </div>
+          <!-- Day -->
+            <div class="fl-mc-cal-day">
+                <header class="fl-mc-cal-day-header">Wednesday, Apr 27</header>
+                <div class="fl-mc-cal-day-events">
 
+                    <!-- Event -->
+                    <div class="fl-mc-cal-day-event fl-mc-event-color-red">
+                        <p class="fl-mc-cal-day-event-time">09:00 - 18:00</p>
+                        <p class="fl-mc-cal-day-event-title">Simple title</p>
+                        <p class="fl-mc-cal-day-event-tooltip">LOL</p>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
     </section>
-
-  </section>
-
 </main>
 ```
