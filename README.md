@@ -122,12 +122,12 @@ Example calendar markup:
 
 ## Bower
 ```
-bower install fl-multi-calendar-2 --save-dev
+bower install fl-multi-calendar-2 --save
 ```
 
 ## NPM
 ```
-npm install fl-multi-calendar-2 --save-dev
+npm install fl-multi-calendar-2 --save
 ```
 
 ## Dependencies
