@@ -163,7 +163,9 @@ export default class MultiCalendar extends ModelView {
   loadEvents(loadUrl = this.loadUrl, calendars = this.calendars, controlBar = this.controlBar) {
     controlBar.setLoadingState(true);
     // TODO: develop a timeout mechanism
-    return fetch(loadUrl)
+    return fetch(loadUrl, {
+      credentials: 'include',
+    })
     .then((data) => { return data.json(); })
     // The loaded object is indexed by calendar id and each element contains
     // an array of event objects.
