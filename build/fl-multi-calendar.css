@@ -55,6 +55,9 @@
 .icon-check:before {
   content: "\67"; }
 
+.icon-times:before {
+  content: "\68"; }
+
 @-webkit-keyframes fadeInUp {
   from {
     opacity: 0;
@@ -199,6 +202,9 @@
 .fl-mc-ctrl-refresh .icon-check {
   display: none; }
 
+.fl-mc-ctrl-refresh .icon-times {
+  display: none; }
+
 .fl-mc-ctrl-refresh .icon-refresh {
   display: inline-block; }
 
@@ -217,6 +223,15 @@
   .fl-mc-ctrl-refresh.fl-mc-loading-complete .icon-refresh {
     display: none; }
   .fl-mc-ctrl-refresh.fl-mc-loading-complete .icon-check {
+    display: inline-block; }
+
+.fl-mc-ctrl-refresh.fl-mc-loading-error {
+  background-color: #C43232;
+  color: #fafafa;
+  pointer-events: none; }
+  .fl-mc-ctrl-refresh.fl-mc-loading-error .icon-refresh {
+    display: none; }
+  .fl-mc-ctrl-refresh.fl-mc-loading-error .icon-times {
     display: inline-block; }
 
 .fl-mc-ctrl-show-weekend {

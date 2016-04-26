@@ -255,10 +255,11 @@ var ControlBar = function (_ModelView) {
     babelHelpers.classCallCheck(this, ControlBar);
 
     var html = [{ name: 'datePicker', tag: 'input' }, { name: 'back', tag: 'button', content: '<i class=icon-chevron-left></i>' }, { name: 'forward', tag: 'button', content: '<i class=icon-chevron-right></i>' }, { name: 'today', tag: 'button', content: 'Today' }, { name: 'refresh', tag: 'button',
-      content: '<i class=icon-refresh></i><i class=icon-check></i>' }, { name: 'titleBar', tag: 'p' }, { name: 'show-weekend', tag: 'button', content: 'Show Weekend' }];
+      content: '<i class=icon-refresh></i><i class=icon-check></i><i class=icon-times></i>' }, { name: 'titleBar', tag: 'p' }, { name: 'show-weekend', tag: 'button', content: 'Show Weekend' }];
 
     var _this = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(ControlBar).call(this, html, CONTROL_CLASS, parentClass, 'nav'));
 
+    _this.refreshLoadingController = new ButtonLoadingController(_this.html.refresh, 'fl-mc-loading', 'fl-mc-loading-complete', 'fl-mc-loading-error');
     _this.eventListeners = {};
 
     Object.preventExtensions(_this);
@@ -343,24 +344,21 @@ var ControlBar = function (_ModelView) {
     }
   }, {
     key: 'setLoadingState',
-    value: function setLoadingState(loading) {
-      var loadingClass = 'fl-mc-loading';
-      var completeClass = 'fl-mc-loading-complete';
-      var refreshClass = this.html.refresh.classList;
-
-      if (loading) {
-        refreshClass.add(loadingClass);
-      } else if (refreshClass.contains(loadingClass)) {
-        refreshClass.remove(loadingClass);
-        refreshClass.add(completeClass);
-
-        setTimeout(function () {
-          if (!refreshClass.contains(completeClass)) {
-            assert.warn(false, 'Icon loading interrupted before due time.');
-            return;
-          }
-          refreshClass.remove(completeClass);
-        }, 1500);
+    value: function setLoadingState(state) {
+      switch (state) {
+        case 'loading':
+          this.refreshLoadingController.setLoading();
+          break;
+        case 'success':
+          this.refreshLoadingController.setLoadingSuccess();
+          break;
+        case 'error':
+          console.log('errpr');
+          this.refreshLoadingController.setLoadingError();
+          break;
+        default:
+          assert.warn(false, 'Unexpected loading state: ' + state);
+          break;
       }
     }
 
@@ -488,6 +486,122 @@ var ControlBar = function (_ModelView) {
   }]);
   return ControlBar;
 }(ModelView);
+
+var ButtonLoadingController = function () {
+  function ButtonLoadingController(button, loadingClass, successClass, errorClass) {
+    babelHelpers.classCallCheck(this, ButtonLoadingController);
+
+    // Make sure we never handle a button twice.
+    if (button.loadingIsHandled) {
+      return;
+    }
+    button.loadingIsHandled = true;
+
+    this.button = button;
+
+    this.loadingClass = loadingClass;
+    this.successClass = successClass;
+    this.errorClass = errorClass;
+
+    this._removeAllLoadingClasses();
+
+    // This will be locked while elements are in their timeout
+    // to change a state
+    this.locked = false;
+    this.complete = true;
+
+    // Minimum time showing 'complete' or 'error' symbol.
+    this.minAnimationTimeout = 500;
+    this.minIconTimeout = 1500;
+
+    // Time button was set to loading
+    this.loadingStartTime = null;
+  }
+
+  babelHelpers.createClass(ButtonLoadingController, [{
+    key: 'setLoading',
+    value: function setLoading() {
+      if (!this.complete) {
+        assert.warn(false, 'Impossible to set load animation.\n        Last animation still not complete.');
+        return;
+      }
+
+      if (this.locked) {
+        return;
+      }
+      this.complete = false;
+      this.button.classList.add(this.loadingClass);
+      this.loadingStartTime = DateHandler.newDate();
+    }
+  }, {
+    key: 'setLoadingSuccess',
+    value: function setLoadingSuccess() {
+      this._completeLoadingWithSuccessStatus(true);
+    }
+  }, {
+    key: 'setLoadingError',
+    value: function setLoadingError() {
+      this._completeLoadingWithSuccessStatus(false);
+    }
+  }, {
+    key: '_completeLoadingWithSuccessStatus',
+    value: function _completeLoadingWithSuccessStatus(success) {
+      var _this2 = this;
+
+      if (this.complete) {
+        // That is, if it wasn't loading.
+        assert(false, 'Cannot set loading to complete when\n        button was not in loading state.');
+        return;
+      }
+
+      if (this.locked) {
+        return;
+      }
+      this.locked = true;
+
+      var outcomeClass = success ? this.successClass : this.errorClass;
+      var remainingDelay = this._timeToAnimationTimeoutEnd();
+
+      setTimeout(function () {
+        _this2._removeAllLoadingClasses();
+        // Show with the completed class for at least minTimeout miliseconds
+        _this2.button.classList.add(outcomeClass);
+        setTimeout(function () {
+          _this2._unlockAndComplete();
+        }, _this2.minIconTimeout);
+      }, remainingDelay);
+    }
+  }, {
+    key: '_removeAllLoadingClasses',
+    value: function _removeAllLoadingClasses() {
+      this.button.classList.remove(this.loadingClass);
+      this.button.classList.remove(this.successClass);
+      this.button.classList.remove(this.errorClass);
+    }
+
+    // Time remaining to minTimeout
+
+  }, {
+    key: '_timeToAnimationTimeoutEnd',
+    value: function _timeToAnimationTimeoutEnd() {
+      var timeoutStart = arguments.length <= 0 || arguments[0] === undefined ? this.loadingStartTime : arguments[0];
+      var minTimeout = arguments.length <= 1 || arguments[1] === undefined ? this.minAnimationTimeout : arguments[1];
+      var now = arguments.length <= 2 || arguments[2] === undefined ? DateHandler.newDate() : arguments[2];
+
+      var delayEndTime = DateHandler.add(timeoutStart, minTimeout, 'milliseconds');
+      var remainingDelay = DateHandler.diff(delayEndTime, now, 'milliseconds');
+      return Math.max(remainingDelay, 0);
+    }
+  }, {
+    key: '_unlockAndComplete',
+    value: function _unlockAndComplete() {
+      this._removeAllLoadingClasses();
+      this.complete = true;
+      this.locked = false;
+    }
+  }]);
+  return ButtonLoadingController;
+}();
 
 var EVENT_CLASS = '-event';
 
@@ -1527,7 +1641,7 @@ var MultiCalendar = function (_ModelView) {
       var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
       var controlBar = arguments.length <= 2 || arguments[2] === undefined ? this.controlBar : arguments[2];
 
-      controlBar.setLoadingState(true);
+      controlBar.setLoadingState('loading');
       // TODO: develop a timeout mechanism
       return fetch(loadUrl, {
         credentials: 'include'
@@ -1538,9 +1652,9 @@ var MultiCalendar = function (_ModelView) {
       // an array of event objects.
       .then(function (loadedCalEvents) {
         _this3.setEvents(loadedCalEvents, calendars);
-        controlBar.setLoadingState(false);
+        controlBar.setLoadingState('success');
       }).catch(function () {
-        controlBar.setLoadingState(false);
+        controlBar.setLoadingState('error');
       });
     }
   }, {
