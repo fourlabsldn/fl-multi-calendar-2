@@ -20,7 +20,7 @@ export default class ControlBar extends ModelView {
       { name: 'forward', tag: 'button', content: '<i class=icon-chevron-right></i>' },
       { name: 'today', tag: 'button', content: 'Today' },
       { name: 'refresh', tag: 'button', content: '<i class=icon-refresh></i>' },
-      { name: 'date-range', tag: 'p' },
+      { name: 'titleBar', tag: 'p' },
       { name: 'show-weekend', tag: 'button', content: 'Show Weekend' },
     ];
     super(html, CONTROL_CLASS, parentClass, 'nav');
@@ -35,9 +35,6 @@ export default class ControlBar extends ModelView {
       assert(e.target, 'Error in datePicker\'s change event');
       this.trigger('datePicker', e.target.value);
     });
-
-    // TODO: Remove this statement
-    this.html['date-range'].innerHTML = 'Apr 04 - Apr 05';
 
     // Add listener to buttons
     for (const el of html) {
@@ -54,7 +51,8 @@ export default class ControlBar extends ModelView {
   }
 
   setDate(date) {
-    return this._setDatePickerDate(date);
+    this._setTitleBarDate(date);
+    this._setDatePickerDate(date);
   }
 
   setDateRange(range) {
@@ -111,6 +109,9 @@ export default class ControlBar extends ModelView {
     this._setDatePickerDate(currDate);
   }
 
+  _setTitleBarDate(date) {
+    this.html.titleBar.innerHTML = DateHandler.format(date, 'YYYY');
+  }
   /**
    * @method listenTo
    * @param  {String}   eventName
