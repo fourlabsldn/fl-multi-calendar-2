@@ -1384,6 +1384,27 @@ var Calendar = function (_ModelView) {
   return Calendar;
 }(ModelView);
 
+function debounce(func, wait, immediate) {
+  var _this = this;
+
+  var timeout = void 0;
+  return function () {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    var context = _this;
+    var later = function later() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
+
 var MULTI_CALENDAR_CLASS = 'fl-mc';
 var viewModeClassPrefix = 'fl-mc-view-';
 var viewModes = {
@@ -1895,7 +1916,8 @@ var MultiCalendar = function (_ModelView) {
 
       var initialPadTop = '';
       var initialBarWidth = '';
-      window.addEventListener('scroll', function () {
+
+      function stickyCheck() {
         var cBox = container.getBoundingClientRect();
         var barHeight = bar.clientHeight;
 
@@ -1915,7 +1937,10 @@ var MultiCalendar = function (_ModelView) {
 
           container.style.paddingTop = initialPadTop;
         }
-      });
+      }
+
+      var stickyCheckDebounded = debounce(stickyCheck, 50);
+      window.addEventListener('scroll', stickyCheckDebounded);
     }
   }]);
   return MultiCalendar;
@@ -1934,7 +1959,7 @@ xController(function (xDivEl) {
 
   // Setup responsiveness
   // TODO: move that to MultiCalendar
-  function setViewModeBasedOnWindowSize() {
+  function viewModeUpdate() {
     var currViewMode = multiCalendar.getViewMode();
     if (window.innerWidth < 850 && currViewMode !== 'oneDay') {
       multiCalendar.setViewMode('oneDay');
@@ -1943,7 +1968,8 @@ xController(function (xDivEl) {
     }
   }
 
-  setViewModeBasedOnWindowSize();
-  window.addEventListener('resize', setViewModeBasedOnWindowSize);
+  var viewModeUpdateDebounced = debounce(viewModeUpdate, 200);
+  viewModeUpdateDebounced();
+  window.addEventListener('resize', viewModeUpdateDebounced);
 });
 //# sourceMappingURL=fl-multi-calendar.js.map

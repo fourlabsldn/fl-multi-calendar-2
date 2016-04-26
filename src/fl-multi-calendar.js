@@ -1,6 +1,7 @@
 /* globals xController */
 
 import MultiCalendar from './MultiCalendar';
+import debounce from './utils/debounce';
 
 xController((xDivEl) => {
   // Grab config object
@@ -15,7 +16,7 @@ xController((xDivEl) => {
 
   // Setup responsiveness
   // TODO: move that to MultiCalendar
-  function setViewModeBasedOnWindowSize() {
+  function viewModeUpdate() {
     const currViewMode = multiCalendar.getViewMode();
     if (window.innerWidth < 850 && currViewMode !== 'oneDay') {
       multiCalendar.setViewMode('oneDay');
@@ -24,6 +25,7 @@ xController((xDivEl) => {
     }
   }
 
-  setViewModeBasedOnWindowSize();
-  window.addEventListener('resize', setViewModeBasedOnWindowSize);
+  const viewModeUpdateDebounced = debounce(viewModeUpdate, 200);
+  viewModeUpdateDebounced();
+  window.addEventListener('resize', viewModeUpdateDebounced);
 });
