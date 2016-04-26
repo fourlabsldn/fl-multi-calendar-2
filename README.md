@@ -3,6 +3,10 @@
 
 Visualise multiple calendars at once
 
+To use it you will need three elements:
+- [x-div](https://github.com/fourlabsldn/x-div) with MultiCalendar as the controller
+- The CSS for the calendar (which is in the build folder)
+- A configuration object
 
 ## Configuration object
 
