@@ -68,7 +68,7 @@ gulp.task('watch', () => {
 gulp.task('webserver', () => {
   gulp.src('./')
     .pipe(server({
-      livereload: true,
+      livereload: false,
       directoryListing: false,
       open: true,
       defaultFile: '/demo/index.html',

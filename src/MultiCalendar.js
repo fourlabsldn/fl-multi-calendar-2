@@ -161,7 +161,7 @@ export default class MultiCalendar extends ModelView {
 
   // Loads server events into calendars
   loadEvents(loadUrl = this.loadUrl, calendars = this.calendars, controlBar = this.controlBar) {
-    controlBar.setLoadingState(true);
+    controlBar.setLoadingState('loading');
     // TODO: develop a timeout mechanism
     return fetch(loadUrl, {
       credentials: 'include',
@@ -171,10 +171,10 @@ export default class MultiCalendar extends ModelView {
     // an array of event objects.
     .then((loadedCalEvents) => {
       this.setEvents(loadedCalEvents, calendars);
-      controlBar.setLoadingState(false);
+      controlBar.setLoadingState('success');
     })
     .catch(() => {
-      controlBar.setLoadingState(false);
+      controlBar.setLoadingState('error');
     });
   }
 
