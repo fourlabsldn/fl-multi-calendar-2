@@ -19,7 +19,8 @@ export default class ControlBar extends ModelView {
       { name: 'back', tag: 'button', content: '<i class=icon-chevron-left></i>' },
       { name: 'forward', tag: 'button', content: '<i class=icon-chevron-right></i>' },
       { name: 'today', tag: 'button', content: 'Today' },
-      { name: 'refresh', tag: 'button', content: '<i class=icon-refresh></i>' },
+      { name: 'refresh', tag: 'button',
+        content: '<i class=icon-refresh></i><i class=icon-check></i>' },
       { name: 'titleBar', tag: 'p' },
       { name: 'show-weekend', tag: 'button', content: 'Show Weekend' },
     ];
@@ -70,6 +71,20 @@ export default class ControlBar extends ModelView {
         break;
       default:
         assert(false, `Unexpected date range: ${range}`);
+    }
+  }
+
+  setLoadingState(loading) {
+    const loadingClass = 'fl-mc-loading';
+    const completeClass = 'fl-mc-loading-complete';
+    const refreshClass = this.html.refresh.classList;
+
+    if (loading) {
+      refreshClass.add(loadingClass);
+    } else if (refreshClass.contains(loadingClass)) {
+      refreshClass.add(completeClass);
+
+      setTimeout(() => { refreshClass.remove(completeClass); }, 1000);
     }
   }
 

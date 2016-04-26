@@ -60,6 +60,11 @@ $border-size: 2px;
   from { transform: translate3d(0, -100%, 0); }
   to { transform: none; }
 }
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
 //--------------------------------
 //      MultiCalendar
 //--------------------------------
@@ -141,6 +146,29 @@ $border-size: 2px;
   &:active {
     background-image: linear-gradient(grayscale($hover-color), grayscale($hover-color));
     background-blend-mode: color-burn;
+  }
+}
+
+.fl-mc-ctrl-refresh {
+  transition: all .2s ease;
+
+    // Hide the tick when not loading.
+  .icon-check { display: none; }
+  .icon-refresh { display: inline-block; }
+
+  &.fl-mc-loading {
+    background-color: $c-main;
+    color: $c-main-text;
+
+    * { animation: spin 2s linear infinite; }
+  }
+
+  &.fl-mc-loading-complete {
+    background-color: $c-accent;
+    color: $c-main-text;
+
+    .icon-refresh { display: none; }
+    .icon-check { display: inline-block; }
   }
 }
 
