@@ -118,6 +118,18 @@ Example calendar markup:
 </main>
 ```
 
+# Install
+
+## Bower
+```
+bower install fl-multi-calendar-2 --save-dev
+```
+
+## NPM
+```
+npm install fl-multi-calendar-2 --save-dev
+```
+
 ## Dependencies
 
 It only depends on the [x-div](https://github.com/fourlabsldn/x-div) web component.
