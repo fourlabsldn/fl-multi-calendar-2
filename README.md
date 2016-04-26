@@ -50,22 +50,22 @@ myConfigObject = {
     id: '12345',
     description: 'Software Developer', //optional
     titleClick: titleClick, //optional
-    dayHeaderClick: dayHeaderClick,
-    eventClick: eventClick,
+    dayHeaderClick: dayHeaderClick, //optional
+    eventClick: eventClick, //optional
   }, {
     name: 'Friedrich Hegel',
     id: '7899',
     description: 'HR Manager', //optional
     titleClick: titleClick, //optional
-    dayHeaderClick: dayHeaderClick,
-    eventClick: eventClick,
+    dayHeaderClick: dayHeaderClick, //optional
+    eventClick: eventClick, //optional
   }, {
     name: 'Immanuel Kant',
     id: '23456',
     description: 'Research and Revelopement', //optional
     titleClick: titleClick, //optional
-    dayHeaderClick: dayHeaderClick,
-    eventClick: eventClick,
+    dayHeaderClick: dayHeaderClick, //optional
+    eventClick: eventClick, //optional
   }, ],
 }
 ```
