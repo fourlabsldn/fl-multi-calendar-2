@@ -80,6 +80,8 @@ export default class MultiCalendar extends ModelView {
   }
 
   initControlBar(controlBar = this.controlBar) {
+    this._makeControlBarSticky(controlBar);
+
     controlBar.listenTo('datePicker', () => {
       const datePickerDate = this.controlBar.getDate();
       if (DateHandler.isValid(datePickerDate)) {
@@ -278,4 +280,37 @@ export default class MultiCalendar extends ModelView {
   _viewModeClassName(view) {
     return viewModeClassPrefix + view.name;
   }
+
+  _makeControlBarSticky(controlBar = this.controlBar) {
+    const container = this.html.container;
+    const bar = controlBar.html.container;
+
+    let initialPadTop = '';
+    let initialBarWidth = '';
+    window.addEventListener('scroll', () => {
+      const cBox = container.getBoundingClientRect();
+      const barHeight = bar.clientHeight;
+
+      if (cBox.top + barHeight <= 0 && cbPosition !== 'sticky') {
+        cbPosition = 'sticky';
+        bar.classList.add('sticky');
+
+        const containerWidth = container.clientWidth;
+        initialBarWidth = bar.style.width;
+        bar.style.width = `${containerWidth}px`;
+
+        initialPadTop = container.style.paddingTop;
+        container.style.paddingTop = `${barHeight + initialPadTop}px`;
+      } else if (cBox.top + barHeight > 0 && cbPosition === 'sticky') {
+        cbPosition = '';
+        bar.classList.remove('sticky');
+
+        bar.style.width = initialBarWidth;
+
+        container.style.paddingTop = initialPadTop;
+      }
+    });
+  }
 }
+
+let cbPosition;
