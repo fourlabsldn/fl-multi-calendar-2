@@ -5,37 +5,34 @@ import ControlBar from './ControlBar';
 import Calendar from './Calendar';
 
 const MULTI_CALENDAR_CLASS = 'fl-mc';
-
+const viewModeClassPrefix = 'fl-mc-view-';
 const viewModes = {
   weekdays: {
     name: 'weekdays',
+    dateRange: 'isoweek',
+    dateGapUnit: 'week', // Gap when pressing forward or back
     dayCount: 5,
-    className: 'fl-mc-view-weekdays',
+
     pickerType: 'week',
     showWeekendActiveState: true,
-    newDateCallback: (newDate) => { return DateHandler.startOf(newDate, 'isoweek'); },
-    dateForwardCallback: (oldDate) => { return DateHandler.add(oldDate, 1, 'week'); },
-    dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'week'); },
   },
   fullWeek: {
     name: 'fullWeek',
+    dateRange: 'week',
+    dateGapUnit: 'week', // Gap when pressing forward or back
     dayCount: 7,
-    className: 'fl-mc-view-fullWeek',
+
     pickerType: 'week',
     showWeekendActiveState: false,
-    newDateCallback: (newDate) => { return DateHandler.startOf(newDate, 'isoweek'); },
-    dateForwardCallback: (oldDate) => { return DateHandler.add(oldDate, 1, 'week'); },
-    dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'week'); },
   },
   oneDay: {
     name: 'oneDay',
+    dateRange: 'day',
+    dateGapUnit: 'day', // Gap when pressing forward or back
     dayCount: 1,
-    className: 'fl-mc-view-oneDay',
+
     pickerType: 'date',
     showWeekendActiveState: false, // The button will be hidden by css in this view mode
-    newDateCallback: (newDate) => { return DateHandler.newDate(newDate); },
-    dateForwardCallback: (oldDate) => { return DateHandler.add(oldDate, 1, 'day'); },
-    dateBackCallback: (oldDate) => { return DateHandler.add(oldDate, -1, 'day'); },
   },
 };
 
@@ -102,12 +99,16 @@ export default class MultiCalendar extends ModelView {
     });
 
     controlBar.listenTo('forward', () => {
-      const newDate = this.currViewMode.dateForwardCallback(this.startDate);
+      const startDate = this.startDate;
+      const gapUnit = this.currViewMode.dateGapUnit;
+      const newDate = DateHandler.add(startDate, 1, gapUnit);
       this.setStartDate(newDate);
     });
 
     controlBar.listenTo('back', () => {
-      const newDate = this.currViewMode.dateBackCallback(this.startDate);
+      const startDate = this.startDate;
+      const gapUnit = this.currViewMode.dateGapUnit;
+      const newDate = DateHandler.add(startDate, -1, gapUnit);
       this.setStartDate(newDate);
     });
 
@@ -204,7 +205,8 @@ export default class MultiCalendar extends ModelView {
     if (!this.currViewMode) {
       newDate = DateHandler.newDate();
     } else {
-      newDate = this.currViewMode.newDateCallback(date);
+      const dateRange = this.currViewMode.dateRange;
+      newDate = DateHandler.startOf(date, dateRange);
     }
 
     for (const cal of calendars) {
@@ -257,9 +259,11 @@ export default class MultiCalendar extends ModelView {
 
     // Remove any other view's class and add the one for this view.
     for (const view of Object.keys(viewModes)) {
-      this.html.container.classList.remove(viewModes[view].className);
+      const viewClass = this._viewModeClassName(viewModes[view]);
+      this.html.container.classList.remove(viewClass);
     }
-    this.html.container.classList.add(newMode.className);
+    const viewClass = this._viewModeClassName(newMode);
+    this.html.container.classList.add(viewClass);
 
     // Set the datePicker type correctly
     this.controlBar.setDatePickerType(newMode.pickerType);
@@ -282,4 +286,8 @@ export default class MultiCalendar extends ModelView {
     return null;
   }
 
+  // Returns a className for a viewMode.
+  _viewModeClassName(view) {
+    return viewModeClassPrefix + view.name;
+  }
 }

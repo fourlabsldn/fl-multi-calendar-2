@@ -49,6 +49,29 @@ export default class ControlBar extends ModelView {
     }
   }
 
+  getDate() {
+    return this._getDatePickerDate();
+  }
+
+  setDate(date) {
+    return this._setDatePickerDate(date);
+  }
+
+  setDateRange(range) {
+    // TODO: Take care of show-weekends here.
+    switch (range) {
+      case 'isoweek':
+      case 'week':
+        this._setDatePickerType('week');
+        break;
+      case 'day':
+        this._setDatePickerType('date');
+        break;
+      default:
+        assert(false, `Unexpected date range: ${range}`);
+    }
+  }
+
   /**
    * @method getDatePickerDate
    * @return {Date}
