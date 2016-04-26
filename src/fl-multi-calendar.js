@@ -3,136 +3,18 @@
 import MultiCalendar from './MultiCalendar';
 
 xController((xDivEl) => {
-
-  // //Callbacks
-  function dayHeaderClick(date, events) {
-    console.log('Day header click.');
-    console.dir(arguments);
+  // Grab config object
+  const config = window[xDivEl.dataset.config];
+  if (typeof config !== 'object') {
+    throw new Error('x-div multiCalendar: No configuration object provided.');
   }
 
-  function eventClick(eventConfig) {
-    console.log('Event click.');
-    console.dir(arguments);
-  }
+  // Create multiCalendar
+  config.targetElement = xDivEl;
+  const multiCalendar = new MultiCalendar(config);
 
-  function titleClick(calendarConfig) {
-    console.log('Title click.');
-    console.dir(arguments);
-  }
-
-
-  const multiCalendar = new MultiCalendar({
-    targetElement: xDivEl,
-    loadUrl: 'http://localhost:8000/demo/demoData.json',
-    calendars: [{
-      name: 'Karl Marx',
-      id: '12345',
-      description: 'Software Developer', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Friedrich Hegel',
-      id: '7899',
-      description: 'HR Manager', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Immanuel Kant',
-      id: '23456',
-      description: 'Research and Revelopement', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Soren Kierkegaard',
-      id: '3456',
-      description: 'Research and Revelopement', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Jacques Derrida',
-      id: '4567',
-      description: 'Research and Revelopement', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    },{
-      name: 'Karl Marx',
-      id: '12345',
-      description: 'Software Developer', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Friedrich Hegel',
-      id: '7899',
-      description: 'HR Manager', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Immanuel Kant',
-      id: '23456',
-      description: 'Research and Revelopement', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Soren Kierkegaard',
-      id: '3456',
-      description: 'Research and Revelopement', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Jacques Derrida',
-      id: '4567',
-      description: 'Research and Revelopement', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    },{
-      name: 'Karl Marx',
-      id: '12345',
-      description: 'Software Developer', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Friedrich Hegel',
-      id: '7899',
-      description: 'HR Manager', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Immanuel Kant',
-      id: '23456',
-      description: 'Research and Revelopement', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Soren Kierkegaard',
-      id: '3456',
-      description: 'Research and Revelopement', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }, {
-      name: 'Jacques Derrida',
-      id: '4567',
-      description: 'Research and Revelopement', // optional
-      titleClick,
-      dayHeaderClick,
-      eventClick,
-    }
-  ],
-  });
-
+  // Setup responsiveness
+  // TODO: move that to MultiCalendar
   function setViewModeBasedOnWindowSize() {
     const currViewMode = multiCalendar.getViewMode();
     if (window.innerWidth < 850 && currViewMode !== 'oneDay') {

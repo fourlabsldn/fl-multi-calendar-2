@@ -79,7 +79,7 @@ $border-size: 2px;
   font-size: 14px;
 
   // TODO: Remove that and solve wrapper issue
-  min-width: 63em;
+  min-width: 65em;
   * {
     box-sizing: border-box;
   }
@@ -321,7 +321,9 @@ $border-size: 2px;
   flex: 1 1 auto;
   background-color: inherit; //For the day-header effect
 
-  min-width: 9em;
+  // TODO: Fix the wrapper shrinking problem and
+  // enforce minimum size.
+  // min-width: 9em;
   min-height: 5em;
 }
 
@@ -341,6 +343,7 @@ $border-size: 2px;
 
   text-align: center;
   font-weight: bold;
+  white-space: nowrap;
   padding: 0 0 .2em;
   background-color: $c-inactive-2;
   color: $c-background-text;

@@ -14,8 +14,137 @@
 </head>
 
 <body>
+
+    <script>
+      // //Callbacks
+      function dayHeaderClick(date, events) {
+        console.log('Day header click.');
+        console.dir(arguments);
+      }
+
+      function eventClick(eventConfig) {
+        console.log('Event click.');
+        console.dir(arguments);
+      }
+
+      function titleClick(calendarConfig) {
+        console.log('Title click.');
+        console.dir(arguments);
+      }
+
+      var multiCalendarConfig = {
+        loadUrl: 'http://localhost:8000/demo/demoData.json',
+        calendars: [{
+          name: 'Karl Marx',
+          id: '12345',
+          description: 'Software Developer', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Friedrich Hegel',
+          id: '7899',
+          description: 'HR Manager', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Immanuel Kant',
+          id: '23456',
+          description: 'Research and Revelopement', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Soren Kierkegaard',
+          id: '3456',
+          description: 'Research and Revelopement', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Jacques Derrida',
+          id: '4567',
+          description: 'Research and Revelopement', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        },{
+          name: 'Karl Marx',
+          id: '12345',
+          description: 'Software Developer', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Friedrich Hegel',
+          id: '7899',
+          description: 'HR Manager', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Immanuel Kant',
+          id: '23456',
+          description: 'Research and Revelopement', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Soren Kierkegaard',
+          id: '3456',
+          description: 'Research and Revelopement', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Jacques Derrida',
+          id: '4567',
+          description: 'Research and Revelopement', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        },{
+          name: 'Karl Marx',
+          id: '12345',
+          description: 'Software Developer', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Friedrich Hegel',
+          id: '7899',
+          description: 'HR Manager', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Immanuel Kant',
+          id: '23456',
+          description: 'Research and Revelopement', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Soren Kierkegaard',
+          id: '3456',
+          description: 'Research and Revelopement', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }, {
+          name: 'Jacques Derrida',
+          id: '4567',
+          description: 'Research and Revelopement', // optional
+          titleClick: titleClick,
+          dayHeaderClick: dayHeaderClick,
+          eventClick: eventClick,
+        }
+      ],
+    }
+    </script>
     <h1>Multi Calendar</h1>
-    <x-div data-controller="/build/fl-multi-calendar"></x-div>
+    <x-div data-controller="/build/fl-multi-calendar" data-config="multiCalendarConfig"></x-div>
 </body>
 
 </html>
