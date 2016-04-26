@@ -331,8 +331,8 @@ $border-size: 2px;
   transition: all .1s ease;
   animation: fadeInUp;
   animation-duration: .5s;
-  animation-fill-mode: both;
   animation-delay: 0;
+  animation-fill-mode: backwards;
   @for $i from 2 through 10 {
     &:nth-child(#{$i}) {
       animation-delay: 0s + ($i / 15);
@@ -342,6 +342,10 @@ $border-size: 2px;
   &:hover {
     filter: brightness(110%);
     cursor: pointer;
+  }
+
+  &:active {
+    filter: brightness(95%);
   }
 }
 
