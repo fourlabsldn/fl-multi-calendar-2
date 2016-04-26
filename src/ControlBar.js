@@ -189,9 +189,6 @@ class ButtonLoadingController {
 
     this._removeAllLoadingClasses();
 
-    // This will be locked while elements are in their timeout
-    // to change a state
-    this.locked = false;
     this.complete = true;
 
     // Minimum time showing 'complete' or 'error' symbol.
@@ -200,18 +197,14 @@ class ButtonLoadingController {
 
     // Time button was set to loading
     this.loadingStartTime = null;
+
+    this.loadingProgress = { cancelled: false };
   }
 
   setLoading() {
-    if (!this.complete) {
-      assert.warn(false,
-        `Impossible to set load animation.
-        Last animation still not complete.`);
-      return;
-    }
-
-    if (this.locked) { return; }
+    this.loadingProgress.cancelled = true;
     this.complete = false;
+    this._removeAllLoadingClasses();
     this.button.classList.add(this.loadingClass);
     this.loadingStartTime = DateHandler.newDate();
   }
@@ -226,24 +219,29 @@ class ButtonLoadingController {
 
   _completeLoadingWithSuccessStatus(success) {
     if (this.complete) { // That is, if it wasn't loading.
-      assert(false,
-        `Cannot set loading to complete when
-        button was not in loading state.`);
+      assert.warn(false,
+        'Cannot set loading to complete when button was not in loading state.');
       return;
     }
 
-
-    if (this.locked) { return; }
-    this.locked = true;
+    this.loadingProgress.cancelled = true;
+    const thisProgress = { cancelled: false };
+    this.loadingProgress = thisProgress;
 
     const outcomeClass = success ? this.successClass : this.errorClass;
     const remainingDelay = this._timeToAnimationTimeoutEnd();
 
     setTimeout(() => {
+      if (thisProgress.cancelled) { return; }
       this._removeAllLoadingClasses();
+
       // Show with the completed class for at least minTimeout miliseconds
       this.button.classList.add(outcomeClass);
-      setTimeout(() => { this._unlockAndComplete(); }, this.minIconTimeout);
+      setTimeout(() => {
+        if (thisProgress.cancelled) { return; }
+        this._removeAllLoadingClasses();
+        this.complete = true;
+      }, this.minIconTimeout);
     }, remainingDelay);
   }
 
@@ -261,11 +259,5 @@ class ButtonLoadingController {
     const delayEndTime = DateHandler.add(timeoutStart, minTimeout, 'milliseconds');
     const remainingDelay = DateHandler.diff(delayEndTime, now, 'milliseconds');
     return Math.max(remainingDelay, 0);
-  }
-
-  _unlockAndComplete() {
-    this._removeAllLoadingClasses();
-    this.complete = true;
-    this.locked = false;
   }
 }

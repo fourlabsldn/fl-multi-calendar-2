@@ -505,9 +505,6 @@ var ButtonLoadingController = function () {
 
     this._removeAllLoadingClasses();
 
-    // This will be locked while elements are in their timeout
-    // to change a state
-    this.locked = false;
     this.complete = true;
 
     // Minimum time showing 'complete' or 'error' symbol.
@@ -516,20 +513,16 @@ var ButtonLoadingController = function () {
 
     // Time button was set to loading
     this.loadingStartTime = null;
+
+    this.loadingProgress = { cancelled: false };
   }
 
   babelHelpers.createClass(ButtonLoadingController, [{
     key: 'setLoading',
     value: function setLoading() {
-      if (!this.complete) {
-        assert.warn(false, 'Impossible to set load animation.\n        Last animation still not complete.');
-        return;
-      }
-
-      if (this.locked) {
-        return;
-      }
+      this.loadingProgress.cancelled = true;
       this.complete = false;
+      this._removeAllLoadingClasses();
       this.button.classList.add(this.loadingClass);
       this.loadingStartTime = DateHandler.newDate();
     }
@@ -550,24 +543,31 @@ var ButtonLoadingController = function () {
 
       if (this.complete) {
         // That is, if it wasn't loading.
-        assert(false, 'Cannot set loading to complete when\n        button was not in loading state.');
+        assert.warn(false, 'Cannot set loading to complete when button was not in loading state.');
         return;
       }
 
-      if (this.locked) {
-        return;
-      }
-      this.locked = true;
+      this.loadingProgress.cancelled = true;
+      var thisProgress = { cancelled: false };
+      this.loadingProgress = thisProgress;
 
       var outcomeClass = success ? this.successClass : this.errorClass;
       var remainingDelay = this._timeToAnimationTimeoutEnd();
 
       setTimeout(function () {
+        if (thisProgress.cancelled) {
+          return;
+        }
         _this2._removeAllLoadingClasses();
+
         // Show with the completed class for at least minTimeout miliseconds
         _this2.button.classList.add(outcomeClass);
         setTimeout(function () {
-          _this2._unlockAndComplete();
+          if (thisProgress.cancelled) {
+            return;
+          }
+          _this2._removeAllLoadingClasses();
+          _this2.complete = true;
         }, _this2.minIconTimeout);
       }, remainingDelay);
     }
@@ -591,13 +591,6 @@ var ButtonLoadingController = function () {
       var delayEndTime = DateHandler.add(timeoutStart, minTimeout, 'milliseconds');
       var remainingDelay = DateHandler.diff(delayEndTime, now, 'milliseconds');
       return Math.max(remainingDelay, 0);
-    }
-  }, {
-    key: '_unlockAndComplete',
-    value: function _unlockAndComplete() {
-      this._removeAllLoadingClasses();
-      this.complete = true;
-      this.locked = false;
     }
   }]);
   return ButtonLoadingController;
