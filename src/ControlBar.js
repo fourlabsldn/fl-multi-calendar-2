@@ -193,7 +193,7 @@ class buttonLoadingHandler {
     this.complete = true;
 
     // Minimum time showing 'complete' or 'error' symbol.
-    this.minimumTimeout = 1500;
+    this.minTimeout = 1500;
 
     // Time button was set to loading
     this.loadingStartTime = null;
@@ -223,9 +223,13 @@ class buttonLoadingHandler {
 
     if (this.locked) { return; }
 
+    // Time remaining to minimumTimeout
+    // const remainingDelay = timeNow - (timeLoadingStart + timeout)
+    const timeNow = DateHandler.newDate();
+    const minDelayEnd = DateHandler.add(this.loadingStartTime, this.minTimeout, 'miliseconds');
     const remainingDelay = DateHandler.diff(
-      DateHandler.newDate(),
-      this.loadingStartTime,
+      timeNow,
+      minDelayEnd,
       'miliseconds'
     );
 
