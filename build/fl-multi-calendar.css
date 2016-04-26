@@ -281,7 +281,7 @@
             flex: 1 1 auto;
     min-height: 2em; }
   .fl-mc-view-oneDay .fl-mc-ctrl .fl-mc-ctrl-refresh {
-    border-right: 0; }
+    border-right-width: 0; }
   .fl-mc-view-oneDay .fl-mc-ctrl .fl-mc-ctrl-titleBar {
     display: none; }
   .fl-mc-view-oneDay .fl-mc-ctrl .fl-mc-ctrl-show-weekend {
@@ -305,14 +305,14 @@
   .fl-mc-cal:nth-child(even) {
     background-color: #f2f2f2; }
   .fl-mc-cal:first-of-type .fl-mc-cal-day {
-    border-top: 0; }
+    border-top-width: 0; }
 
 .fl-mc-view-oneDay .fl-mc-cal {
   -webkit-flex-flow: column nowrap;
       -ms-flex-flow: column nowrap;
           flex-flow: column nowrap; }
   .fl-mc-view-oneDay .fl-mc-cal:first-of-type .fl-mc-cal-header {
-    border-top: 0; }
+    border-top-width: 0; }
 
 .fl-mc-cal-header {
   display: block;

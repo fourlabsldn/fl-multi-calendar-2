@@ -231,7 +231,7 @@ $border-size: 2px;
   }
 
   .fl-mc-ctrl-refresh {
-    border-right: 0;
+    border-right-width: 0;
   }
 
   .fl-mc-ctrl-titleBar  {
@@ -260,7 +260,7 @@ $border-size: 2px;
   }
 
   &:first-of-type .fl-mc-cal-day {
-    border-top: 0;
+    border-top-width: 0;
   }
 }
 
@@ -268,7 +268,7 @@ $border-size: 2px;
   flex-flow: column nowrap;
 
   &:first-of-type .fl-mc-cal-header{
-    border-top: 0;
+    border-top-width: 0;
   }
 }
 
