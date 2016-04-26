@@ -14,11 +14,29 @@
     "babel-preset-es2015-rollup": "^1.1.1",
     "bower": "^1.7.9",
     "gulp": "^3.9.1",
+    "gulp-css2js": "^1.0.2",
     "gulp-postcss": "^6.1.0",
     "gulp-rollup": "^1.8.0",
     "gulp-sass": "^2.3.0",
     "gulp-server-livereload": "^1.7.4",
     "gulp-sourcemaps": "^1.6.0",
     "rollup-plugin-babel": "^2.4.0"
-  }
+  },
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fourlabsldn/fl-multi-calendar-2.git"
+  },
+  "keywords": [
+    "Four",
+    "labs",
+    "multi-calendar"
+  ],
+  "bugs": {
+    "url": "https://github.com/fourlabsldn/fl-multi-calendar-2/issues"
+  },
+  "homepage": "https://github.com/fourlabsldn/fl-multi-calendar-2#readme"
 }
