@@ -82,9 +82,16 @@ export default class ControlBar extends ModelView {
     if (loading) {
       refreshClass.add(loadingClass);
     } else if (refreshClass.contains(loadingClass)) {
+      refreshClass.remove(loadingClass);
       refreshClass.add(completeClass);
 
-      setTimeout(() => { refreshClass.remove(completeClass); }, 1000);
+      setTimeout(() => {
+        if (!refreshClass.contains(completeClass)) {
+          assert.warn(false, 'Icon loading interrupted before due time.');
+          return;
+        }
+        refreshClass.remove(completeClass);
+      }, 1500);
     }
   }
 
@@ -163,3 +170,104 @@ export default class ControlBar extends ModelView {
     }
   }
 }
+
+//
+// class buttonLoadingHandler {
+//   constructor(button) {
+//
+//     // Make sure we never handle a button twice.
+//     if (button.loadingIsHandled) { return; }
+//     button.loadingIsHandled = true;
+//
+//     this.button = button;
+//
+//     this.loadingClass = 'fl-mc-loading';
+//     this.completeClass = 'fl-mc-loading-complete';
+//     this.completeClass = 'fl-mc-loading-error';
+//
+//     this._removeAllLoadingClasses();
+//     this.complete = true;
+//
+//     // This will be locked while elements are in their timeout
+//     // to change a state
+//     this.locked = false;
+//
+//     // Minimum time showing 'complete' or 'error' symbol.
+//     this.minimumOutcomeShowingTime = 1500;
+//     this.minimumLoadingTime = 1500;
+//
+//     // Time button was set to loading
+//     this.loadingStartTime = null;
+//   }
+//
+//   setLoading() {
+//     if (!this.complete) {
+//       assert.warn(false,
+//         `Impossible to set load animation.
+//         Last animation still not complete.`);
+//       return;
+//     } else if (this.locked) {
+//       return;
+//     }
+//     this.complete = false;
+//     this.button.classList.add(this.loadingClass);
+//     this.loadingStartTime = DateHandler.newDate();
+//   }
+//
+//   setLoadingComplete() {
+//     if (this.complete) {
+//       assert(false,
+//         `Cannot set loading to complete when
+//         button was not in loading state.`);
+//       return;
+//     } else if (this.locked) {
+//       return;
+//     }
+//
+//     const timeSinceStartedLoading = DateHandler.diff(
+//       DateHandler.newDate(),
+//       this.loadingStartTime,
+//       'miliseconds'
+//     );
+//
+//     setTimeout(() => {
+//
+//     });
+//     this._removeAllLoadingClasses();
+//     this.button.classList.add(this.completeClass);
+//     this.complete = true;
+//   }
+//
+//   setLoadingError() {
+//     this._removeAllLoadingClasses();
+//     this.button.classList.add(this.errorClass);
+//     this.complete = true;
+//   }
+//
+//   _removeAllLoadingClasses() {
+//     this.button.classList.remove(this.loadingClass);
+//     this.button.classList.remove(this.completeClass);
+//     this.button.classList.remove(this.errorClass);
+//   }
+// }
+//
+// setLoadingState(loading) {
+//   const loadingClass = 'fl-mc-loading';
+//   const completeClass = 'fl-mc-loading-complete';
+//   const refreshClass = this.html.refresh.classList;
+//
+//   if (loading) {
+//     refreshClass.add(loadingClass);
+//   } else if (refreshClass.contains(loadingClass)) {
+//     refreshClass.remove(loadingClass);
+//     refreshClass.add(completeClass);
+//
+//     setTimeout(() => {
+//       if (!refreshClass.contains(completeClass)) {
+//         assert.warn(false, 'Icon loading interrupted before due time.');
+//         return;
+//       }
+//       refreshClass.remove(completeClass);
+//     }, 1500);
+//   }
+// }

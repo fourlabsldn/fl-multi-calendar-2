@@ -150,7 +150,7 @@ $border-size: 2px;
 }
 
 .fl-mc-ctrl-refresh {
-  transition: all .2s ease;
+  // transition: all .5s ease;
 
     // Hide the tick when not loading.
   .icon-check { display: none; }
@@ -159,6 +159,7 @@ $border-size: 2px;
   &.fl-mc-loading {
     background-color: $c-main;
     color: $c-main-text;
+    pointer-events: none; // Disallow multiple clicks
 
     * { animation: spin 2s linear infinite; }
   }
@@ -166,6 +167,7 @@ $border-size: 2px;
   &.fl-mc-loading-complete {
     background-color: $c-accent;
     color: $c-main-text;
+    pointer-events: none; // Disallow multiple clicks
 
     .icon-refresh { display: none; }
     .icon-check { display: inline-block; }
