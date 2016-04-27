@@ -53,15 +53,32 @@ export default class ControlBar extends ModelView {
     }
   }
 
+  /**
+   * Returns the start date of the controlBar
+   * @method getDate
+   * @return {DateHandler}
+   */
   getDate() {
     return this._getDatePickerDate();
   }
 
+  /**
+   * Sets the start date of control bar. The end date is automatically
+   * calculated given the current dateRange
+   * @method setDate
+   * @param  {DateHandler} date
+   */
   setDate(date) {
     this._setTitleBarDate(date);
     this._setDatePickerDate(date);
   }
 
+  /**
+   * Prepares the config bar to represent that dateRange
+   * by changing the datepicker type and the title.
+   * @method setDateRange
+   * @param  {String}     range 'isoweek', 'week' or 'day'
+   */
   setDateRange(range) {
     switch (range) {
       case 'isoweek':
@@ -80,6 +97,11 @@ export default class ControlBar extends ModelView {
     }
   }
 
+  /**
+   * Sets the state of the refresh button.
+   * @method setLoadingState
+   * @param  {String}        state
+   */
   setLoadingState(state) {
     switch (state) {
       case 'loading':
@@ -89,7 +111,6 @@ export default class ControlBar extends ModelView {
         this.refreshLoadingController.setLoadingSuccess();
         break;
       case 'error':
-      console.log('errpr');
         this.refreshLoadingController.setLoadingError();
         break;
       default:
@@ -99,6 +120,7 @@ export default class ControlBar extends ModelView {
   }
 
   /**
+   * @private
    * @method _getDatePickerDate
    * @return {Date}
    */
@@ -107,6 +129,7 @@ export default class ControlBar extends ModelView {
   }
 
   /**
+   * @private
    * @method _setDatePickerDate
    * @param {Date} date
    */
@@ -117,6 +140,7 @@ export default class ControlBar extends ModelView {
   }
 
   /**
+   * @private
    * @method _setDatePickerType
    * @param {String} type 'week' or 'day';
    */
@@ -134,11 +158,15 @@ export default class ControlBar extends ModelView {
     this._setDatePickerDate(currDate);
   }
 
+  /**
+   * @private
+   * @method _setTitleBarDate
+   * @param {DateHandler or Date} date
+   */
   _setTitleBarDate(date) {
     this.html.titleBar.innerHTML = DateHandler.format(date, 'YYYY');
   }
   /**
-   *
    * Assigns a callback to be called by this.trigger when the event happens
    * @method listenTo
    * @param  {String}   eventName
@@ -166,7 +194,8 @@ export default class ControlBar extends ModelView {
   }
 
   /**
-   * @method @private _setShowWeekendActive
+   * @private
+   * @method _setShowWeekendActive
    * @param {Boolean} active
    */
   _setShowWeekendActive(active) {
@@ -181,7 +210,10 @@ export default class ControlBar extends ModelView {
   }
 }
 
-
+/**
+ * 	@private Only ControlBar will use this class
+ * 	@class ButtonLoadingController
+ */
 class ButtonLoadingController {
   constructor(button, loadingClass, successClass, errorClass) {
     // Make sure we never handle a button twice.
@@ -222,7 +254,8 @@ class ButtonLoadingController {
 
   /**
    * Shows a success or failure icon for a certain period of time.
-   * @method @private _completeLoadingWithSuccessStatus
+   * @private
+   * @method _completeLoadingWithSuccessStatus
    * @param  {Boolean} success
    * @return {void}
    */
@@ -247,13 +280,26 @@ class ButtonLoadingController {
     }, remainingDelay);
   }
 
+  /**
+   * @private
+   * @method _removeAllLoadingClasses
+   * @return {void}
+   */
   _removeAllLoadingClasses() {
     this.button.classList.remove(this.loadingClass);
     this.button.classList.remove(this.successClass);
     this.button.classList.remove(this.errorClass);
   }
 
-  // Time remaining to minTimeout
+  /**
+  * Time remaining to minTimeout
+   * @private
+   * @method _timeToAnimationTimeoutEnd
+   * @param  {DateHandler} timeoutStart
+   * @param  {int} minTimeout
+   * @param  {int} now
+   * @return {int}
+   */
   _timeToAnimationTimeoutEnd(
       timeoutStart = this.loadingStartTime,
       minTimeout = this.minAnimationTime,

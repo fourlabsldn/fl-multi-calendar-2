@@ -312,17 +312,40 @@ var ControlBar = function (_ModelView) {
     return _this;
   }
 
+  /**
+   * Returns the start date of the controlBar
+   * @method getDate
+   * @return {DateHandler}
+   */
+
+
   babelHelpers.createClass(ControlBar, [{
     key: 'getDate',
     value: function getDate() {
       return this._getDatePickerDate();
     }
+
+    /**
+     * Sets the start date of control bar. The end date is automatically
+     * calculated given the current dateRange
+     * @method setDate
+     * @param  {DateHandler} date
+     */
+
   }, {
     key: 'setDate',
     value: function setDate(date) {
       this._setTitleBarDate(date);
       this._setDatePickerDate(date);
     }
+
+    /**
+     * Prepares the config bar to represent that dateRange
+     * by changing the datepicker type and the title.
+     * @method setDateRange
+     * @param  {String}     range 'isoweek', 'week' or 'day'
+     */
+
   }, {
     key: 'setDateRange',
     value: function setDateRange(range) {
@@ -342,6 +365,13 @@ var ControlBar = function (_ModelView) {
           assert(false, 'Unexpected date range: ' + range);
       }
     }
+
+    /**
+     * Sets the state of the refresh button.
+     * @method setLoadingState
+     * @param  {String}        state
+     */
+
   }, {
     key: 'setLoadingState',
     value: function setLoadingState(state) {
@@ -353,7 +383,6 @@ var ControlBar = function (_ModelView) {
           this.refreshLoadingController.setLoadingSuccess();
           break;
         case 'error':
-          console.log('errpr');
           this.refreshLoadingController.setLoadingError();
           break;
         default:
@@ -363,6 +392,7 @@ var ControlBar = function (_ModelView) {
     }
 
     /**
+     * @private
      * @method _getDatePickerDate
      * @return {Date}
      */
@@ -374,6 +404,7 @@ var ControlBar = function (_ModelView) {
     }
 
     /**
+     * @private
      * @method _setDatePickerDate
      * @param {Date} date
      */
@@ -387,6 +418,7 @@ var ControlBar = function (_ModelView) {
     }
 
     /**
+     * @private
      * @method _setDatePickerType
      * @param {String} type 'week' or 'day';
      */
@@ -408,13 +440,19 @@ var ControlBar = function (_ModelView) {
       this.html.datePicker.type = dateType;
       this._setDatePickerDate(currDate);
     }
+
+    /**
+     * @private
+     * @method _setTitleBarDate
+     * @param {DateHandler or Date} date
+     */
+
   }, {
     key: '_setTitleBarDate',
     value: function _setTitleBarDate(date) {
       this.html.titleBar.innerHTML = DateHandler.format(date, 'YYYY');
     }
     /**
-     *
      * Assigns a callback to be called by this.trigger when the event happens
      * @method listenTo
      * @param  {String}   eventName
@@ -476,7 +514,8 @@ var ControlBar = function (_ModelView) {
     }
 
     /**
-     * @method @private _setShowWeekendActive
+     * @private
+     * @method _setShowWeekendActive
      * @param {Boolean} active
      */
 
@@ -544,7 +583,8 @@ var ButtonLoadingController = function () {
 
     /**
      * Shows a success or failure icon for a certain period of time.
-     * @method @private _completeLoadingWithSuccessStatus
+     * @private
+     * @method _completeLoadingWithSuccessStatus
      * @param  {Boolean} success
      * @return {void}
      */
@@ -573,6 +613,13 @@ var ButtonLoadingController = function () {
         }, _this2.minIconTime);
       }, remainingDelay);
     }
+
+    /**
+     * @private
+     * @method _removeAllLoadingClasses
+     * @return {void}
+     */
+
   }, {
     key: '_removeAllLoadingClasses',
     value: function _removeAllLoadingClasses() {
@@ -581,7 +628,15 @@ var ButtonLoadingController = function () {
       this.button.classList.remove(this.errorClass);
     }
 
-    // Time remaining to minTimeout
+    /**
+    * Time remaining to minTimeout
+     * @private
+     * @method _timeToAnimationTimeoutEnd
+     * @param  {DateHandler} timeoutStart
+     * @param  {int} minTimeout
+     * @param  {int} now
+     * @return {int}
+     */
 
   }, {
     key: '_timeToAnimationTimeoutEnd',
@@ -1405,8 +1460,9 @@ function debounce(func, wait, immediate) {
   };
 }
 
+// Private variables
 var MULTI_CALENDAR_CLASS = 'fl-mc';
-var viewModeClassPrefix = 'fl-mc-view-';
+var viewModeClassPrefix = MULTI_CALENDAR_CLASS + '-view-';
 var viewModes = {
   weekdays: {
     name: 'weekdays',
@@ -1430,6 +1486,11 @@ var viewModes = {
 
 var MultiCalendar = function (_ModelView) {
   babelHelpers.inherits(MultiCalendar, _ModelView);
+
+  /**
+   * @constructor
+   * @param  {Object}    config MultiCalendar configuration object
+   */
 
   function MultiCalendar(config) {
     babelHelpers.classCallCheck(this, MultiCalendar);
@@ -1470,7 +1531,7 @@ var MultiCalendar = function (_ModelView) {
     // --------------- ControlBar & Calendars setup -- ----------------
     // ----------------------------------------------------------------
 
-    _this.initControlBar(_this.controlBar);
+    _this._initControlBar(_this.controlBar);
 
     _this.setStartDate(DateHandler.newDate());
 
@@ -1507,9 +1568,18 @@ var MultiCalendar = function (_ModelView) {
     return _this;
   }
 
+  /**
+   * Sets up listeners to control bar events
+   * @private
+   * @method _initControlBar
+   * @param  {ControlBar}  controlBar [optional]
+   * @return {void}
+   */
+
+
   babelHelpers.createClass(MultiCalendar, [{
-    key: 'initControlBar',
-    value: function initControlBar() {
+    key: '_initControlBar',
+    value: function _initControlBar() {
       var _this2 = this;
 
       var controlBar = arguments.length <= 0 || arguments[0] === undefined ? this.controlBar : arguments[0];
@@ -1557,13 +1627,18 @@ var MultiCalendar = function (_ModelView) {
       });
     }
 
-    // TODO: Add calendar when other calendars already have days
+    /**
+     * @method addCalendar
+     * @param  {Object}       config    Configuration object for the calendar
+     * @param  {DateHandler}  startDate [optional]
+     */
 
   }, {
     key: 'addCalendar',
     value: function addCalendar(config) {
       var startDate = arguments.length <= 1 || arguments[1] === undefined ? this.startDate : arguments[1];
 
+      // TODO: Add calendar when other calendars already have days
       var calendarCallbacks = {
         titleClick: config.titleClick,
         dayHeaderClick: config.dayHeaderClick,
@@ -1574,6 +1649,14 @@ var MultiCalendar = function (_ModelView) {
       this.html.container.appendChild(calendar.html.container);
       this.calendars.push(calendar);
     }
+
+    /**
+     * Adds one day to all calendars
+     * @method addDay
+     * @param  {Array[Calendars]}  calendars  [optional]
+     * @return {void}
+     */
+
   }, {
     key: 'addDay',
     value: function addDay() {
@@ -1605,6 +1688,14 @@ var MultiCalendar = function (_ModelView) {
         }
       }
     }
+
+    /**
+     * removes one day from all calendars
+     * @method removeDay
+     * @param  {Array[Calendars]}  calendars  [optional]
+     * @return {void}
+     */
+
   }, {
     key: 'removeDay',
     value: function removeDay() {
@@ -1652,7 +1743,15 @@ var MultiCalendar = function (_ModelView) {
       return calendars[0].getDayCount();
     }
 
-    // Loads server events into calendars
+    /**
+     * Fetches events from the server and puts them into calendars
+     * @method loadEvents
+     * @param  {String}    loadUrl            [optional]
+     * @param  {Array[Calendar]}   calendars  [optional]
+     * @param  {ControlBar}   controlBar      [optional]
+     * @return {Promise}              Promise that will be resolved when events
+     *                                 have been loaded and added to the calendars
+     */
 
   }, {
     key: 'loadEvents',
@@ -1712,6 +1811,14 @@ var MultiCalendar = function (_ModelView) {
         controlBar.setLoadingState('error');
       });
     }
+
+    /**
+     * Sets the events for all calendars
+     * @method setEvents
+     * @param  {Array[Object]}  calEvents    [optional]
+     * @param  {Array[Calendar]}  calendars  [optional]
+     */
+
   }, {
     key: 'setEvents',
     value: function setEvents() {
@@ -1765,6 +1872,14 @@ var MultiCalendar = function (_ModelView) {
         return cal.id === calId;
       });
     }
+
+    /**
+     * Sets the start date of all calendars and of the control bar.
+     * @method setStartDate
+     * @param  {DateHandler or String}   date
+     * @param  {Array[Calendar]}        calendars  [optional]
+     */
+
   }, {
     key: 'setStartDate',
     value: function setStartDate(date) {
@@ -1920,19 +2035,30 @@ var MultiCalendar = function (_ModelView) {
   }, {
     key: 'getViewMode',
     value: function getViewMode() {
-      if (this.currViewMode) {
-        return this.currViewMode.name;
-      }
-      return null;
+      return this.currViewMode ? this.currViewMode.name : null;
     }
 
-    // Returns a className for a viewMode.
+    /**
+    * Returns a className for a viewMode.
+    * @private
+    * @method _viewModeClassName
+    * @param  {String} view
+    * @return {String}      The class name to be added to the main container.
+    */
 
   }, {
     key: '_viewModeClassName',
     value: function _viewModeClassName(view) {
       return viewModeClassPrefix + view.name;
     }
+
+    /**
+     * @private
+     * @method _makeControlBarSticky
+     * @param  {ControlBar} controlBar [optional]
+     * @return {void}
+     */
+
   }, {
     key: '_makeControlBarSticky',
     value: function _makeControlBarSticky() {

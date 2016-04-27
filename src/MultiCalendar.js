@@ -5,8 +5,9 @@ import ControlBar from './ControlBar';
 import Calendar from './Calendar';
 import debounce from './utils/debounce';
 
+// Private variables
 const MULTI_CALENDAR_CLASS = 'fl-mc';
-const viewModeClassPrefix = 'fl-mc-view-';
+const viewModeClassPrefix = `${MULTI_CALENDAR_CLASS}-view-`;
 const viewModes = {
   weekdays: {
     name: 'weekdays',
@@ -29,6 +30,10 @@ const viewModes = {
 };
 
 export default class MultiCalendar extends ModelView {
+  /**
+   * @constructor
+   * @param  {Object}    config MultiCalendar configuration object
+   */
   constructor(config) {
     // ----------------------------------------------------------------
     // --------------------- Property creation  -----------------------
@@ -67,7 +72,7 @@ export default class MultiCalendar extends ModelView {
     // --------------- ControlBar & Calendars setup -- ----------------
     // ----------------------------------------------------------------
 
-    this.initControlBar(this.controlBar);
+    this._initControlBar(this.controlBar);
 
     this.setStartDate(DateHandler.newDate());
 
@@ -81,7 +86,14 @@ export default class MultiCalendar extends ModelView {
     this.targetElement.appendChild(this.html.container);
   }
 
-  initControlBar(controlBar = this.controlBar) {
+  /**
+   * Sets up listeners to control bar events
+   * @private
+   * @method _initControlBar
+   * @param  {ControlBar}  controlBar [optional]
+   * @return {void}
+   */
+  _initControlBar(controlBar = this.controlBar) {
     this._makeControlBarSticky(controlBar);
 
     controlBar.listenTo('datePicker', () => {
@@ -125,8 +137,13 @@ export default class MultiCalendar extends ModelView {
     });
   }
 
-  // TODO: Add calendar when other calendars already have days
+  /**
+   * @method addCalendar
+   * @param  {Object}       config    Configuration object for the calendar
+   * @param  {DateHandler}  startDate [optional]
+   */
   addCalendar(config, startDate = this.startDate) {
+    // TODO: Add calendar when other calendars already have days
     const calendarCallbacks = {
       titleClick: config.titleClick,
       dayHeaderClick: config.dayHeaderClick,
@@ -138,6 +155,12 @@ export default class MultiCalendar extends ModelView {
     this.calendars.push(calendar);
   }
 
+  /**
+   * Adds one day to all calendars
+   * @method addDay
+   * @param  {Array[Calendars]}  calendars  [optional]
+   * @return {void}
+   */
   addDay(calendars = this.calendars) {
     console.log('Adding days');
     for (const cal of calendars) {
@@ -145,6 +168,12 @@ export default class MultiCalendar extends ModelView {
     }
   }
 
+  /**
+   * removes one day from all calendars
+   * @method removeDay
+   * @param  {Array[Calendars]}  calendars  [optional]
+   * @return {void}
+   */
   removeDay(calendars = this.calendars) {
     for (const cal of calendars) {
       cal.removeDay();
@@ -161,7 +190,15 @@ export default class MultiCalendar extends ModelView {
     return calendars[0].getDayCount();
   }
 
-  // Loads server events into calendars
+  /**
+   * Fetches events from the server and puts them into calendars
+   * @method loadEvents
+   * @param  {String}    loadUrl            [optional]
+   * @param  {Array[Calendar]}   calendars  [optional]
+   * @param  {ControlBar}   controlBar      [optional]
+   * @return {Promise}              Promise that will be resolved when events
+   *                                 have been loaded and added to the calendars
+   */
   loadEvents(loadUrl = this.loadUrl, calendars = this.calendars, controlBar = this.controlBar) {
     controlBar.setLoadingState('loading');
 
@@ -208,6 +245,12 @@ export default class MultiCalendar extends ModelView {
     });
   }
 
+  /**
+   * Sets the events for all calendars
+   * @method setEvents
+   * @param  {Array[Object]}  calEvents    [optional]
+   * @param  {Array[Calendar]}  calendars  [optional]
+   */
   setEvents(calEvents = this.lastLoadedEvents, calendars = this.calendars) {
     if (typeof calEvents !== 'object') {
       assert.warn(false, 'Trying to set events with invalid object');
@@ -229,6 +272,12 @@ export default class MultiCalendar extends ModelView {
     return calendars.find((cal) => { return cal.id === calId; });
   }
 
+  /**
+   * Sets the start date of all calendars and of the control bar.
+   * @method setStartDate
+   * @param  {DateHandler or String}   date
+   * @param  {Array[Calendar]}        calendars  [optional]
+   */
   setStartDate(date, calendars = this.calendars) {
     // This function may be called before a view mode is set. In this clase
     // the only acceptable start date is Today.
@@ -307,17 +356,26 @@ export default class MultiCalendar extends ModelView {
   }
 
   getViewMode() {
-    if (this.currViewMode) {
-      return this.currViewMode.name;
-    }
-    return null;
+    return this.currViewMode ? this.currViewMode.name : null;
   }
 
-  // Returns a className for a viewMode.
+  /**
+  * Returns a className for a viewMode.
+  * @private
+  * @method _viewModeClassName
+  * @param  {String} view
+  * @return {String}      The class name to be added to the main container.
+  */
   _viewModeClassName(view) {
     return viewModeClassPrefix + view.name;
   }
 
+  /**
+   * @private
+   * @method _makeControlBarSticky
+   * @param  {ControlBar} controlBar [optional]
+   * @return {void}
+   */
   _makeControlBarSticky(controlBar = this.controlBar) {
     const container = this.html.container;
     const bar = controlBar.html.container;
