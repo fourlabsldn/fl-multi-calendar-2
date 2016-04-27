@@ -414,6 +414,8 @@ var ControlBar = function (_ModelView) {
       this.html.titleBar.innerHTML = DateHandler.format(date, 'YYYY');
     }
     /**
+     *
+     * Assigns a callback to be called by this.trigger when the event happens
      * @method listenTo
      * @param  {String}   eventName
      * @param  {Function} callback
@@ -429,6 +431,7 @@ var ControlBar = function (_ModelView) {
     }
 
     /**
+     * Calls all callbacks assigned to an event with this.listenTo.
      * @method trigger
      * @param  {String} eventName
      * @param  {Anything} ...parameters
@@ -471,6 +474,12 @@ var ControlBar = function (_ModelView) {
         }
       }
     }
+
+    /**
+     * @method @private _setShowWeekendActive
+     * @param {Boolean} active
+     */
+
   }, {
     key: '_setShowWeekendActive',
     value: function _setShowWeekendActive(active) {
@@ -498,30 +507,26 @@ var ButtonLoadingController = function () {
     button.loadingIsHandled = true;
 
     this.button = button;
-
     this.loadingClass = loadingClass;
     this.successClass = successClass;
     this.errorClass = errorClass;
 
     this._removeAllLoadingClasses();
 
-    this.complete = true;
-
     // Minimum time showing 'complete' or 'error' symbol.
-    this.minAnimationTimeout = 500;
-    this.minIconTimeout = 1500;
+    this.minAnimationTime = 500;
+    this.minIconTime = 1500;
 
     // Time button was set to loading
     this.loadingStartTime = null;
 
-    this.loadingProgress = { cancelled: false };
+    this.outcomeTimeout = null;
   }
 
   babelHelpers.createClass(ButtonLoadingController, [{
     key: 'setLoading',
     value: function setLoading() {
-      this.loadingProgress.cancelled = true;
-      this.complete = false;
+      clearTimeout(this.outcomeTimeout);
       this._removeAllLoadingClasses();
       this.button.classList.add(this.loadingClass);
       this.loadingStartTime = DateHandler.newDate();
@@ -536,39 +541,36 @@ var ButtonLoadingController = function () {
     value: function setLoadingError() {
       this._completeLoadingWithSuccessStatus(false);
     }
+
+    /**
+     * Shows a success or failure icon for a certain period of time.
+     * @method @private _completeLoadingWithSuccessStatus
+     * @param  {Boolean} success
+     * @return {void}
+     */
+
   }, {
     key: '_completeLoadingWithSuccessStatus',
     value: function _completeLoadingWithSuccessStatus(success) {
       var _this2 = this;
 
-      if (this.complete) {
-        // That is, if it wasn't loading.
-        assert.warn(false, 'Cannot set loading to complete when button was not in loading state.');
-        return;
-      }
-
-      this.loadingProgress.cancelled = true;
-      var thisProgress = { cancelled: false };
-      this.loadingProgress = thisProgress;
+      clearTimeout(this.outcomeTimeout);
 
       var outcomeClass = success ? this.successClass : this.errorClass;
       var remainingDelay = this._timeToAnimationTimeoutEnd();
 
-      setTimeout(function () {
-        if (thisProgress.cancelled) {
-          return;
-        }
+      // This timeout will be cancelled if either this function or
+      // setLoading are called
+      this.outcomeTimeout = setTimeout(function () {
         _this2._removeAllLoadingClasses();
-
         // Show with the completed class for at least minTimeout miliseconds
         _this2.button.classList.add(outcomeClass);
-        setTimeout(function () {
-          if (thisProgress.cancelled) {
-            return;
-          }
+
+        // This timeout will be cancelled if either this function or
+        // setLoading are called
+        _this2.outcomeTimeout = setTimeout(function () {
           _this2._removeAllLoadingClasses();
-          _this2.complete = true;
-        }, _this2.minIconTimeout);
+        }, _this2.minIconTime);
       }, remainingDelay);
     }
   }, {
@@ -585,7 +587,7 @@ var ButtonLoadingController = function () {
     key: '_timeToAnimationTimeoutEnd',
     value: function _timeToAnimationTimeoutEnd() {
       var timeoutStart = arguments.length <= 0 || arguments[0] === undefined ? this.loadingStartTime : arguments[0];
-      var minTimeout = arguments.length <= 1 || arguments[1] === undefined ? this.minAnimationTimeout : arguments[1];
+      var minTimeout = arguments.length <= 1 || arguments[1] === undefined ? this.minAnimationTime : arguments[1];
       var now = arguments.length <= 2 || arguments[2] === undefined ? DateHandler.newDate() : arguments[2];
 
       var delayEndTime = DateHandler.add(timeoutStart, minTimeout, 'milliseconds');

@@ -138,6 +138,8 @@ export default class ControlBar extends ModelView {
     this.html.titleBar.innerHTML = DateHandler.format(date, 'YYYY');
   }
   /**
+   *
+   * Assigns a callback to be called by this.trigger when the event happens
    * @method listenTo
    * @param  {String}   eventName
    * @param  {Function} callback
@@ -150,6 +152,7 @@ export default class ControlBar extends ModelView {
   }
 
   /**
+   * Calls all callbacks assigned to an event with this.listenTo.
    * @method trigger
    * @param  {String} eventName
    * @param  {Anything} ...parameters
@@ -162,6 +165,10 @@ export default class ControlBar extends ModelView {
     }
   }
 
+  /**
+   * @method @private _setShowWeekendActive
+   * @param {Boolean} active
+   */
   _setShowWeekendActive(active) {
     const activeClass = 'fl-mc-active';
     if (active) {
@@ -182,28 +189,24 @@ class ButtonLoadingController {
     button.loadingIsHandled = true;
 
     this.button = button;
-
     this.loadingClass = loadingClass;
     this.successClass = successClass;
     this.errorClass = errorClass;
 
     this._removeAllLoadingClasses();
 
-    this.complete = true;
-
     // Minimum time showing 'complete' or 'error' symbol.
-    this.minAnimationTimeout = 500;
-    this.minIconTimeout = 1500;
+    this.minAnimationTime = 500;
+    this.minIconTime = 1500;
 
     // Time button was set to loading
     this.loadingStartTime = null;
 
-    this.loadingProgress = { cancelled: false };
+    this.outcomeTimeout = null;
   }
 
   setLoading() {
-    this.loadingProgress.cancelled = true;
-    this.complete = false;
+    clearTimeout(this.outcomeTimeout);
     this._removeAllLoadingClasses();
     this.button.classList.add(this.loadingClass);
     this.loadingStartTime = DateHandler.newDate();
@@ -217,31 +220,30 @@ class ButtonLoadingController {
     this._completeLoadingWithSuccessStatus(false);
   }
 
+  /**
+   * Shows a success or failure icon for a certain period of time.
+   * @method @private _completeLoadingWithSuccessStatus
+   * @param  {Boolean} success
+   * @return {void}
+   */
   _completeLoadingWithSuccessStatus(success) {
-    if (this.complete) { // That is, if it wasn't loading.
-      assert.warn(false,
-        'Cannot set loading to complete when button was not in loading state.');
-      return;
-    }
-
-    this.loadingProgress.cancelled = true;
-    const thisProgress = { cancelled: false };
-    this.loadingProgress = thisProgress;
+    clearTimeout(this.outcomeTimeout);
 
     const outcomeClass = success ? this.successClass : this.errorClass;
     const remainingDelay = this._timeToAnimationTimeoutEnd();
 
-    setTimeout(() => {
-      if (thisProgress.cancelled) { return; }
+    // This timeout will be cancelled if either this function or
+    // setLoading are called
+    this.outcomeTimeout = setTimeout(() => {
       this._removeAllLoadingClasses();
-
       // Show with the completed class for at least minTimeout miliseconds
       this.button.classList.add(outcomeClass);
-      setTimeout(() => {
-        if (thisProgress.cancelled) { return; }
+
+      // This timeout will be cancelled if either this function or
+      // setLoading are called
+      this.outcomeTimeout = setTimeout(() => {
         this._removeAllLoadingClasses();
-        this.complete = true;
-      }, this.minIconTimeout);
+      }, this.minIconTime);
     }, remainingDelay);
   }
 
@@ -254,7 +256,7 @@ class ButtonLoadingController {
   // Time remaining to minTimeout
   _timeToAnimationTimeoutEnd(
       timeoutStart = this.loadingStartTime,
-      minTimeout = this.minAnimationTimeout,
+      minTimeout = this.minAnimationTime,
       now = DateHandler.newDate()) {
     const delayEndTime = DateHandler.add(timeoutStart, minTimeout, 'milliseconds');
     const remainingDelay = DateHandler.diff(delayEndTime, now, 'milliseconds');
