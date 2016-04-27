@@ -84,6 +84,7 @@ class Event extends ModelView {
    * Checks whether two configurations would create the same event.
    * @static
    * @method areSame
+   * @api private
    * @param  {Object} e1 Event object or event configuration object
    * @param  {Object} e2
    * @return {Boolean}

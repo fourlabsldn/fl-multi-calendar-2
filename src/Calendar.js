@@ -7,6 +7,7 @@ const CALENDAR_CLASS = '-cal';
 
 /**
  * 	@class Calendar
+ * @api private
  */
 export default class Calendar extends ModelView {
   constructor(config, startDate, parentClass, callbacks = {}) {

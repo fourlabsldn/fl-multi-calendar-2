@@ -82,9 +82,13 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
-              <li><a href="#MultiCalendar"><i class="alert alert-success"></i><span>MultiCalendar</span></a>
+              <li><a href="#goForward"><i class="alert alert-info"></i><span>goForward</span></a>
               </li>
-              <li><a href="#constructor"><i class="alert alert-success"></i><span>constructor</span></a>
+              <li><a href="#goBack"><i class="alert alert-info"></i><span>goBack</span></a>
+              </li>
+              <li><a href="#refresh"><i class="alert alert-info"></i><span>refresh</span></a>
+              </li>
+              <li><a href="#showWeekends"><i class="alert alert-info"></i><span>showWeekends</span></a>
               </li>
               <li><a href="#goToDate"><i class="alert alert-info"></i><span>goToDate</span></a>
               </li>
@@ -96,20 +100,50 @@
           </div>
         </div>
         <div class="span9">
-          <section id="MultiCalendar">
-            <h1>MultiCalendar</h1>
+          <section id="goForward">
+            <h1>goForward</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-success radius ctx-type">class</div><span>new MultiCalendar()</span>
+              <div class="label label-info radius ctx-type">method</div><span>MultiCalendar.prototype.goForward()</span>
             </p>
           </section>
-          <div class="description"> </div>
-          <pre><code class="language-javascript">class MultiCalendar extends ModelView {</code></pre>
-          <section id="constructor">
-            <h1>constructor</h1>
+          <div class="description"><p>Moves the multi-calendar date forward by a day or by a week<br />depending on how many days are being shown.</p> </div>
+          <pre><code class="language-javascript">goForward() {
+  const startDate = this.startDate;
+  const gapUnit = this.currViewMode.dateGapUnit;
+  const newDate = DateHandler.add(startDate, 1, gapUnit);
+  this.setStartDate(newDate);
+}</code></pre>
+          <section id="goBack">
+            <h1>goBack</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-success radius ctx-type">constructor</div><span>MultiCalendar.prototype.constructor()</span>
+              <div class="label label-info radius ctx-type">method</div><span>MultiCalendar.prototype.goBack()</span>
+            </p>
+          </section>
+          <div class="description"><p>Moves the multi-calendar date back by a day or by a week<br />depending on how many days are being shown.</p> </div>
+          <pre><code class="language-javascript">goBack() {
+  const startDate = this.startDate;
+  const gapUnit = this.currViewMode.dateGapUnit;
+  const newDate = DateHandler.add(startDate, -1, gapUnit);
+  this.setStartDate(newDate);
+}</code></pre>
+          <section id="refresh">
+            <h1>refresh</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>MultiCalendar.prototype.refresh()</span>
+            </p>
+          </section>
+          <div class="description"><p>Fetches data from the server for the current showing days and updates<br />the events.</p> </div>
+          <pre><code class="language-javascript">refresh() {
+  this._loadEvents();
+}</code></pre>
+          <section id="showWeekends">
+            <h1>showWeekends</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-info radius ctx-type">method</div><span>MultiCalendar.prototype.showWeekends()</span>
             </p>
           </section>
           <table class="table table-bordered table-striped">
@@ -122,66 +156,25 @@
             </thead>
             <tbody>
               <tr>
-                <td>config</td>
-                <td>Object</td>
+                <td>show</td>
+                <td>Boolean</td>
                 <td><ul>
-<li>MultiCalendar configuration object</li>
+<li>Whether to show the weekends or not.</li>
 </ul>
 </td>
               </tr>
+              <tr>
+                <td>return</td>
+                <td></td>
+                <td></td>
+              </tr>
             </tbody>
           </table>
-          <div class="description"> </div>
-          <pre><code class="language-javascript">constructor(config) {
-  // ----------------------------------------------------------------
-  // --------------------- Property creation  -----------------------
-  // ----------------------------------------------------------------
-  assert(config, 'No Configuration object provided.');
-
-  // Create HTML part with SuperClass
-  super(null, MULTI_CALENDAR_CLASS, '', 'main');
-
-  assert(typeof config.targetElement === 'object',
-      'No valid targetElement provided.');
-  this.targetElement = config.targetElement;
-
-  // Create control bar
-  this.controlBar = new ControlBar(this.class);
-  this.html.container.appendChild(this.controlBar.html.container);
-
-  assert(typeof config.loadUrl === 'string',
-    'No loadUrl provided.');
-  this.loadUrl = this._prepareLoadUrl(config.loadUrl);
-
-  // Dates will be initialised in this.setStartDate
-  this.startDate = null;
-  this.endDate = null;
-  this.calendars = [];
-  this.lastLoadedEvents = {};
-  this.currViewMode = null;
-
-  // Tell last requests whether they were cancelled.
-  this.lastRequest = { cancelled: false };
-
-  // Nothing else will be added to the object from here on.
-  Object.preventExtensions(this);
-
-  // ----------------------------------------------------------------
-  // --------------- ControlBar &amp; Calendars setup -- ----------------
-  // ----------------------------------------------------------------
-
-  this._initControlBar(this.controlBar);
-
-  this.setStartDate(DateHandler.newDate());
-
-  // Add Calendars
-  assert(Array.isArray(config.calendars), 'No valid calendars array provided.');
-  for (const cal of config.calendars) {
-    this._addCalendar(cal, this.startDate);
-  }
-
-  // Add everything to the DOM
-  this.targetElement.appendChild(this.html.container);
+          <div class="description"><p>Shows or hides Saturday and Sunday from the current calendar view.<br />If calendar is in mobile mode (oneDay view) it does nothing.</p> </div>
+          <pre><code class="language-javascript">showWeekends(show) {
+  if (this.currViewMode === viewModes.oneDay) { return; }
+  const newView = show ? 'fullWeek' : 'weekdays';
+  this._setViewMode(newView);
 }</code></pre>
           <section id="goToDate">
             <h1>goToDate</h1>

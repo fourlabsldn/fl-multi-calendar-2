@@ -82,41 +82,21 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#multiCalendar"><i class="alert alert-success"></i><span>multiCalendar</span></a>
+              </li>
             </ul>
           </div>
         </div>
         <div class="span9">
-          <div class="description"><p>globals xController</p> </div>
-          <pre><code class="language-javascript">import MultiCalendar from './MultiCalendar';
-import debounce from './utils/debounce';
-
-xController((xDivEl) =&gt; {
-  // Grab config object
-  const config = window[xDivEl.dataset.config];
-  if (typeof config !== 'object') {
-    throw new Error('x-div multiCalendar: No configuration object provided.');
-  }
-
-  // Create multiCalendar
-  config.targetElement = xDivEl;
-  const multiCalendar = new MultiCalendar(config);
-
-  // Setup responsiveness
-  // TODO: move that to MultiCalendar
-  function viewModeUpdate() {
-    const currViewMode = multiCalendar.getViewMode();
-    if (window.innerWidth &lt; 850 &amp;&amp; currViewMode !== 'oneDay') {
-      multiCalendar._setViewMode('oneDay');
-    } else if (window.innerWidth &gt; 850 &amp;&amp; currViewMode === 'oneDay' || !currViewMode) {
-      multiCalendar._setViewMode('weekdays');
-    }
-  }
-
-  const viewModeUpdateDebounced = debounce(viewModeUpdate, 200);
-  viewModeUpdateDebounced();
-  window.addEventListener('resize', viewModeUpdateDebounced);
-
-  window.multiCalendar = multiCalendar;
+          <section id="multiCalendar">
+            <h1>multiCalendar</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">property</div><span>window.multiCalendar</span>
+            </p>
+          </section>
+          <div class="description"><p>You can call public functions of MultiCalendar on it.<br />Access it through window[multiCalendar]</p> </div>
+          <pre><code class="language-javascript">window.multiCalendar = multiCalendar;
 });</code></pre>
         </div>
       </div>

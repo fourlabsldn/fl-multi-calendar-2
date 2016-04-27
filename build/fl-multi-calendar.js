@@ -185,7 +185,7 @@ var DateHandler = function () {
 /**
  * @class ModelView
  * @abstract
- * @private
+ * @api private
  */
 
 var ModelView = function ModelView(html, instanceClass) {
@@ -259,6 +259,7 @@ var ControlBar = function (_ModelView) {
 
   /**
    * @constructor
+   * @api private
    * @param  {String} parentClass
    */
 
@@ -772,6 +773,7 @@ var Event = function (_ModelView) {
      * Checks whether two configurations would create the same event.
      * @static
      * @method areSame
+     * @api private
      * @param  {Object} e1 Event object or event configuration object
      * @param  {Object} e2
      * @return {Boolean}
@@ -895,6 +897,7 @@ var Day = function (_ModelView) {
 
     /**
      * @method setEvents
+     * @api private
      * @param  {Array<Object>}  newEventsConfig   array of event configuration objects
      */
 
@@ -1045,6 +1048,7 @@ var Day = function (_ModelView) {
      * Checks whether an event that uses the same configuration object
      * is already being displayer.
      * @method hasEvent
+     * @api private
      * @param  {Object}  eventConfig
      * @return {Boolean}
      */
@@ -1156,6 +1160,7 @@ var CALENDAR_CLASS = '-cal';
 
 /**
  * 	@class Calendar
+ * @api private
  */
 
 var Calendar = function (_ModelView) {
@@ -1508,6 +1513,8 @@ var viewModes = {
 
 /**
  * @class MultiCalendar
+ * @extends ModelView
+ * @api private
  */
 
 var MultiCalendar = function (_ModelView) {
@@ -1515,6 +1522,7 @@ var MultiCalendar = function (_ModelView) {
 
   /**
    * @constructor
+   * @api private
    * @param  {Object} config - MultiCalendar configuration object
    */
 
@@ -1638,6 +1646,13 @@ var MultiCalendar = function (_ModelView) {
     // ====================================================
     //          Public Interface
     // ====================================================
+    /**
+     * Moves the multi-calendar date forward by a day or by a week
+     * depending on how many days are being shown.
+     * @method goForward
+     * @api public
+     * @return {void}
+     */
 
   }, {
     key: 'goForward',
@@ -1647,6 +1662,15 @@ var MultiCalendar = function (_ModelView) {
       var newDate = DateHandler.add(startDate, 1, gapUnit);
       this.setStartDate(newDate);
     }
+
+    /**
+     * Moves the multi-calendar date back by a day or by a week
+     * depending on how many days are being shown.
+     * @method goBack
+     * @api public
+     * @return {void}
+     */
+
   }, {
     key: 'goBack',
     value: function goBack() {
@@ -1655,11 +1679,30 @@ var MultiCalendar = function (_ModelView) {
       var newDate = DateHandler.add(startDate, -1, gapUnit);
       this.setStartDate(newDate);
     }
+
+    /**
+     * Fetches data from the server for the current showing days and updates
+     * the events.
+     * @api public
+     * @method refresh
+     * @return {void}
+     */
+
   }, {
     key: 'refresh',
     value: function refresh() {
       this._loadEvents();
     }
+
+    /**
+     * Shows or hides Saturday and Sunday from the current calendar view.
+     * If calendar is in mobile mode (oneDay view) it does nothing.
+     * @api public
+     * @method showWeekends
+     * @param  {Boolean} show - Whether to show the weekends or not.
+     * @return {void}
+     */
+
   }, {
     key: 'showWeekends',
     value: function showWeekends(show) {
@@ -1672,6 +1715,7 @@ var MultiCalendar = function (_ModelView) {
 
     /**
      * Moves all calendars to a view that shows the specified date.
+     * @api public
      * @method goToDate
      * @param  {String | Date} date       [description]
      * @param  {ControlBar} controlBar [opitonal]
@@ -2196,6 +2240,7 @@ var MultiCalendar = function (_ModelView) {
 }(ModelView);
 
 xController(function (xDivEl) {
+  //eslint-disable-line
   // Grab config object
   var config = window[xDivEl.dataset.config];
   if ((typeof config === 'undefined' ? 'undefined' : babelHelpers.typeof(config)) !== 'object') {
@@ -2221,6 +2266,13 @@ xController(function (xDivEl) {
   viewModeUpdateDebounced();
   window.addEventListener('resize', viewModeUpdateDebounced);
 
+  /**
+   * You can call public functions of MultiCalendar on it.
+   * Access it through window[multiCalendar]
+   * @module MultiCalendar
+   * @api public
+   * @global
+   */
   window.multiCalendar = multiCalendar;
 });
 //# sourceMappingURL=fl-multi-calendar.js.map

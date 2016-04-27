@@ -85,6 +85,7 @@ export default class Day extends ModelView {
 
   /**
    * @method setEvents
+   * @api private
    * @param  {Array<Object>}  newEventsConfig   array of event configuration objects
    */
   setEvents(newEventsConfig) {
@@ -179,6 +180,7 @@ export default class Day extends ModelView {
    * Checks whether an event that uses the same configuration object
    * is already being displayer.
    * @method hasEvent
+   * @api private
    * @param  {Object}  eventConfig
    * @return {Boolean}
    */

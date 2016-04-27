@@ -31,10 +31,13 @@ const viewModes = {
 
 /**
  * @class MultiCalendar
+ * @extends ModelView
+ * @api private
  */
 class MultiCalendar extends ModelView {
   /**
    * @constructor
+   * @api private
    * @param  {Object} config - MultiCalendar configuration object
    */
   constructor(config) {
@@ -117,6 +120,13 @@ class MultiCalendar extends ModelView {
   // ====================================================
   //          Public Interface
   // ====================================================
+  /**
+   * Moves the multi-calendar date forward by a day or by a week
+   * depending on how many days are being shown.
+   * @method goForward
+   * @api public
+   * @return {void}
+   */
   goForward() {
     const startDate = this.startDate;
     const gapUnit = this.currViewMode.dateGapUnit;
@@ -124,6 +134,13 @@ class MultiCalendar extends ModelView {
     this.setStartDate(newDate);
   }
 
+  /**
+   * Moves the multi-calendar date back by a day or by a week
+   * depending on how many days are being shown.
+   * @method goBack
+   * @api public
+   * @return {void}
+   */
   goBack() {
     const startDate = this.startDate;
     const gapUnit = this.currViewMode.dateGapUnit;
@@ -131,10 +148,25 @@ class MultiCalendar extends ModelView {
     this.setStartDate(newDate);
   }
 
+  /**
+   * Fetches data from the server for the current showing days and updates
+   * the events.
+   * @api public
+   * @method refresh
+   * @return {void}
+   */
   refresh() {
     this._loadEvents();
   }
 
+  /**
+   * Shows or hides Saturday and Sunday from the current calendar view.
+   * If calendar is in mobile mode (oneDay view) it does nothing.
+   * @api public
+   * @method showWeekends
+   * @param  {Boolean} show - Whether to show the weekends or not.
+   * @return {void}
+   */
   showWeekends(show) {
     if (this.currViewMode === viewModes.oneDay) { return; }
     const newView = show ? 'fullWeek' : 'weekdays';
@@ -143,6 +175,7 @@ class MultiCalendar extends ModelView {
 
   /**
    * Moves all calendars to a view that shows the specified date.
+   * @api public
    * @method goToDate
    * @param  {String | Date} date       [description]
    * @param  {ControlBar} controlBar [opitonal]

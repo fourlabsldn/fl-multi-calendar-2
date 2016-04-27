@@ -15,6 +15,7 @@ const datePickerFormats = {
 export default class ControlBar extends ModelView {
   /**
    * @constructor
+   * @api private
    * @param  {String} parentClass
    */
   constructor(parentClass) {

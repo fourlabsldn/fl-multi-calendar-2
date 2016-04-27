@@ -1,9 +1,7 @@
-/* globals xController */
-
 import MultiCalendar from './MultiCalendar';
 import debounce from './utils/debounce';
 
-xController((xDivEl) => {
+xController((xDivEl) => { //eslint-disable-line
   // Grab config object
   const config = window[xDivEl.dataset.config];
   if (typeof config !== 'object') {
@@ -29,5 +27,12 @@ xController((xDivEl) => {
   viewModeUpdateDebounced();
   window.addEventListener('resize', viewModeUpdateDebounced);
 
+  /**
+   * You can call public functions of MultiCalendar on it.
+   * Access it through window[multiCalendar]
+   * @module MultiCalendar
+   * @api public
+   * @global
+   */
   window.multiCalendar = multiCalendar;
 });

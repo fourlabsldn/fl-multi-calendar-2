@@ -6,7 +6,7 @@ import assert from './utils/assert';
 /**
  * @class ModelView
  * @abstract
- * @private
+ * @api private
  */
 export default class ModelView {
   constructor(html, instanceClass, parentClass = '', containerTag = 'div') {
