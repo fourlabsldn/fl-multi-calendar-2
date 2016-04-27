@@ -8,6 +8,7 @@ To use it you will need three elements:
 - The CSS for the calendar (which is in the build folder)
 - A configuration object
 
+** Read the [Docs](http://fourlabsldn.github.io/fl-multi-calendar-2/) ** 
 ## Configuration object
 
 In the HTML, add your `x-div` element with `fl-multi-calendar-2.js` as the `data-controller`

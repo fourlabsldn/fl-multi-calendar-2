@@ -7,7 +7,8 @@
     "test": "echo \"No tests specified\" && exit 0",
     "dev": "gulp dev",
     "build": "gulp build",
-    "demo": "gulp demo"
+    "demo": "gulp demo",
+    "deploy-gh-pages": "git-directory-deploy --directory docs --branch gh-pages"
   },
   "author": "Lazamar @ FourLabs",
   "license": "ISC",
@@ -15,6 +16,7 @@
     "autoprefixer": "^6.3.6",
     "babel-preset-es2015-rollup": "^1.1.1",
     "bower": "^1.7.9",
+    "git-directory-deploy": "^1.5.0",
     "gulp": "^3.9.1",
     "gulp-css2js": "^1.0.2",
     "gulp-postcss": "^6.1.0",
