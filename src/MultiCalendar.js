@@ -487,15 +487,13 @@ class MultiCalendar extends ModelView {
     const getParams = [];
     const keys = Object.keys(params);
     for (const param of keys) {
-      let value = params[param].toString();
-      if (Array.isArray(params[param])) {
-        value = `[${value}]`;
-      }
-      getParams.push(`${param}=${value}`);
+      const value = params[param].toString();
+      const encodedParam = encodeURIComponent(param);
+      const encodedValue = encodeURIComponent(value);
+      getParams.push(`${encodedParam}=${encodedValue}`);
     }
 
-    const unencodedGetParams = getParams.join('&');
-    const encodedGetParams = encodeURIComponent(unencodedGetParams);
+    const encodedGetParams = getParams.join('&');
     const fullUrl = loadUrl + encodedGetParams;
     return fullUrl;
   }

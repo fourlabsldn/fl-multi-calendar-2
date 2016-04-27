@@ -2226,10 +2226,9 @@ var MultiCalendar = function (_ModelView) {
           var param = _step6.value;
 
           var value = params[param].toString();
-          if (Array.isArray(params[param])) {
-            value = '[' + value + ']';
-          }
-          getParams.push(param + '=' + value);
+          var encodedParam = encodeURIComponent(param);
+          var encodedValue = encodeURIComponent(value);
+          getParams.push(encodedParam + '=' + encodedValue);
         }
       } catch (err) {
         _didIteratorError6 = true;
@@ -2246,8 +2245,7 @@ var MultiCalendar = function (_ModelView) {
         }
       }
 
-      var unencodedGetParams = getParams.join('&');
-      var encodedGetParams = encodeURIComponent(unencodedGetParams);
+      var encodedGetParams = getParams.join('&');
       var fullUrl = loadUrl + encodedGetParams;
       return fullUrl;
     }
