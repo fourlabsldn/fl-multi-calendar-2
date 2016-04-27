@@ -243,6 +243,7 @@ var ModelView = function ModelView(html, instanceClass) {
   }
 };
 
+var DEFAULT_TITLE_BAR_FORMAT = 'YYYY';
 var CONTROL_CLASS = '-ctrl';
 var datePickerFormats = {
   week: 'YYYY-[W]WW',
@@ -263,7 +264,7 @@ var ControlBar = function (_ModelView) {
    * @param  {String} parentClass
    */
 
-  function ControlBar(parentClass) {
+  function ControlBar(parentClass, titleBarFormat) {
     babelHelpers.classCallCheck(this, ControlBar);
 
     var html = [{ name: 'datePicker', tag: 'input' }, { name: 'back', tag: 'button', content: '<i class=icon-chevron-left></i>' }, { name: 'forward', tag: 'button', content: '<i class=icon-chevron-right></i>' }, { name: 'today', tag: 'button', content: 'Today' }, { name: 'refresh', tag: 'button',
@@ -273,6 +274,8 @@ var ControlBar = function (_ModelView) {
 
     _this.refreshLoadingController = new ButtonLoadingController(_this.html.refresh, 'fl-mc-loading', 'fl-mc-loading-complete', 'fl-mc-loading-error');
     _this.eventListeners = {};
+
+    _this.titleBarFormat = typeof titleBarFormat === 'string' ? titleBarFormat : DEFAULT_TITLE_BAR_FORMAT;
 
     Object.preventExtensions(_this);
     // --------- end of attribute creation ----------
@@ -456,13 +459,16 @@ var ControlBar = function (_ModelView) {
     /**
      * @private
      * @method _setTitleBarDate
-     * @param {DateHandler or Date} date
+     * @param {DateHandler | Date} date
+     * @param {String} [format] - A format string for the title bar.
      */
 
   }, {
     key: '_setTitleBarDate',
     value: function _setTitleBarDate(date) {
-      this.html.titleBar.innerHTML = DateHandler.format(date, 'YYYY');
+      var format = arguments.length <= 1 || arguments[1] === undefined ? this.titleBarFormat : arguments[1];
+
+      this.html.titleBar.innerHTML = DateHandler.format(date, format);
     }
     /**
      * Assigns a callback to be called by this.trigger when the event happens
@@ -1549,7 +1555,7 @@ var MultiCalendar = function (_ModelView) {
     _this.targetElement = config.targetElement;
 
     // Create control bar
-    _this.controlBar = new ControlBar(_this.class);
+    _this.controlBar = new ControlBar(_this.class, config.titleBarFormat);
     _this.html.container.appendChild(_this.controlBar.html.container);
 
     assert(typeof config.loadUrl === 'string', 'No loadUrl provided.');

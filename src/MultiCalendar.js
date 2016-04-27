@@ -54,7 +54,7 @@ class MultiCalendar extends ModelView {
     this.targetElement = config.targetElement;
 
     // Create control bar
-    this.controlBar = new ControlBar(this.class);
+    this.controlBar = new ControlBar(this.class, config.titleBarFormat);
     this.html.container.appendChild(this.controlBar.html.container);
 
     assert(typeof config.loadUrl === 'string',

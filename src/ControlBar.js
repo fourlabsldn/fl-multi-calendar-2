@@ -2,6 +2,7 @@ import assert from './utils/assert.js';
 import ModelView from './ModelView';
 import DateHandler from './utils/DateHandler';
 
+const DEFAULT_TITLE_BAR_FORMAT = 'YYYY';
 const CONTROL_CLASS = '-ctrl';
 const datePickerFormats = {
   week: 'YYYY-[W]WW',
@@ -18,7 +19,7 @@ export default class ControlBar extends ModelView {
    * @api private
    * @param  {String} parentClass
    */
-  constructor(parentClass) {
+  constructor(parentClass, titleBarFormat) {
     const html = [
       { name: 'datePicker', tag: 'input' },
       { name: 'back', tag: 'button', content: '<i class=icon-chevron-left></i>' },
@@ -38,6 +39,9 @@ export default class ControlBar extends ModelView {
       'fl-mc-loading-error'
     );
     this.eventListeners = {};
+
+    this.titleBarFormat = (typeof titleBarFormat === 'string') ?
+      titleBarFormat : DEFAULT_TITLE_BAR_FORMAT;
 
     Object.preventExtensions(this);
     // --------- end of attribute creation ----------
@@ -166,10 +170,11 @@ export default class ControlBar extends ModelView {
   /**
    * @private
    * @method _setTitleBarDate
-   * @param {DateHandler or Date} date
+   * @param {DateHandler | Date} date
+   * @param {String} [format] - A format string for the title bar.
    */
-  _setTitleBarDate(date) {
-    this.html.titleBar.innerHTML = DateHandler.format(date, 'YYYY');
+  _setTitleBarDate(date, format = this.titleBarFormat) {
+    this.html.titleBar.innerHTML = DateHandler.format(date, format);
   }
   /**
    * Assigns a callback to be called by this.trigger when the event happens
