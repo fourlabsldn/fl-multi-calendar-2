@@ -79,7 +79,7 @@ export default class MultiCalendar extends ModelView {
     // Add Calendars
     assert(Array.isArray(config.calendars), 'No valid calendars array provided.');
     for (const cal of config.calendars) {
-      this.addCalendar(cal, this.startDate);
+      this._addCalendar(cal, this.startDate);
     }
 
     // Add everything to the DOM
@@ -98,51 +98,71 @@ export default class MultiCalendar extends ModelView {
 
     controlBar.listenTo('datePicker', () => {
       const datePickerDate = this.controlBar.getDate();
-      if (DateHandler.isValid(datePickerDate)) {
-        this.setStartDate(datePickerDate);
-      } else {
-        controlBar.setDate(this.startDate);
-      }
+      this.goToDate(datePickerDate);
     });
 
-    controlBar.listenTo('forward', () => {
-      const startDate = this.startDate;
-      const gapUnit = this.currViewMode.dateGapUnit;
-      const newDate = DateHandler.add(startDate, 1, gapUnit);
-      this.setStartDate(newDate);
-    });
-
-    controlBar.listenTo('back', () => {
-      const startDate = this.startDate;
-      const gapUnit = this.currViewMode.dateGapUnit;
-      const newDate = DateHandler.add(startDate, -1, gapUnit);
-      this.setStartDate(newDate);
-    });
-
-    controlBar.listenTo('today', () => {
-      this.setStartDate(DateHandler.newDate());
-    });
-
-    controlBar.listenTo('refresh', () => {
-      this.loadEvents();
-    });
+    controlBar.listenTo('forward', () => { this.goForward(); });
+    controlBar.listenTo('back', () => { this.goBack(); });
+    controlBar.listenTo('today', () => { this.goToDate(DateHandler.newDate()); });
+    controlBar.listenTo('refresh', () => { this.refresh(); });
 
     controlBar.listenTo('show-weekend', () => {
-      if (this.currViewMode === viewModes.fullWeek) {
-        this.setViewMode('weekdays');
-      } else {
-        this.setViewMode('fullWeek');
-      }
-      return true;
+      const show = (this.currViewMode === viewModes.weekdays);
+      this.showWeekends(show);
     });
+  }
+  // ====================================================
+  //          Public Interface
+  // ====================================================
+  goForward() {
+    const startDate = this.startDate;
+    const gapUnit = this.currViewMode.dateGapUnit;
+    const newDate = DateHandler.add(startDate, 1, gapUnit);
+    this.setStartDate(newDate);
+  }
+
+  goBack() {
+    const startDate = this.startDate;
+    const gapUnit = this.currViewMode.dateGapUnit;
+    const newDate = DateHandler.add(startDate, -1, gapUnit);
+    this.setStartDate(newDate);
+  }
+
+  refresh() {
+    this._loadEvents();
+  }
+
+  showWeekends(show) {
+    if (this.currViewMode === viewModes.oneDay) { return; }
+    const newView = show ? 'fullWeek' : 'weekdays';
+    this._setViewMode(newView);
   }
 
   /**
-   * @method addCalendar
+   * Moves all calendars to a view that shows the specified date.
+   * @method goToDate
+   * @param  {String or Date} date       [description]
+   * @param  {ControlBar} controlBar [opitonal]
+   * @return {void}
+   */
+  goToDate(date, controlBar = this.controlBar) {
+    if (DateHandler.isValid(date)) {
+      this.setStartDate(date);
+    } else {
+      controlBar.setDate(this.date);
+    }
+  }
+
+
+  // ====================================================
+  // ------------- End of Public interface --------------
+  // ====================================================
+  /**
+   * @method _addCalendar
    * @param  {Object}       config    Configuration object for the calendar
    * @param  {DateHandler}  startDate [optional]
    */
-  addCalendar(config, startDate = this.startDate) {
+  _addCalendar(config, startDate = this.startDate) {
     // TODO: Add calendar when other calendars already have days
     const calendarCallbacks = {
       titleClick: config.titleClick,
@@ -153,31 +173,6 @@ export default class MultiCalendar extends ModelView {
     const calendar = new Calendar(config, startDate, MULTI_CALENDAR_CLASS, calendarCallbacks);
     this.html.container.appendChild(calendar.html.container);
     this.calendars.push(calendar);
-  }
-
-  /**
-   * Adds one day to all calendars
-   * @method addDay
-   * @param  {Array[Calendars]}  calendars  [optional]
-   * @return {void}
-   */
-  addDay(calendars = this.calendars) {
-    console.log('Adding days');
-    for (const cal of calendars) {
-      cal.addDay();
-    }
-  }
-
-  /**
-   * removes one day from all calendars
-   * @method removeDay
-   * @param  {Array[Calendars]}  calendars  [optional]
-   * @return {void}
-   */
-  removeDay(calendars = this.calendars) {
-    for (const cal of calendars) {
-      cal.removeDay();
-    }
   }
 
   /**
@@ -192,14 +187,15 @@ export default class MultiCalendar extends ModelView {
 
   /**
    * Fetches events from the server and puts them into calendars
-   * @method loadEvents
+   * @private
+   * @method _loadEvents
    * @param  {String}    loadUrl            [optional]
    * @param  {Array[Calendar]}   calendars  [optional]
    * @param  {ControlBar}   controlBar      [optional]
    * @return {Promise}              Promise that will be resolved when events
    *                                 have been loaded and added to the calendars
    */
-  loadEvents(loadUrl = this.loadUrl, calendars = this.calendars, controlBar = this.controlBar) {
+  _loadEvents(loadUrl = this.loadUrl, calendars = this.calendars, controlBar = this.controlBar) {
     controlBar.setLoadingState('loading');
 
     // Crete array of calendar IDS
@@ -236,7 +232,7 @@ export default class MultiCalendar extends ModelView {
     // an array of event objects.
     .then((loadedCalEvents) => {
       if (thisRequest.cancelled) { return; }
-      this.setEvents(loadedCalEvents, calendars);
+      this._setEvents(loadedCalEvents, calendars);
       controlBar.setLoadingState('success');
     })
     .catch((e) => {
@@ -248,11 +244,12 @@ export default class MultiCalendar extends ModelView {
 
   /**
    * Sets the events for all calendars
-   * @method setEvents
+   * @private
+   * @method _setEvents
    * @param  {Array[Object]}  calEvents    [optional]
    * @param  {Array[Calendar]}  calendars  [optional]
    */
-  setEvents(calEvents = this.lastLoadedEvents, calendars = this.calendars) {
+  _setEvents(calEvents = this.lastLoadedEvents, calendars = this.calendars) {
     if (typeof calEvents !== 'object') {
       assert.warn(false, 'Trying to set events with invalid object');
       return;
@@ -262,14 +259,21 @@ export default class MultiCalendar extends ModelView {
 
     // Send each array of event objects to the corresponding calendar
     for (const loadedId of loadedIds) {
-      const cal = this.findCalendar(loadedId, calendars);
+      const cal = this._findCalendar(loadedId, calendars);
       if (cal) { cal.setEvents(calEvents[loadedId]); }
     }
 
     this.lastLoadedEvents = calEvents;
   }
 
-  findCalendar(calId, calendars = this.calendars) {
+  /**
+   * @private
+   * @method _findCalendar
+   * @param  {String}           calId
+   * @param  {Calendar}      calendars [optional]
+   * @return {Calendar}
+   */
+  _findCalendar(calId, calendars = this.calendars) {
     return calendars.find((cal) => { return cal.id === calId; });
   }
 
@@ -303,16 +307,17 @@ export default class MultiCalendar extends ModelView {
     this.endDate = DateHandler.addDays(newDate, daysToEnd);
 
     this.controlBar.setDate(newDate);
-    this.loadEvents();
+    this._loadEvents();
   }
 
   /**
-   * @method setViewMode
+   * @private
+   * @method _setViewMode
    * @param {String} newMode
    * @param {Array[Calendar]} calendars [optional]
    * @return {void}
    */
-  setViewMode(modeName, calendars = this.calendars) {
+  _setViewMode(modeName, calendars = this.calendars) {
     let newMode = viewModes[modeName];
     if (newMode === undefined) {
       const fallbackMode = 'weekdays';
@@ -416,6 +421,7 @@ export default class MultiCalendar extends ModelView {
 
   /**
    * Adds parameters as GET string parameters to a prepared URL
+   * @private
    * @method _addParametersToUrl
    * @param  {Object}            params
    * @param  {String}            loadUrl [optional]

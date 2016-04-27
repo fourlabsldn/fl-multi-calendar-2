@@ -19,13 +19,15 @@ xController((xDivEl) => {
   function viewModeUpdate() {
     const currViewMode = multiCalendar.getViewMode();
     if (window.innerWidth < 850 && currViewMode !== 'oneDay') {
-      multiCalendar.setViewMode('oneDay');
+      multiCalendar._setViewMode('oneDay');
     } else if (window.innerWidth > 850 && currViewMode === 'oneDay' || !currViewMode) {
-      multiCalendar.setViewMode('weekdays');
+      multiCalendar._setViewMode('weekdays');
     }
   }
 
   const viewModeUpdateDebounced = debounce(viewModeUpdate, 200);
   viewModeUpdateDebounced();
   window.addEventListener('resize', viewModeUpdateDebounced);
+
+  window.multiCalendar = multiCalendar;
 });

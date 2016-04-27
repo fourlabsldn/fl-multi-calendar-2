@@ -1541,7 +1541,7 @@ var MultiCalendar = function (_ModelView) {
       for (var _iterator = config.calendars[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
         var cal = _step.value;
 
-        _this.addCalendar(cal, _this.startDate);
+        _this._addCalendar(cal, _this.startDate);
       }
 
       // Add everything to the DOM
@@ -1584,54 +1584,94 @@ var MultiCalendar = function (_ModelView) {
 
       controlBar.listenTo('datePicker', function () {
         var datePickerDate = _this2.controlBar.getDate();
-        if (DateHandler.isValid(datePickerDate)) {
-          _this2.setStartDate(datePickerDate);
-        } else {
-          controlBar.setDate(_this2.startDate);
-        }
+        _this2.goToDate(datePickerDate);
       });
 
       controlBar.listenTo('forward', function () {
-        var startDate = _this2.startDate;
-        var gapUnit = _this2.currViewMode.dateGapUnit;
-        var newDate = DateHandler.add(startDate, 1, gapUnit);
-        _this2.setStartDate(newDate);
+        _this2.goForward();
       });
-
       controlBar.listenTo('back', function () {
-        var startDate = _this2.startDate;
-        var gapUnit = _this2.currViewMode.dateGapUnit;
-        var newDate = DateHandler.add(startDate, -1, gapUnit);
-        _this2.setStartDate(newDate);
+        _this2.goBack();
       });
-
       controlBar.listenTo('today', function () {
-        _this2.setStartDate(DateHandler.newDate());
+        _this2.goToDate(DateHandler.newDate());
       });
-
       controlBar.listenTo('refresh', function () {
-        _this2.loadEvents();
+        _this2.refresh();
       });
 
       controlBar.listenTo('show-weekend', function () {
-        if (_this2.currViewMode === viewModes.fullWeek) {
-          _this2.setViewMode('weekdays');
-        } else {
-          _this2.setViewMode('fullWeek');
-        }
-        return true;
+        var show = _this2.currViewMode === viewModes.weekdays;
+        _this2.showWeekends(show);
       });
+    }
+    // ====================================================
+    //          Public Interface
+    // ====================================================
+
+  }, {
+    key: 'goForward',
+    value: function goForward() {
+      var startDate = this.startDate;
+      var gapUnit = this.currViewMode.dateGapUnit;
+      var newDate = DateHandler.add(startDate, 1, gapUnit);
+      this.setStartDate(newDate);
+    }
+  }, {
+    key: 'goBack',
+    value: function goBack() {
+      var startDate = this.startDate;
+      var gapUnit = this.currViewMode.dateGapUnit;
+      var newDate = DateHandler.add(startDate, -1, gapUnit);
+      this.setStartDate(newDate);
+    }
+  }, {
+    key: 'refresh',
+    value: function refresh() {
+      this._loadEvents();
+    }
+  }, {
+    key: 'showWeekends',
+    value: function showWeekends(show) {
+      if (this.currViewMode === viewModes.oneDay) {
+        return;
+      }
+      var newView = show ? 'fullWeek' : 'weekdays';
+      this._setViewMode(newView);
     }
 
     /**
-     * @method addCalendar
+     * Moves all calendars to a view that shows the specified date.
+     * @method goToDate
+     * @param  {String or Date} date       [description]
+     * @param  {ControlBar} controlBar [opitonal]
+     * @return {void}
+     */
+
+  }, {
+    key: 'goToDate',
+    value: function goToDate(date) {
+      var controlBar = arguments.length <= 1 || arguments[1] === undefined ? this.controlBar : arguments[1];
+
+      if (DateHandler.isValid(date)) {
+        this.setStartDate(date);
+      } else {
+        controlBar.setDate(this.date);
+      }
+    }
+
+    // ====================================================
+    // ------------- End of Public interface --------------
+    // ====================================================
+    /**
+     * @method _addCalendar
      * @param  {Object}       config    Configuration object for the calendar
      * @param  {DateHandler}  startDate [optional]
      */
 
   }, {
-    key: 'addCalendar',
-    value: function addCalendar(config) {
+    key: '_addCalendar',
+    value: function _addCalendar(config) {
       var startDate = arguments.length <= 1 || arguments[1] === undefined ? this.startDate : arguments[1];
 
       // TODO: Add calendar when other calendars already have days
@@ -1644,82 +1684,6 @@ var MultiCalendar = function (_ModelView) {
       var calendar = new Calendar(config, startDate, MULTI_CALENDAR_CLASS, calendarCallbacks);
       this.html.container.appendChild(calendar.html.container);
       this.calendars.push(calendar);
-    }
-
-    /**
-     * Adds one day to all calendars
-     * @method addDay
-     * @param  {Array[Calendars]}  calendars  [optional]
-     * @return {void}
-     */
-
-  }, {
-    key: 'addDay',
-    value: function addDay() {
-      var calendars = arguments.length <= 0 || arguments[0] === undefined ? this.calendars : arguments[0];
-
-      console.log('Adding days');
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = calendars[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var cal = _step2.value;
-
-          cal.addDay();
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-    }
-
-    /**
-     * removes one day from all calendars
-     * @method removeDay
-     * @param  {Array[Calendars]}  calendars  [optional]
-     * @return {void}
-     */
-
-  }, {
-    key: 'removeDay',
-    value: function removeDay() {
-      var calendars = arguments.length <= 0 || arguments[0] === undefined ? this.calendars : arguments[0];
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
-
-      try {
-        for (var _iterator3 = calendars[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var cal = _step3.value;
-
-          cal.removeDay();
-        }
-      } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
-          }
-        } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
-          }
-        }
-      }
     }
 
     /**
@@ -1741,7 +1705,8 @@ var MultiCalendar = function (_ModelView) {
 
     /**
      * Fetches events from the server and puts them into calendars
-     * @method loadEvents
+     * @private
+     * @method _loadEvents
      * @param  {String}    loadUrl            [optional]
      * @param  {Array[Calendar]}   calendars  [optional]
      * @param  {ControlBar}   controlBar      [optional]
@@ -1750,8 +1715,8 @@ var MultiCalendar = function (_ModelView) {
      */
 
   }, {
-    key: 'loadEvents',
-    value: function loadEvents() {
+    key: '_loadEvents',
+    value: function _loadEvents() {
       var loadUrl = arguments.length <= 0 || arguments[0] === undefined ? this.loadUrl : arguments[0];
 
       var _this3 = this;
@@ -1798,7 +1763,7 @@ var MultiCalendar = function (_ModelView) {
         if (thisRequest.cancelled) {
           return;
         }
-        _this3.setEvents(loadedCalEvents, calendars);
+        _this3._setEvents(loadedCalEvents, calendars);
         controlBar.setLoadingState('success');
       }).catch(function (e) {
         if (thisRequest.cancelled) {
@@ -1811,14 +1776,15 @@ var MultiCalendar = function (_ModelView) {
 
     /**
      * Sets the events for all calendars
-     * @method setEvents
+     * @private
+     * @method _setEvents
      * @param  {Array[Object]}  calEvents    [optional]
      * @param  {Array[Calendar]}  calendars  [optional]
      */
 
   }, {
-    key: 'setEvents',
-    value: function setEvents() {
+    key: '_setEvents',
+    value: function _setEvents() {
       var calEvents = arguments.length <= 0 || arguments[0] === undefined ? this.lastLoadedEvents : arguments[0];
       var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
 
@@ -1830,39 +1796,48 @@ var MultiCalendar = function (_ModelView) {
       var loadedIds = Object.keys(calEvents);
 
       // Send each array of event objects to the corresponding calendar
-      var _iteratorNormalCompletion4 = true;
-      var _didIteratorError4 = false;
-      var _iteratorError4 = undefined;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator4 = loadedIds[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-          var loadedId = _step4.value;
+        for (var _iterator2 = loadedIds[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var loadedId = _step2.value;
 
-          var cal = this.findCalendar(loadedId, calendars);
+          var cal = this._findCalendar(loadedId, calendars);
           if (cal) {
             cal.setEvents(calEvents[loadedId]);
           }
         }
       } catch (err) {
-        _didIteratorError4 = true;
-        _iteratorError4 = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion4 && _iterator4.return) {
-            _iterator4.return();
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
           }
         } finally {
-          if (_didIteratorError4) {
-            throw _iteratorError4;
+          if (_didIteratorError2) {
+            throw _iteratorError2;
           }
         }
       }
 
       this.lastLoadedEvents = calEvents;
     }
+
+    /**
+     * @private
+     * @method _findCalendar
+     * @param  {String}           calId
+     * @param  {Calendar}      calendars [optional]
+     * @return {Calendar}
+     */
+
   }, {
-    key: 'findCalendar',
-    value: function findCalendar(calId) {
+    key: '_findCalendar',
+    value: function _findCalendar(calId) {
       var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
 
       return calendars.find(function (cal) {
@@ -1892,27 +1867,27 @@ var MultiCalendar = function (_ModelView) {
         newDate = DateHandler.startOf(date, dateRange);
       }
 
-      var _iteratorNormalCompletion5 = true;
-      var _didIteratorError5 = false;
-      var _iteratorError5 = undefined;
+      var _iteratorNormalCompletion3 = true;
+      var _didIteratorError3 = false;
+      var _iteratorError3 = undefined;
 
       try {
-        for (var _iterator5 = calendars[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-          var cal = _step5.value;
+        for (var _iterator3 = calendars[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+          var cal = _step3.value;
 
           cal.setStartDate(newDate);
         }
       } catch (err) {
-        _didIteratorError5 = true;
-        _iteratorError5 = err;
+        _didIteratorError3 = true;
+        _iteratorError3 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion5 && _iterator5.return) {
-            _iterator5.return();
+          if (!_iteratorNormalCompletion3 && _iterator3.return) {
+            _iterator3.return();
           }
         } finally {
-          if (_didIteratorError5) {
-            throw _iteratorError5;
+          if (_didIteratorError3) {
+            throw _iteratorError3;
           }
         }
       }
@@ -1926,19 +1901,20 @@ var MultiCalendar = function (_ModelView) {
       this.endDate = DateHandler.addDays(newDate, daysToEnd);
 
       this.controlBar.setDate(newDate);
-      this.loadEvents();
+      this._loadEvents();
     }
 
     /**
-     * @method setViewMode
+     * @private
+     * @method _setViewMode
      * @param {String} newMode
      * @param {Array[Calendar]} calendars [optional]
      * @return {void}
      */
 
   }, {
-    key: 'setViewMode',
-    value: function setViewMode(modeName) {
+    key: '_setViewMode',
+    value: function _setViewMode(modeName) {
       var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
 
       var newMode = viewModes[modeName];
@@ -1962,13 +1938,13 @@ var MultiCalendar = function (_ModelView) {
       var method = newMode.dayCount < currDayCount ? 'removeDay' : 'addDay';
 
       // Add or remove the needed amount of days from the calendar.
-      var _iteratorNormalCompletion6 = true;
-      var _didIteratorError6 = false;
-      var _iteratorError6 = undefined;
+      var _iteratorNormalCompletion4 = true;
+      var _didIteratorError4 = false;
+      var _iteratorError4 = undefined;
 
       try {
-        for (var _iterator6 = calendars[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-          var cal = _step6.value;
+        for (var _iterator4 = calendars[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+          var cal = _step4.value;
 
           for (var i = 0; i < dayCountDiff; i++) {
             cal[method]();
@@ -1977,42 +1953,42 @@ var MultiCalendar = function (_ModelView) {
 
         // Remove any other view's class and add the one for this view.
       } catch (err) {
-        _didIteratorError6 = true;
-        _iteratorError6 = err;
+        _didIteratorError4 = true;
+        _iteratorError4 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion6 && _iterator6.return) {
-            _iterator6.return();
+          if (!_iteratorNormalCompletion4 && _iterator4.return) {
+            _iterator4.return();
           }
         } finally {
-          if (_didIteratorError6) {
-            throw _iteratorError6;
+          if (_didIteratorError4) {
+            throw _iteratorError4;
           }
         }
       }
 
-      var _iteratorNormalCompletion7 = true;
-      var _didIteratorError7 = false;
-      var _iteratorError7 = undefined;
+      var _iteratorNormalCompletion5 = true;
+      var _didIteratorError5 = false;
+      var _iteratorError5 = undefined;
 
       try {
-        for (var _iterator7 = Object.keys(viewModes)[Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-          var view = _step7.value;
+        for (var _iterator5 = Object.keys(viewModes)[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+          var view = _step5.value;
 
           var _viewClass = this._viewModeClassName(viewModes[view]);
           this.html.container.classList.remove(_viewClass);
         }
       } catch (err) {
-        _didIteratorError7 = true;
-        _iteratorError7 = err;
+        _didIteratorError5 = true;
+        _iteratorError5 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion7 && _iterator7.return) {
-            _iterator7.return();
+          if (!_iteratorNormalCompletion5 && _iterator5.return) {
+            _iterator5.return();
           }
         } finally {
-          if (_didIteratorError7) {
-            throw _iteratorError7;
+          if (_didIteratorError5) {
+            throw _iteratorError5;
           }
         }
       }
@@ -2101,6 +2077,7 @@ var MultiCalendar = function (_ModelView) {
 
     /**
      * Adds parameters as GET string parameters to a prepared URL
+     * @private
      * @method _addParametersToUrl
      * @param  {Object}            params
      * @param  {String}            loadUrl [optional]
@@ -2114,13 +2091,13 @@ var MultiCalendar = function (_ModelView) {
 
       var getParams = [];
       var keys = Object.keys(params);
-      var _iteratorNormalCompletion8 = true;
-      var _didIteratorError8 = false;
-      var _iteratorError8 = undefined;
+      var _iteratorNormalCompletion6 = true;
+      var _didIteratorError6 = false;
+      var _iteratorError6 = undefined;
 
       try {
-        for (var _iterator8 = keys[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
-          var param = _step8.value;
+        for (var _iterator6 = keys[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+          var param = _step6.value;
 
           var value = params[param].toString();
           if (Array.isArray(params[param])) {
@@ -2129,16 +2106,16 @@ var MultiCalendar = function (_ModelView) {
           getParams.push(param + '=' + value);
         }
       } catch (err) {
-        _didIteratorError8 = true;
-        _iteratorError8 = err;
+        _didIteratorError6 = true;
+        _iteratorError6 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion8 && _iterator8.return) {
-            _iterator8.return();
+          if (!_iteratorNormalCompletion6 && _iterator6.return) {
+            _iterator6.return();
           }
         } finally {
-          if (_didIteratorError8) {
-            throw _iteratorError8;
+          if (_didIteratorError6) {
+            throw _iteratorError6;
           }
         }
       }
@@ -2201,14 +2178,16 @@ xController(function (xDivEl) {
   function viewModeUpdate() {
     var currViewMode = multiCalendar.getViewMode();
     if (window.innerWidth < 850 && currViewMode !== 'oneDay') {
-      multiCalendar.setViewMode('oneDay');
+      multiCalendar._setViewMode('oneDay');
     } else if (window.innerWidth > 850 && currViewMode === 'oneDay' || !currViewMode) {
-      multiCalendar.setViewMode('weekdays');
+      multiCalendar._setViewMode('weekdays');
     }
   }
 
   var viewModeUpdateDebounced = debounce(viewModeUpdate, 200);
   viewModeUpdateDebounced();
   window.addEventListener('resize', viewModeUpdateDebounced);
+
+  window.multiCalendar = multiCalendar;
 });
 //# sourceMappingURL=fl-multi-calendar.js.map
