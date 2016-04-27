@@ -17,7 +17,7 @@ and make sure to add the name of your configuration object name to `data-config`
 
 Like this:
 
-``` html
+``` HTML
 <x-div data-controller="/build/fl-multi-calendar" data-config="myConfigObject"></x-div>
 ```
 
@@ -73,9 +73,28 @@ myConfigObject = {
 }
 ```
 
-## Classes
+## Event data
 
-Classes that represent an HTML element have a property called `html`, within which all of its HTML elements reside. The main wrapper is `html.container` and all classes that represent HTML elements have it.
+Events sent from the server should follow this structure:
+
+``` json
+{
+   "title": "46 Hanover House,  London E14 8RH ",
+   "description": "Mum's birthday",
+   "start":"2016-04-25T09:00:00",
+   "end":"2016-04-25T10:00:00",
+   "classes": [                 // Optional. CSS classes to be attatched to the event object
+     "fl-mc-event-color-black"
+   ]
+}
+```
+
+## DOM Events
+
+The main wrapper emmits the following events:
+
+- `fl-mc-loading-start` - Dispatched when an event request is sent to the server.
+- `fl-mc-loading-complete` - Dispatched after events from the server finished rendering.
 
 ## Calendar markup
 
@@ -110,9 +129,9 @@ Example calendar markup:
 
                     <!-- Event -->
                     <div class="fl-mc-cal-day-event fl-mc-event-color-red">
-                        <p class="fl-mc-cal-day-event-time">09:00 - 18:00</p>
-                        <p class="fl-mc-cal-day-event-title">Simple title</p>
-                        <p class="fl-mc-cal-day-event-tooltip">LOL</p>
+                        <span class="fl-mc-cal-day-event-time">09:00 - 18:00</span>
+                        <span class="fl-mc-cal-day-event-title">Simple title</span>
+                        <span class="fl-mc-cal-day-event-tooltip">LOL</span>
                     </div>
                 </div>
             </div>
@@ -158,4 +177,9 @@ npm run dev
 ### Test
 ```
 npm run test
+```
+
+## Deploy docs
+```
+npm run deploy-gh-pages
 ```
