@@ -690,7 +690,7 @@ var Event = function (_ModelView) {
     // Create HTML part with SuperClass
     // The html elements to be created are 'time'
     // and whatever info comes in the eventConfig
-    var html = [{ name: 'time', tag: 'p', content: eventConfig.time }];
+    var html = [{ name: 'time', tag: 'span', content: eventConfig.time }];
 
     var fields = ['title', 'description', 'tooltip'];
     var _iteratorNormalCompletion = true;
@@ -702,7 +702,7 @@ var Event = function (_ModelView) {
         var field = _step.value;
 
         if (eventConfig[field]) {
-          html.push({ name: field, tag: 'p', content: eventConfig[field] });
+          html.push({ name: field, tag: 'span', content: eventConfig[field] });
         }
       }
     } catch (err) {

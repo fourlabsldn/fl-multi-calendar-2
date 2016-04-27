@@ -432,15 +432,18 @@ $border-size: 2px;
 .fl-mc-cal-day-event-time {
   font-weight: bold;
   margin: inherit;
+  display: block;
 }
 
 .fl-mc-cal-day-event-title {
   margin: inherit;
   font-weight: bold;
+  display: block;
 }
 
 .fl-mc-cal-day-event-description {
   margin: inherit;
+  display: block;
 }
 
 // Show long text on hover?
@@ -458,6 +461,7 @@ $border-size: 2px;
 
 // TODO: Add arrow to tooltip
 .fl-mc-cal-day-event-tooltip {
+  display: block;
   margin: 0;
   position: absolute;
   bottom: 0;

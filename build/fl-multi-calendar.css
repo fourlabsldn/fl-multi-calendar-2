@@ -492,16 +492,20 @@
 
 .fl-mc-cal-day-event-time {
   font-weight: bold;
-  margin: inherit; }
+  margin: inherit;
+  display: block; }
 
 .fl-mc-cal-day-event-title {
   margin: inherit;
-  font-weight: bold; }
+  font-weight: bold;
+  display: block; }
 
 .fl-mc-cal-day-event-description {
-  margin: inherit; }
+  margin: inherit;
+  display: block; }
 
 .fl-mc-cal-day-event-tooltip {
+  display: block;
   margin: 0;
   position: absolute;
   bottom: 0;

@@ -16,12 +16,12 @@ class Event extends ModelView {
     // Create HTML part with SuperClass
     // The html elements to be created are 'time'
     // and whatever info comes in the eventConfig
-    const html = [{ name: 'time', tag: 'p', content: eventConfig.time }];
+    const html = [{ name: 'time', tag: 'span', content: eventConfig.time }];
 
     const fields = ['title', 'description', 'tooltip'];
     for (const field of fields) {
       if (eventConfig[field]) {
-        html.push({ name: field, tag: 'p', content: eventConfig[field] });
+        html.push({ name: field, tag: 'span', content: eventConfig[field] });
       }
     }
 
