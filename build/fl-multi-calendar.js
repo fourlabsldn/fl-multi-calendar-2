@@ -794,6 +794,7 @@ var Event = function (_ModelView) {
 }(ModelView);
 
 var DAY_CLASS = '-day';
+var DEFAULT_HEADER_FORMAT = 'dddd, MMM DD';
 
 /**
  * @class Day
@@ -804,7 +805,8 @@ var Day = function (_ModelView) {
   babelHelpers.inherits(Day, _ModelView);
 
   function Day(date, parentClass) {
-    var callbacks = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+    var config = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+    var callbacks = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
     babelHelpers.classCallCheck(this, Day);
 
     // Create HTML part with SuperClass
@@ -817,6 +819,8 @@ var Day = function (_ModelView) {
     _this.end = null;
 
     _this.callbacks = callbacks;
+
+    _this.headerFormat = typeof config.dayHeaderFormat === 'string' ? config.dayHeaderFormat : DEFAULT_HEADER_FORMAT;
 
     // The order of this array doesn't matter.
     _this.events = [];
@@ -841,7 +845,7 @@ var Day = function (_ModelView) {
   babelHelpers.createClass(Day, [{
     key: 'updateHeader',
     value: function updateHeader() {
-      this.html.header.textContent = DateHandler.format(this.date);
+      this.html.header.textContent = DateHandler.format(this.date, this.headerFormat);
     }
   }, {
     key: 'addEvent',
@@ -1201,6 +1205,8 @@ var Calendar = function (_ModelView) {
     assert(startDate, 'No start date provided.');
     _this.startDate = startDate;
 
+    _this.dayConfig = config.dayConfig;
+
     _this.callbacks = callbacks;
 
     // The days array is ordered chronologically.
@@ -1230,7 +1236,8 @@ var Calendar = function (_ModelView) {
     key: 'addDay',
     value: function addDay() {
       var newDate = DateHandler.addDays(this.startDate, this.days.length);
-      var newDay = new Day(newDate, this.class, this.callbacks);
+      var newDay = new Day(newDate, this.class, this.dayConfig, this.callbacks);
+
       assert(newDay && newDay.html && newDay.html.container, 'New Day instance initialised without an HTML container.');
       this.days.push(newDay);
       this.html.days.appendChild(newDay.html.container);
@@ -1548,6 +1555,8 @@ var MultiCalendar = function (_ModelView) {
     assert(typeof config.loadUrl === 'string', 'No loadUrl provided.');
     _this.loadUrl = _this._prepareLoadUrl(config.loadUrl);
 
+    _this.dayConfig = { dayHeaderFormat: config.dayHeaderFormat };
+
     // Dates will be initialised in this.setStartDate
     _this.startDate = null;
     _this.endDate = null;
@@ -1755,6 +1764,8 @@ var MultiCalendar = function (_ModelView) {
         dayHeaderClick: config.dayHeaderClick,
         eventClick: config.eventClick
       };
+
+      config.dayConfig = this.dayConfig;
 
       var calendar = new Calendar(config, startDate, MULTI_CALENDAR_CLASS, calendarCallbacks);
       this.html.container.appendChild(calendar.html.container);

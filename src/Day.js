@@ -4,13 +4,14 @@ import ModelView from './ModelView';
 import Event from './Event';
 
 const DAY_CLASS = '-day';
+const DEFAULT_HEADER_FORMAT =  'dddd, MMM DD';
 
 /**
  * @class Day
  * @api private
  */
 export default class Day extends ModelView {
-  constructor(date, parentClass, callbacks = {}) {
+  constructor(date, parentClass, config = {}, callbacks = {}) {
     // Create HTML part with SuperClass
     const html = [
       { name: 'header', tag: 'header' },
@@ -23,6 +24,9 @@ export default class Day extends ModelView {
     this.end = null;
 
     this.callbacks = callbacks;
+
+    this.headerFormat = (typeof config.dayHeaderFormat === 'string') ?
+      config.dayHeaderFormat : DEFAULT_HEADER_FORMAT;
 
     // The order of this array doesn't matter.
     this.events = [];
@@ -42,7 +46,8 @@ export default class Day extends ModelView {
   }
 
   updateHeader() {
-    this.html.header.textContent = DateHandler.format(this.date);
+    this.html.header.textContent =
+      DateHandler.format(this.date, this.headerFormat);
   }
 
   addEvent(eventInfo) {

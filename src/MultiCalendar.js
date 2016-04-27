@@ -61,6 +61,8 @@ class MultiCalendar extends ModelView {
       'No loadUrl provided.');
     this.loadUrl = this._prepareLoadUrl(config.loadUrl);
 
+    this.dayConfig = { dayHeaderFormat: config.dayHeaderFormat };
+
     // Dates will be initialised in this.setStartDate
     this.startDate = null;
     this.endDate = null;
@@ -206,6 +208,8 @@ class MultiCalendar extends ModelView {
       dayHeaderClick: config.dayHeaderClick,
       eventClick: config.eventClick,
     };
+
+    config.dayConfig = this.dayConfig;
 
     const calendar = new Calendar(config, startDate, MULTI_CALENDAR_CLASS, calendarCallbacks);
     this.html.container.appendChild(calendar.html.container);

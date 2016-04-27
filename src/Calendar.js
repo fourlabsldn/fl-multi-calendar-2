@@ -42,6 +42,8 @@ export default class Calendar extends ModelView {
     assert(startDate, 'No start date provided.');
     this.startDate = startDate;
 
+    this.dayConfig = config.dayConfig;
+
     this.callbacks = callbacks;
 
     // The days array is ordered chronologically.
@@ -65,7 +67,13 @@ export default class Calendar extends ModelView {
   // The Object will decide what is the date of the day to be added.
   addDay() {
     const newDate = DateHandler.addDays(this.startDate, this.days.length);
-    const newDay = new Day(newDate, this.class, this.callbacks);
+    const newDay = new Day(
+      newDate,
+      this.class,
+      this.dayConfig,
+      this.callbacks
+    );
+
     assert(newDay && newDay.html && newDay.html.container,
         'New Day instance initialised without an HTML container.');
     this.days.push(newDay);

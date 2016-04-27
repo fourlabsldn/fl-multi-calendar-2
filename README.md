@@ -8,7 +8,7 @@ To use it you will need three elements:
 - The CSS for the calendar (which is in the build folder)
 - A configuration object
 
-** Read the [Docs](http://fourlabsldn.github.io/fl-multi-calendar-2/) ** 
+** Read the [Docs](http://fourlabsldn.github.io/fl-multi-calendar-2/) **
 ## Configuration object
 
 In the HTML, add your `x-div` element with `fl-multi-calendar-2.js` as the `data-controller`
@@ -46,6 +46,8 @@ function titleClick(calendarConfig) {
 
 myConfigObject = {
   loadUrl: 'http://localhost:5000',
+  titleBarFormat: 'YYYY',
+  dayHeaderFormat: 'dddd, MMM DD',
   calendars: [{
     name: 'Karl Marx',
     id: '12345',
