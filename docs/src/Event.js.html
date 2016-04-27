@@ -92,7 +92,7 @@
             <h1>areSame</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-info radius ctx-type">method</div><span>areSame()</span>
+              <div class="label label-info radius ctx-type">method</div><span>Event.areSame()</span>
             </p>
           </section>
           <table class="table table-bordered table-striped">
@@ -128,7 +128,9 @@
   const event2 = (e2 instanceof Event) ? e2.getConfig() : e2;
   return JSON.stringify(event1) === JSON.stringify(event2);
 }
-}</code></pre>
+}
+
+export default Event;</code></pre>
         </div>
       </div>
     </div>

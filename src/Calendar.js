@@ -5,6 +5,9 @@ import Day from './Day';
 
 const CALENDAR_CLASS = '-cal';
 
+/**
+ * 	@class Calendar
+ */
 export default class Calendar extends ModelView {
   constructor(config, startDate, parentClass, callbacks = {}) {
     assert(config, 'No calendar configuration object provided.');
@@ -112,6 +115,7 @@ export default class Calendar extends ModelView {
 
   /**
    * @method findDays
+   * @api private
    * @param {String | Date} end
    * @param {String | Date} start
    * @param {Array<Day>} days

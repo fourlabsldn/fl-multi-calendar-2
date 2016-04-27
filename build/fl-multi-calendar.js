@@ -182,6 +182,12 @@ var DateHandler = function () {
   return DateHandler;
 }();
 
+/**
+ * @class ModelView
+ * @abstract
+ * @private
+ */
+
 var ModelView = function ModelView(html, instanceClass) {
   var parentClass = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
   var containerTag = arguments.length <= 3 || arguments[3] === undefined ? 'div' : arguments[3];
@@ -242,6 +248,11 @@ var datePickerFormats = {
   week: 'YYYY-[W]WW',
   date: 'YYYY-MM-DD'
 };
+
+/**
+ * @class ControlBar
+ * @api private
+ */
 
 var ControlBar = function (_ModelView) {
   babelHelpers.inherits(ControlBar, _ModelView);
@@ -655,6 +666,11 @@ var ButtonLoadingController = function () {
 
 var EVENT_CLASS = '-event';
 
+/**
+ * @class Event
+ * @private
+ */
+
 var Event = function (_ModelView) {
   babelHelpers.inherits(Event, _ModelView);
 
@@ -776,6 +792,11 @@ var Event = function (_ModelView) {
 }(ModelView);
 
 var DAY_CLASS = '-day';
+
+/**
+ * @class Day
+ * @api private
+ */
 
 var Day = function (_ModelView) {
   babelHelpers.inherits(Day, _ModelView);
@@ -1133,6 +1154,10 @@ function arrayDifference(arr1, arr2, compare) {
 
 var CALENDAR_CLASS = '-cal';
 
+/**
+ * 	@class Calendar
+ */
+
 var Calendar = function (_ModelView) {
   babelHelpers.inherits(Calendar, _ModelView);
 
@@ -1344,6 +1369,7 @@ var Calendar = function (_ModelView) {
 
     /**
      * @method findDays
+     * @api private
      * @param {String | Date} end
      * @param {String | Date} start
      * @param {Array<Day>} days
@@ -1480,12 +1506,16 @@ var viewModes = {
   }
 };
 
+/**
+ * @class MultiCalendar
+ */
+
 var MultiCalendar = function (_ModelView) {
   babelHelpers.inherits(MultiCalendar, _ModelView);
 
   /**
    * @constructor
-   * @param  {Object}    config MultiCalendar configuration object
+   * @param  {Object} config - MultiCalendar configuration object
    */
 
   function MultiCalendar(config) {
@@ -1664,6 +1694,7 @@ var MultiCalendar = function (_ModelView) {
     // ------------- End of Public interface --------------
     // ====================================================
     /**
+     * @private
      * @method _addCalendar
      * @param  {Object}       config    Configuration object for the calendar
      * @param  {DateHandler}  startDate [optional]
@@ -1687,9 +1718,11 @@ var MultiCalendar = function (_ModelView) {
     }
 
     /**
-     * @method getDayCount Amount of days being shown in each calendar.
-     * @param  {Array<Calendar>} calendars [optional]
-     * @return {Int} If there are no calendars it returns 0;
+     * Amount of days being shown in each calendar.
+     * @method getDayCount
+     * @param  {Array<Calendar>} calendars
+     * @return {Int} - Amount of days being shown in each calendar.
+     *               - If there are no calendars it returns 0.
      */
 
   }, {

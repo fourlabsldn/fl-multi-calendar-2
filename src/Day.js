@@ -4,6 +4,11 @@ import ModelView from './ModelView';
 import Event from './Event';
 
 const DAY_CLASS = '-day';
+
+/**
+ * @class Day
+ * @api private
+ */
 export default class Day extends ModelView {
   constructor(date, parentClass, callbacks = {}) {
     // Create HTML part with SuperClass

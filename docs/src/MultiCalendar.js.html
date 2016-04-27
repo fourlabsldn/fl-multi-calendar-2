@@ -82,11 +82,11 @@
           </ul>
           <div class="scrollspy">
             <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#MultiCalendar"><i class="alert alert-success"></i><span>MultiCalendar</span></a>
+              </li>
               <li><a href="#constructor"><i class="alert alert-success"></i><span>constructor</span></a>
               </li>
               <li><a href="#goToDate"><i class="alert alert-info"></i><span>goToDate</span></a>
-              </li>
-              <li><a href="#_addCalendar"><i class="alert alert-info"></i><span>_addCalendar</span></a>
               </li>
               <li><a href="#getDayCount"><i class="alert alert-info"></i><span>getDayCount</span></a>
               </li>
@@ -96,11 +96,20 @@
           </div>
         </div>
         <div class="span9">
+          <section id="MultiCalendar">
+            <h1>MultiCalendar</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">class</div><span>new MultiCalendar()</span>
+            </p>
+          </section>
+          <div class="description"> </div>
+          <pre><code class="language-javascript">class MultiCalendar extends ModelView {</code></pre>
           <section id="constructor">
             <h1>constructor</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-success radius ctx-type">constructor</div><span>constructor()</span>
+              <div class="label label-success radius ctx-type">constructor</div><span>MultiCalendar.prototype.constructor()</span>
             </p>
           </section>
           <table class="table table-bordered table-striped">
@@ -115,7 +124,10 @@
               <tr>
                 <td>config</td>
                 <td>Object</td>
-                <td><p>MultiCalendar configuration object</p></td>
+                <td><ul>
+<li>MultiCalendar configuration object</li>
+</ul>
+</td>
               </tr>
             </tbody>
           </table>
@@ -175,7 +187,7 @@
             <h1>goToDate</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-info radius ctx-type">method</div><span>goToDate()</span>
+              <div class="label label-info radius ctx-type">method</div><span>MultiCalendar.prototype.goToDate()</span>
             </p>
           </section>
           <table class="table table-bordered table-striped">
@@ -217,52 +229,11 @@
 // ====================================================
 // ------------- End of Public interface --------------
 // ====================================================</code></pre>
-          <section id="_addCalendar">
-            <h1>_addCalendar</h1>
-            <h5 class="subheader"></h5>
-            <p>
-              <div class="label label-info radius ctx-type">method</div><span>_addCalendar()</span>
-            </p>
-          </section>
-          <table class="table table-bordered table-striped">
-            <thead>
-              <tr>
-                <th style="width:20%">Option name</th>
-                <th style="width:20%">Type</th>
-                <th>Description</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td>config</td>
-                <td>Object</td>
-                <td><p>Configuration object for the calendar</p></td>
-              </tr>
-              <tr>
-                <td>startDate</td>
-                <td>DateHandler</td>
-                <td><p>[optional]</p></td>
-              </tr>
-            </tbody>
-          </table>
-          <div class="description"> </div>
-          <pre><code class="language-javascript">_addCalendar(config, startDate = this.startDate) {
-  // TODO: Add calendar when other calendars already have days
-  const calendarCallbacks = {
-    titleClick: config.titleClick,
-    dayHeaderClick: config.dayHeaderClick,
-    eventClick: config.eventClick,
-  };
-
-  const calendar = new Calendar(config, startDate, MULTI_CALENDAR_CLASS, calendarCallbacks);
-  this.html.container.appendChild(calendar.html.container);
-  this.calendars.push(calendar);
-}</code></pre>
           <section id="getDayCount">
             <h1>getDayCount</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-info radius ctx-type">method</div><span>getDayCount()</span>
+              <div class="label label-info radius ctx-type">method</div><span>MultiCalendar.prototype.getDayCount()</span>
             </p>
           </section>
           <table class="table table-bordered table-striped">
@@ -277,16 +248,19 @@
               <tr>
                 <td>calendars</td>
                 <td>Array.&lt;Calendar&gt;</td>
-                <td><p>[optional]</p></td>
+                <td></td>
               </tr>
               <tr>
                 <td>return</td>
                 <td>Int</td>
-                <td><p>If there are no calendars it returns 0;</p></td>
+                <td><ul>
+<li>Amount of days being shown in each calendar.               - If there are no calendars it returns 0.</li>
+</ul>
+</td>
               </tr>
             </tbody>
           </table>
-          <div class="description"> </div>
+          <div class="description"><p>Amount of days being shown in each calendar.</p> </div>
           <pre><code class="language-javascript">getDayCount(calendars = this.calendars) {
   if (calendars.length === 0) { return 0; }
   return calendars[0].getDayCount();
@@ -295,7 +269,7 @@
             <h1>setStartDate</h1>
             <h5 class="subheader"></h5>
             <p>
-              <div class="label label-info radius ctx-type">method</div><span>setStartDate()</span>
+              <div class="label label-info radius ctx-type">method</div><span>MultiCalendar.prototype.setStartDate()</span>
             </p>
           </section>
           <table class="table table-bordered table-striped">

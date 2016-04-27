@@ -8,6 +8,10 @@ const datePickerFormats = {
   date: 'YYYY-MM-DD',
 };
 
+/**
+ * @class ControlBar
+ * @api private
+ */
 export default class ControlBar extends ModelView {
   /**
    * @constructor

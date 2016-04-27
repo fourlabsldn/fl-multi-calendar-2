@@ -29,10 +29,13 @@ const viewModes = {
   },
 };
 
-export default class MultiCalendar extends ModelView {
+/**
+ * @class MultiCalendar
+ */
+class MultiCalendar extends ModelView {
   /**
    * @constructor
-   * @param  {Object}    config MultiCalendar configuration object
+   * @param  {Object} config - MultiCalendar configuration object
    */
   constructor(config) {
     // ----------------------------------------------------------------
@@ -158,6 +161,7 @@ export default class MultiCalendar extends ModelView {
   // ------------- End of Public interface --------------
   // ====================================================
   /**
+   * @private
    * @method _addCalendar
    * @param  {Object}       config    Configuration object for the calendar
    * @param  {DateHandler}  startDate [optional]
@@ -176,9 +180,11 @@ export default class MultiCalendar extends ModelView {
   }
 
   /**
-   * @method getDayCount Amount of days being shown in each calendar.
-   * @param  {Array<Calendar>} calendars [optional]
-   * @return {Int} If there are no calendars it returns 0;
+   * Amount of days being shown in each calendar.
+   * @method getDayCount
+   * @param  {Array<Calendar>} calendars
+   * @return {Int} - Amount of days being shown in each calendar.
+   *               - If there are no calendars it returns 0.
    */
   getDayCount(calendars = this.calendars) {
     if (calendars.length === 0) { return 0; }
@@ -474,3 +480,5 @@ export default class MultiCalendar extends ModelView {
     return fullUrl;
   }
 }
+
+export default MultiCalendar;

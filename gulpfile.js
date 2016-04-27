@@ -85,9 +85,9 @@ gulp.task('docs', () => {
     .pipe(gulp.dest('docs'));
 });
 
+gulp.task('build-docs', ['docs']);
 gulp.task('demo', ['webserver']);
 gulp.task('rollup', ['rollup-module', 'rollup-tests']);
-gulp.task('build', ['rollup', 'sass', 'assets']);
-gulp.task('build-docs', ['docs']);
+gulp.task('build', ['rollup', 'sass', 'assets', 'build-docs']);
 
 gulp.task('dev', ['build', 'watch', 'webserver']);

@@ -3,6 +3,11 @@
 // ]
 import assert from './utils/assert';
 
+/**
+ * @class ModelView
+ * @abstract
+ * @private
+ */
 export default class ModelView {
   constructor(html, instanceClass, parentClass = '', containerTag = 'div') {
     assert(instanceClass, 'No instance class provided.');

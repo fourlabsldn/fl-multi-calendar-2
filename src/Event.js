@@ -4,7 +4,11 @@ import ModelView from './ModelView';
 
 const EVENT_CLASS = '-event';
 
-export default class Event extends ModelView {
+/**
+ * @class Event
+ * @private
+ */
+class Event extends ModelView {
   constructor(eventConfig, parentClass, callbacks = {}) {
     assert(typeof eventConfig === 'object',
       `Invalid event configuration object provided: ${eventConfig}`);
@@ -91,3 +95,5 @@ export default class Event extends ModelView {
     return JSON.stringify(event1) === JSON.stringify(event2);
   }
 }
+
+export default Event;
