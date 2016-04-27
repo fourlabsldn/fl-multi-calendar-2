@@ -762,7 +762,9 @@ var Event = function (_ModelView) {
     }
 
     /**
-     * @method areSame Whether two configurations would create the same event.
+     * Checks whether two configurations would create the same event.
+     * @static
+     * @method areSame
      * @param  {Object} e1 Event object or event configuration object
      * @param  {Object} e2
      * @return {Boolean}
@@ -777,24 +779,6 @@ var Event = function (_ModelView) {
       var event1 = e1 instanceof Event ? e1.getConfig() : e1;
       var event2 = e2 instanceof Event ? e2.getConfig() : e2;
       return JSON.stringify(event1) === JSON.stringify(event2);
-
-      // TODO: Check properties properly, using a properties array with the
-      // name and of every relevant property.
-
-      // const keysEvent1 = Object.keys(event1);
-      // const keysEvent2 = Object.keys(event2);
-      // if (keysEvent1.length !== keysEvent2.length) { return false; }
-      //
-      // // Keys of both object
-      // const keys = keysEvent1.concat(keysEvent1);
-      // const keySet = new Set(keys); // So we don't compare the same thing twice.
-      // for (const key of keySet) {
-      //   if (!event1[key] || !event2[key]) { return false; }
-      //   if (event1[key].toString() !== event2[key].toString()) {
-      //     return false;
-      //   }
-      // }
-      // return true;
     }
   }]);
   return Event;
@@ -896,6 +880,12 @@ var Day = function (_ModelView) {
       // Now add it to the events array.
       this.events.push(newEvent);
     }
+
+    /**
+     * @method setEvents
+     * @param  {Array[Object]}  newEventsConfig   array of event configuration objects
+     */
+
   }, {
     key: 'setEvents',
     value: function setEvents(newEventsConfig) {
@@ -990,7 +980,7 @@ var Day = function (_ModelView) {
       this.start = DateHandler.startOf(this.date, 'day');
       this.end = DateHandler.endOf(this.date, 'day');
       this.updateHeader();
-      this.todayColor();
+      this._todayColor();
     }
   }, {
     key: 'clearEvents',
@@ -1018,12 +1008,18 @@ var Day = function (_ModelView) {
       event = null; // Make object available to be garbage collected
     }
 
-    // Assigns a different color to the container if
-    // this instance represents today's date
+    /**
+     *  Assigns a different class to the container if
+     *  this instance represents today's date
+     * @private
+     * @method _todayColor
+     * @param  {DateHandler}    date [optional]
+     * @return {void}
+     */
 
   }, {
-    key: 'todayColor',
-    value: function todayColor() {
+    key: '_todayColor',
+    value: function _todayColor() {
       var date = arguments.length <= 0 || arguments[0] === undefined ? this.date : arguments[0];
 
       if (DateHandler.sameDay(date, DateHandler.newDate())) {
@@ -1032,6 +1028,15 @@ var Day = function (_ModelView) {
         this.html.container.classList.remove(this.class + '-today');
       }
     }
+
+    /**
+     * Checks whether an event that uses the same configuration object
+     * is already being displayer.
+     * @method hasEvent
+     * @param  {Object}  eventConfig
+     * @return {Boolean}
+     */
+
   }, {
     key: 'hasEvent',
     value: function hasEvent(eventConfig) {

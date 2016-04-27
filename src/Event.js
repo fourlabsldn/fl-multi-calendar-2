@@ -87,7 +87,9 @@ export default class Event extends ModelView {
   }
 
   /**
-   * @method areSame Whether two configurations would create the same event.
+   * Checks whether two configurations would create the same event.
+   * @static
+   * @method areSame
    * @param  {Object} e1 Event object or event configuration object
    * @param  {Object} e2
    * @return {Boolean}
@@ -97,23 +99,5 @@ export default class Event extends ModelView {
     const event1 = (e1 instanceof Event) ? e1.getConfig() : e1;
     const event2 = (e2 instanceof Event) ? e2.getConfig() : e2;
     return JSON.stringify(event1) === JSON.stringify(event2);
-
-    // TODO: Check properties properly, using a properties array with the
-    // name and of every relevant property.
-
-    // const keysEvent1 = Object.keys(event1);
-    // const keysEvent2 = Object.keys(event2);
-    // if (keysEvent1.length !== keysEvent2.length) { return false; }
-    //
-    // // Keys of both object
-    // const keys = keysEvent1.concat(keysEvent1);
-    // const keySet = new Set(keys); // So we don't compare the same thing twice.
-    // for (const key of keySet) {
-    //   if (!event1[key] || !event2[key]) { return false; }
-    //   if (event1[key].toString() !== event2[key].toString()) {
-    //     return false;
-    //   }
-    // }
-    // return true;
   }
 }

@@ -78,6 +78,10 @@ export default class Day extends ModelView {
     this.events.push(newEvent);
   }
 
+  /**
+   * @method setEvents
+   * @param  {Array[Object]}  newEventsConfig   array of event configuration objects
+   */
   setEvents(newEventsConfig) {
     assert.warn(Array.isArray(newEventsConfig),
       `Invalid array of configuration events,
@@ -124,7 +128,7 @@ export default class Day extends ModelView {
     this.start = DateHandler.startOf(this.date, 'day');
     this.end = DateHandler.endOf(this.date, 'day');
     this.updateHeader();
-    this.todayColor();
+    this._todayColor();
   }
 
   clearEvents(events = this.events) {
@@ -149,9 +153,16 @@ export default class Day extends ModelView {
     event = null; // Make object available to be garbage collected
   }
 
-  // Assigns a different color to the container if
-  // this instance represents today's date
-  todayColor(date = this.date) {
+
+  /**
+   *  Assigns a different class to the container if
+   *  this instance represents today's date
+   * @private
+   * @method _todayColor
+   * @param  {DateHandler}    date [optional]
+   * @return {void}
+   */
+  _todayColor(date = this.date) {
     if (DateHandler.sameDay(date, DateHandler.newDate())) {
       this.html.container.classList.add(`${this.class}-today`);
     } else {
@@ -159,6 +170,13 @@ export default class Day extends ModelView {
     }
   }
 
+  /**
+   * Checks whether an event that uses the same configuration object
+   * is already being displayer.
+   * @method hasEvent
+   * @param  {Object}  eventConfig
+   * @return {Boolean}
+   */
   hasEvent(eventConfig) {
     return this.events.some((x) => {
       return Event.isSame(x.config(), eventConfig);
