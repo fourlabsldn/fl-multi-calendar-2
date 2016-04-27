@@ -88,6 +88,6 @@ gulp.task('docs', () => {
 gulp.task('build-docs', ['docs']);
 gulp.task('demo', ['webserver']);
 gulp.task('rollup', ['rollup-module', 'rollup-tests']);
-gulp.task('build', ['rollup', 'sass', 'assets', 'build-docs']);
+gulp.task('build', ['rollup', 'sass', 'assets']);
 
 gulp.task('dev', ['build', 'watch', 'webserver']);

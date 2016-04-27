@@ -8,7 +8,7 @@
     "dev": "gulp dev",
     "build": "gulp build",
     "demo": "gulp demo",
-    "deploy-gh-pages": "git-directory-deploy --directory docs --branch gh-pages"
+    "deploy-gh-pages": "gulp build-docs && git-directory-deploy --directory docs --branch gh-pages"
   },
   "author": "Lazamar @ FourLabs",
   "license": "ISC",
