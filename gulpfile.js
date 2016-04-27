@@ -8,6 +8,7 @@ const server = require('gulp-server-livereload');
 const sass = require('gulp-sass');
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
+const gulpDoxx = require('gulp-doxx');
 
 gulp.task('assets', () => {
   return gulp.src(['./src/assets/**/*.*'])
@@ -75,8 +76,18 @@ gulp.task('webserver', () => {
     }));
 });
 
+gulp.task('docs', () => {
+  gulp.src(['src/*.js', 'README.md'], { base: '.' })
+    .pipe(gulpDoxx({
+      title: 'Multi Calendar 2',
+      urlPrefix: '/docs',
+    }))
+    .pipe(gulp.dest('docs'));
+});
+
 gulp.task('demo', ['webserver']);
 gulp.task('rollup', ['rollup-module', 'rollup-tests']);
 gulp.task('build', ['rollup', 'sass', 'assets']);
+gulp.task('build-docs', ['docs']);
 
 gulp.task('dev', ['build', 'watch', 'webserver']);

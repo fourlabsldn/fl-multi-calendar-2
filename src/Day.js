@@ -80,7 +80,7 @@ export default class Day extends ModelView {
 
   /**
    * @method setEvents
-   * @param  {Array[Object]}  newEventsConfig   array of event configuration objects
+   * @param  {Array<Object>}  newEventsConfig   array of event configuration objects
    */
   setEvents(newEventsConfig) {
     assert.warn(Array.isArray(newEventsConfig),

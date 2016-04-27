@@ -112,9 +112,9 @@ export default class Calendar extends ModelView {
 
   /**
    * @method findDays
-   * @param {String or Date} end
-   * @param {String or Date} start
-   * @param {Array[Day]} days
+   * @param {String | Date} end
+   * @param {String | Date} start
+   * @param {Array<Day>} days
    * @returns {Array}
    */
   findDaysInRange(start, end, days = this.days) {

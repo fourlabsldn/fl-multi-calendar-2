@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width" charset="utf-8">
+    <title>Multi Calendar 2</title>
+    <link rel="stylesheet" href="http://getbootstrap.com/2.3.2/assets/css/bootstrap.css">
+    <link rel="stylesheet" href="http://getbootstrap.com/2.3.2/assets/css/bootstrap-responsive.css">
+    <link rel="stylesheet" href="http://getbootstrap.com/2.3.2/assets/css/docs.css">
+    <style>
+      body > .navbar .brand {
+        float:left;
+        text-shadow: rgba(255, 255, 255, 0.0980392) 0px 1px 0px, rgba(255, 255, 255, 0.4) 0px 0px 30px;
+        color: white;
+        margin-left:0px;
+        font-weight:normal;
+      }
+      
+      .bs-docs-sidenav.affix {
+        box-shadow: 0 0 20px 1px rgba(0, 0, 0, 0.5);
+        z-index: 10;
+      }
+      
+      .bs-docs-sidenav i{
+        width: 8px;
+        height: 8px;
+        padding: 0px;
+        margin: 0px;
+        display: inline-block;
+        margin-right:0.5em;
+      }
+      
+      .bs-docs-sidenav > li > a {
+          word-wrap: break-word;
+      }
+      
+      .bs-docs-sidenav > li:first-child > a {
+        border-top-right-radius: 6px;
+        border-top-left-radius: 6px;
+      }
+      
+      code[class*="language-"],pre[class*="language-"]{color:black;text-shadow:0 1px white;font-family:Consolas,Monaco,'Andale Mono',monospace;direction:ltr;text-align:left;white-space:pre;word-spacing:normal;-moz-tab-size:4;-o-tab-size:4;tab-size:4;-webkit-hyphens:none;-moz-hyphens:none;-ms-hyphens:none;hyphens:none}pre[class*="language-"]{padding:1em;margin:.5em 0;overflow:auto}:not(pre)>code[class*="language-"],pre[class*="language-"]{background:#f5f2f0}:not(pre)>code[class*="language-"]{padding:.1em;border-radius:.3em}.token.comment,.token.prolog,.token.doctype,.token.cdata{color:slategray}.token.punctuation{color:#999}.namespace{opacity:.7}.token.property,.token.tag,.token.boolean,.token.number{color:#905}.token.selector,.token.attr-name,.token.string{color:#690}.token.operator,.token.entity,.token.url,.language-css .token.string,.style .token.string{color:#a67f59;background:hsla(0,0%,100%,.5)}.token.atrule,.token.attr-value,.token.keyword{color:#07a}.token.regex,.token.important{color:#e90}.token.important{font-weight:bold}.token.entity{cursor:help}
+      div.description {margin: 14px 0; padding-top: 14px; border-bottom:1px solid #eee; }
+      .tags {}
+      .ctx-type {
+        display:inline-block;
+        margin-right:0.5em;
+        //- float:right; margin-top:8px
+      }
+      
+      footer iframe{vertical-align:middle;}
+      
+    </style>
+  </head>
+  <body data-spy="scroll" data-target=".scrollspy">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container"><a class="brand">Doxx</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav pull-right sponsored"></ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <header id="overview" class="jumbotron subhead">
+      <div class="container">
+        <h1>Multi Calendar 2</h1>
+        <p class="lead"></p>
+      </div>
+    </header>
+    <div class="container">
+      <div class="row">
+        <div class="span3 bs-docs-sidebar">
+          <ul class="nav nav-list bs-docs-sidenav affix-top">
+            <li><a href="/docs/index.html">Main</a></li>
+            <li><a href="/docs/src/Calendar.js.html">src/Calendar.js</a></li>
+            <li class="active"><a href="/docs/src/ControlBar.js.html">src/ControlBar.js</a></li>
+            <li><a href="/docs/src/Day.js.html">src/Day.js</a></li>
+            <li><a href="/docs/src/Event.js.html">src/Event.js</a></li>
+            <li><a href="/docs/src/ModelView.js.html">src/ModelView.js</a></li>
+            <li><a href="/docs/src/MultiCalendar.js.html">src/MultiCalendar.js</a></li>
+            <li><a href="/docs/src/fl-multi-calendar.js.html">src/fl-multi-calendar.js</a></li>
+          </ul>
+          <div class="scrollspy">
+            <ul class="nav nav-list bs-docs-sidenav affix-top">
+              <li><a href="#constructor"><i class="alert alert-success"></i><span>constructor</span></a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="span9">
+          <section id="constructor">
+            <h1>constructor</h1>
+            <h5 class="subheader"></h5>
+            <p>
+              <div class="label label-success radius ctx-type">constructor</div><span>constructor()</span>
+            </p>
+          </section>
+          <table class="table table-bordered table-striped">
+            <thead>
+              <tr>
+                <th style="width:20%">Option name</th>
+                <th style="width:20%">Type</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>parentClass</td>
+                <td>String</td>
+                <td></td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="description"> </div>
+          <pre><code class="language-javascript">constructor(parentClass) {
+  const html = [
+    { name: 'datePicker', tag: 'input' },
+    { name: 'back', tag: 'button', content: '&lt;i class=icon-chevron-left&gt;&lt;/i&gt;' },
+    { name: 'forward', tag: 'button', content: '&lt;i class=icon-chevron-right&gt;&lt;/i&gt;' },
+    { name: 'today', tag: 'button', content: 'Today' },
+    { name: 'refresh', tag: 'button',
+      content: '&lt;i class=icon-refresh&gt;&lt;/i&gt;&lt;i class=icon-check&gt;&lt;/i&gt;&lt;i class=icon-times&gt;&lt;/i&gt;' },
+    { name: 'titleBar', tag: 'p' },
+    { name: 'show-weekend', tag: 'button', content: 'Show Weekend' },
+  ];
+  super(html, CONTROL_CLASS, parentClass, 'nav');
+
+  this.refreshLoadingController = new ButtonLoadingController(
+    this.html.refresh,
+    'fl-mc-loading',
+    'fl-mc-loading-complete',
+    'fl-mc-loading-error'
+  );
+  this.eventListeners = {};
+
+  Object.preventExtensions(this);
+  // --------- end of attribute creation ----------
+
+  this.html.datePicker.setAttribute('type', 'week');
+  this.html.datePicker.addEventListener('change', (e) =&gt; {
+    assert(e.target, 'Error in datePicker\'s change event');
+    this.trigger('datePicker', e.target.value);
+  });
+
+  // Add listener to buttons
+  for (const el of html) {
+    if (el.tag !== 'button') { continue; }
+    this.html[el.name].addEventListener('click', (e) =&gt; {
+      assert(e.target, `Error in ${el.name}'s change event`);
+      this.trigger(el.name, e);
+    });
+  }
+}
+
+/**
+ * Returns the start date of the controlBar
+ * @method getDate
+ * @return {DateHandler}
+ */
+getDate() {
+  return this._getDatePickerDate();
+}
+
+/**
+ * Sets the start date of control bar. The end date is automatically
+ * calculated given the current dateRange
+ * @method setDate
+ * @param  {DateHandler} date
+ */
+setDate(date) {
+  this._setTitleBarDate(date);
+  this._setDatePickerDate(date);
+}
+
+/**
+ * Prepares the config bar to represent that dateRange
+ * by changing the datepicker type and the title.
+ * @method setDateRange
+ * @param  {String}     range 'isoweek', 'week' or 'day'
+ */
+setDateRange(range) {
+  switch (range) {
+    case 'isoweek':
+      this._setDatePickerType('week');
+      this._setShowWeekendActive(true);
+      break;
+    case 'week':
+      this._setDatePickerType('week');
+      this._setShowWeekendActive(false);
+      break;
+    case 'day':
+      this._setDatePickerType('date');
+      break;
+    default:
+      assert(false, `Unexpected date range: ${range}`);
+  }
+}
+
+/**
+ * Sets the state of the refresh button.
+ * @method setLoadingState
+ * @param  {String}        state
+ */
+setLoadingState(state) {
+  switch (state) {
+    case 'loading':
+      this.refreshLoadingController.setLoading();
+      break;
+    case 'success':
+      this.refreshLoadingController.setLoadingSuccess();
+      break;
+    case 'error':
+      this.refreshLoadingController.setLoadingError();
+      break;
+    default:
+      assert.warn(false, `Unexpected loading state: ${state}`);
+      break;
+  }
+}
+
+/**
+ * @private
+ * @method _getDatePickerDate
+ * @return {Date}
+ */
+_getDatePickerDate() {
+  return DateHandler.newDate(this.html.datePicker.value);
+}
+
+/**
+ * @private
+ * @method _setDatePickerDate
+ * @param {Date} date
+ */
+_setDatePickerDate(date) {
+  // Make sure we set it using the correct format.
+  const format = datePickerFormats[this.html.datePicker.type];
+  this.html.datePicker.value = DateHandler.format(date, format);
+}
+
+/**
+ * @private
+ * @method _setDatePickerType
+ * @param {String} type 'week' or 'day';
+ */
+_setDatePickerType(dateType) {
+  if (!(typeof dateType === 'string' &amp;&amp; datePickerFormats[dateType])) {
+    assert.warn(false, `Invalid datepicker type to be set: ${dateType}`);
+    return;
+  }
+
+  if (this.html.datePicker.type === dateType) { return; }
+
+  // Change picker type and set the date in the correct format.
+  const currDate = this._getDatePickerDate();
+  this.html.datePicker.type = dateType;
+  this._setDatePickerDate(currDate);
+}
+
+/**
+ * @private
+ * @method _setTitleBarDate
+ * @param {DateHandler or Date} date
+ */
+_setTitleBarDate(date) {
+  this.html.titleBar.innerHTML = DateHandler.format(date, 'YYYY');
+}
+/**
+ * Assigns a callback to be called by this.trigger when the event happens
+ * @method listenTo
+ * @param  {String}   eventName
+ * @param  {Function} callback
+ * @return {void}
+ */
+listenTo(eventName, callback) {
+  assert(typeof callback === 'function', 'Invalid callback.');
+  this.eventListeners[eventName] = this.eventListeners[eventName] || [];
+  this.eventListeners[eventName].push(callback);
+}
+
+/**
+ * Calls all callbacks assigned to an event with this.listenTo.
+ * @method trigger
+ * @param  {String} eventName
+ * @param  {Anything} ...parameters
+ * @return {void}
+ */
+trigger(eventName, ...parameters) {
+  if (!this.eventListeners[eventName]) { return; }
+  for (const callback of this.eventListeners[eventName]) {
+    callback.apply({}, parameters);
+  }
+}
+
+/**
+ * @private
+ * @method _setShowWeekendActive
+ * @param {Boolean} active
+ */
+_setShowWeekendActive(active) {
+  const activeClass = 'fl-mc-active';
+  if (active) {
+    this.html['show-weekend'].classList.remove(activeClass);
+    this.html['show-weekend'].textContent = 'Show weekends';
+  } else {
+    this.html['show-weekend'].classList.add(activeClass);
+    this.html['show-weekend'].textContent = 'Hide weekends';
+  }
+}
+}
+
+/**
+ * 	@private Only ControlBar will use this class
+ * 	@class ButtonLoadingController
+ */
+class ButtonLoadingController {
+constructor(button, loadingClass, successClass, errorClass) {
+  // Make sure we never handle a button twice.
+  if (button.loadingIsHandled) { return; }
+  button.loadingIsHandled = true;
+
+  this.button = button;
+  this.loadingClass = loadingClass;
+  this.successClass = successClass;
+  this.errorClass = errorClass;
+
+  this._removeAllLoadingClasses();
+
+  // Minimum time showing 'complete' or 'error' symbol.
+  this.minAnimationTime = 500;
+  this.minIconTime = 1500;
+
+  // Time button was set to loading
+  this.loadingStartTime = null;
+
+  this.outcomeTimeout = null;
+}
+
+setLoading() {
+  clearTimeout(this.outcomeTimeout);
+  this._removeAllLoadingClasses();
+  this.button.classList.add(this.loadingClass);
+  this.loadingStartTime = DateHandler.newDate();
+}
+
+setLoadingSuccess() {
+  this._completeLoadingWithSuccessStatus(true);
+}
+
+setLoadingError() {
+  this._completeLoadingWithSuccessStatus(false);
+}
+
+/**
+ * Shows a success or failure icon for a certain period of time.
+ * @private
+ * @method _completeLoadingWithSuccessStatus
+ * @param  {Boolean} success
+ * @return {void}
+ */
+_completeLoadingWithSuccessStatus(success) {
+  clearTimeout(this.outcomeTimeout);
+
+  const outcomeClass = success ? this.successClass : this.errorClass;
+  const remainingDelay = this._timeToAnimationTimeoutEnd();
+
+  // This timeout will be cancelled if either this function or
+  // setLoading are called
+  this.outcomeTimeout = setTimeout(() =&gt; {
+    this._removeAllLoadingClasses();
+    // Show with the completed class for at least minTimeout miliseconds
+    this.button.classList.add(outcomeClass);
+
+    // This timeout will be cancelled if either this function or
+    // setLoading are called
+    this.outcomeTimeout = setTimeout(() =&gt; {
+      this._removeAllLoadingClasses();
+    }, this.minIconTime);
+  }, remainingDelay);
+}
+
+/**
+ * @private
+ * @method _removeAllLoadingClasses
+ * @return {void}
+ */
+_removeAllLoadingClasses() {
+  this.button.classList.remove(this.loadingClass);
+  this.button.classList.remove(this.successClass);
+  this.button.classList.remove(this.errorClass);
+}
+
+/**
+* Time remaining to minTimeout
+ * @private
+ * @method _timeToAnimationTimeoutEnd
+ * @param  {DateHandler} timeoutStart
+ * @param  {int} minTimeout
+ * @param  {int} now
+ * @return {int}
+ */
+_timeToAnimationTimeoutEnd(
+    timeoutStart = this.loadingStartTime,
+    minTimeout = this.minAnimationTime,
+    now = DateHandler.newDate()) {
+  const delayEndTime = DateHandler.add(timeoutStart, minTimeout, 'milliseconds');
+  const remainingDelay = DateHandler.diff(delayEndTime, now, 'milliseconds');
+  return Math.max(remainingDelay, 0);
+}
+}</code></pre>
+        </div>
+      </div>
+    </div>
+    <footer class="footer">
+      <div class="container">
+        <p>Documentation generated with <a href="https://github.com/FGRibreau/doxx">Doxx </a> created by <a href="https://twitter.com/FGRibreau" data-show-count="false" class="twitter-follow-button">Francois-Guillaume Ribreau </a></p>
+        <p>Doxx is sponsored by <a href="http://bringr.net/?btt" title="Outil d'analyse des réseaux sociaux" class="bringr">Bringr </a> and <a href="https://redsmin.com/?btt" title="Full Redis GUI" class="redsmin">Redsmin</a></p>
+        <p>Theme borrowed from Twitter Bootstrap</p>
+      </div>
+    </footer>
+    <script src="http://platform.twitter.com/widgets.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js"></script>
+    <script src="http://leaverou.github.com/prefixfree/prefixfree.js"></script>
+    <script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap-transition.js"></script>
+    <script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap-scrollspy.js"></script>
+    <script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap-dropdown.js"></script>
+    <script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap-collapse.js"></script>
+    <script src="http://getbootstrap.com/2.3.2/assets/js/bootstrap-affix.js"></script>
+    <script>
+      /**
+       * Prism: Lightweight, robust, elegant syntax highlighting
+       * MIT license http://www.opensource.org/licenses/mit-license.php/
+       * @author Lea Verou http://lea.verou.me
+       */(function(){var e=/\blang(?:uage)?-(?!\*)(\w+)\b/i,t=self.Prism={util:{type:function(e){return Object.prototype.toString.call(e).match(/\[object (\w+)\]/)[1]},clone:function(e){var n=t.util.type(e);switch(n){case"Object":var r={};for(var i in e)e.hasOwnProperty(i)&&(r[i]=t.util.clone(e[i]));return r;case"Array":return e.slice()}return e}},languages:{extend:function(e,n){var r=t.util.clone(t.languages[e]);for(var i in n)r[i]=n[i];return r},insertBefore:function(e,n,r,i){i=i||t.languages;var s=i[e],o={};for(var u in s)if(s.hasOwnProperty(u)){if(u==n)for(var a in r)r.hasOwnProperty(a)&&(o[a]=r[a]);o[u]=s[u]}return i[e]=o},DFS:function(e,n){for(var r in e){n.call(e,r,e[r]);t.util.type(e)==="Object"&&t.languages.DFS(e[r],n)}}},highlightAll:function(e,n){var r=document.querySelectorAll('code[class*="language-"], [class*="language-"] code, code[class*="lang-"], [class*="lang-"] code');for(var i=0,s;s=r[i++];)t.highlightElement(s,e===!0,n)},highlightElement:function(r,i,s){var o,u,a=r;while(a&&!e.test(a.className))a=a.parentNode;if(a){o=(a.className.match(e)||[,""])[1];u=t.languages[o]}if(!u)return;r.className=r.className.replace(e,"").replace(/\s+/g," ")+" language-"+o;a=r.parentNode;/pre/i.test(a.nodeName)&&(a.className=a.className.replace(e,"").replace(/\s+/g," ")+" language-"+o);var f=r.textContent;if(!f)return;f=f.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/\u00a0/g," ");var l={element:r,language:o,grammar:u,code:f};t.hooks.run("before-highlight",l);if(i&&self.Worker){var c=new Worker(t.filename);c.onmessage=function(e){l.highlightedCode=n.stringify(JSON.parse(e.data));l.element.innerHTML=l.highlightedCode;s&&s.call(l.element);t.hooks.run("after-highlight",l)};c.postMessage(JSON.stringify({language:l.language,code:l.code}))}else{l.highlightedCode=t.highlight(l.code,l.grammar);l.element.innerHTML=l.highlightedCode;s&&s.call(r);t.hooks.run("after-highlight",l)}},highlight:function(e,r){return n.stringify(t.tokenize(e,r))},tokenize:function(e,n){var r=t.Token,i=[e],s=n.rest;if(s){for(var o in s)n[o]=s[o];delete n.rest}e:for(var o in n){if(!n.hasOwnProperty(o)||!n[o])continue;var u=n[o],a=u.inside,f=!!u.lookbehind||0;u=u.pattern||u;for(var l=0;l<i.length;l++){var c=i[l];if(i.length>e.length)break e;if(c instanceof r)continue;u.lastIndex=0;var h=u.exec(c);if(h){f&&(f=h[1].length);var p=h.index-1+f,h=h[0].slice(f),d=h.length,v=p+d,m=c.slice(0,p+1),g=c.slice(v+1),y=[l,1];m&&y.push(m);var b=new r(o,a?t.tokenize(h,a):h);y.push(b);g&&y.push(g);Array.prototype.splice.apply(i,y)}}}return i},hooks:{all:{},add:function(e,n){var r=t.hooks.all;r[e]=r[e]||[];r[e].push(n)},run:function(e,n){var r=t.hooks.all[e];if(!r||!r.length)return;for(var i=0,s;s=r[i++];)s(n)}}},n=t.Token=function(e,t){this.type=e;this.content=t};n.stringify=function(e){if(typeof e=="string")return e;if(Object.prototype.toString.call(e)=="[object Array]"){for(var r=0;r<e.length;r++)e[r]=n.stringify(e[r]);return e.join("")}var i={type:e.type,content:n.stringify(e.content),tag:"span",classes:["token",e.type],attributes:{}};i.type=="comment"&&(i.attributes.spellcheck="true");t.hooks.run("wrap",i);var s="";for(var o in i.attributes)s+=o+'="'+(i.attributes[o]||"")+'"';return"<"+i.tag+' class="'+i.classes.join(" ")+'" '+s+">"+i.content+"</"+i.tag+">"};if(!self.document){self.addEventListener("message",function(e){var n=JSON.parse(e.data),r=n.language,i=n.code;self.postMessage(JSON.stringify(t.tokenize(i,t.languages[r])));self.close()},!1);return}var r=document.getElementsByTagName("script");r=r[r.length-1];if(r){t.filename=r.src;document.addEventListener&&!r.hasAttribute("data-manual")&&document.addEventListener("DOMContentLoaded",t.highlightAll)}})();;
+      Prism.languages.markup={comment:/&lt;!--[\w\W]*?--(&gt;|&gt;)/g,prolog:/&lt;\?.+?\?&gt;/,doctype:/&lt;!DOCTYPE.+?&gt;/,cdata:/&lt;!\[CDATA\[[\w\W]+?]]&gt;/i,tag:{pattern:/&lt;\/?[\w:-]+\s*(?:\s+[\w:-]+(?:=(?:("|')(\\?[\w\W])*?\1|\w+))?\s*)*\/?&gt;/gi,inside:{tag:{pattern:/^&lt;\/?[\w:-]+/i,inside:{punctuation:/^&lt;\/?/,namespace:/^[\w-]+?:/}},"attr-value":{pattern:/=(?:('|")[\w\W]*?(\1)|[^\s>]+)/gi,inside:{punctuation:/=|&gt;|"/g}},punctuation:/\/?&gt;/g,"attr-name":{pattern:/[\w:-]+/g,inside:{namespace:/^[\w-]+?:/}}}},entity:/&amp;#?[\da-z]{1,8};/gi};Prism.hooks.add("wrap",function(e){e.type==="entity"&&(e.attributes.title=e.content.replace(/&amp;/,"&"))});;
+      Prism.languages.css={comment:/\/\*[\w\W]*?\*\//g,atrule:/@[\w-]+?(\s+[^;{]+)?(?=\s*{|\s*;)/gi,url:/url\((["']?).*?\1\)/gi,selector:/[^\{\}\s][^\{\}]*(?=\s*\{)/g,property:/(\b|\B)[a-z-]+(?=\s*:)/ig,string:/("|')(\\?.)*?\1/g,important:/\B!important\b/gi,ignore:/&(lt|gt|amp);/gi,punctuation:/[\{\};:]/g};Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{style:{pattern:/(&lt;|<)style[\w\W]*?(>|&gt;)[\w\W]*?(&lt;|<)\/style(>|&gt;)/ig,inside:{tag:{pattern:/(&lt;|<)style[\w\W]*?(>|&gt;)|(&lt;|<)\/style(>|&gt;)/ig,inside:Prism.languages.markup.tag.inside},rest:Prism.languages.css}}});;
+      Prism.languages.clike={comment:{pattern:/(^|[^\\])(\/\*[\w\W]*?\*\/|\/\/.*?(\r?\n|$))/g,lookbehind:!0},string:/("|')(\\?.)*?\1/g,keyword:/\b(if|else|while|do|for|return|in|instanceof|function|new|try|catch|finally|null|break|continue)\b/g,"boolean":/\b(true|false)\b/g,number:/\b-?(0x)?\d*\.?[\da-f]+\b/g,operator:/[-+]{1,2}|!|=?&lt;|=?&gt;|={1,2}|(&amp;){1,2}|\|?\||\?|\*|\//g,ignore:/&(lt|gt|amp);/gi,punctuation:/[{}[\];(),.:]/g};;
+      Prism.languages.javascript=Prism.languages.extend("clike",{keyword:/\b(var|let|if|else|while|do|for|return|in|instanceof|function|new|with|typeof|try|catch|finally|null|break|continue)\b/g,number:/\b(-?(0x)?\d*\.?[\da-f]+|NaN|-?Infinity)\b/g});Prism.languages.insertBefore("javascript","keyword",{regex:{pattern:/(^|[^/])\/(?!\/)(\[.+?]|\\.|[^/\r\n])+\/[gim]{0,3}(?=\s*($|[\r\n,.;})]))/g,lookbehind:!0}});Prism.languages.markup&&Prism.languages.insertBefore("markup","tag",{script:{pattern:/(&lt;|<)script[\w\W]*?(>|&gt;)[\w\W]*?(&lt;|<)\/script(>|&gt;)/ig,inside:{tag:{pattern:/(&lt;|<)script[\w\W]*?(>|&gt;)|(&lt;|<)\/script(>|&gt;)/ig,inside:Prism.languages.markup.tag.inside},rest:Prism.languages.javascript}}});;
+      
+    </script>
+    <!-- App js-->
+    <script>
+      $(function(){
+        var $window = $(window);
+        $('.scrollspy .nav').affix({
+          offset: {
+            top: function () { return $window.width() <= 980 ? 480 : 400 }
+          , bottom: 50
+          }
+        });
+      })
+    </script>
+  </body>
+</html>

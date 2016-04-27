@@ -874,7 +874,7 @@ var Day = function (_ModelView) {
 
     /**
      * @method setEvents
-     * @param  {Array[Object]}  newEventsConfig   array of event configuration objects
+     * @param  {Array<Object>}  newEventsConfig   array of event configuration objects
      */
 
   }, {
@@ -1344,9 +1344,9 @@ var Calendar = function (_ModelView) {
 
     /**
      * @method findDays
-     * @param {String or Date} end
-     * @param {String or Date} start
-     * @param {Array[Day]} days
+     * @param {String | Date} end
+     * @param {String | Date} start
+     * @param {Array<Day>} days
      * @returns {Array}
      */
 
@@ -1643,7 +1643,7 @@ var MultiCalendar = function (_ModelView) {
     /**
      * Moves all calendars to a view that shows the specified date.
      * @method goToDate
-     * @param  {String or Date} date       [description]
+     * @param  {String | Date} date       [description]
      * @param  {ControlBar} controlBar [opitonal]
      * @return {void}
      */
@@ -1688,7 +1688,7 @@ var MultiCalendar = function (_ModelView) {
 
     /**
      * @method getDayCount Amount of days being shown in each calendar.
-     * @param  {Array[Calendar]} calendars [optional]
+     * @param  {Array<Calendar>} calendars [optional]
      * @return {Int} If there are no calendars it returns 0;
      */
 
@@ -1708,7 +1708,7 @@ var MultiCalendar = function (_ModelView) {
      * @private
      * @method _loadEvents
      * @param  {String}    loadUrl            [optional]
-     * @param  {Array[Calendar]}   calendars  [optional]
+     * @param  {Array<Calendar>}   calendars  [optional]
      * @param  {ControlBar}   controlBar      [optional]
      * @return {Promise}              Promise that will be resolved when events
      *                                 have been loaded and added to the calendars
@@ -1778,8 +1778,8 @@ var MultiCalendar = function (_ModelView) {
      * Sets the events for all calendars
      * @private
      * @method _setEvents
-     * @param  {Array[Object]}  calEvents    [optional]
-     * @param  {Array[Calendar]}  calendars  [optional]
+     * @param  {Array<Object>}  calEvents    [optional]
+     * @param  {Array<Calendar>}  calendars  [optional]
      */
 
   }, {
@@ -1848,8 +1848,8 @@ var MultiCalendar = function (_ModelView) {
     /**
      * Sets the start date of all calendars and of the control bar.
      * @method setStartDate
-     * @param  {DateHandler or String}   date
-     * @param  {Array[Calendar]}        calendars  [optional]
+     * @param  {DateHandler | String}   date
+     * @param  {Array<Calendar>}        calendars  [optional]
      */
 
   }, {
@@ -1908,7 +1908,7 @@ var MultiCalendar = function (_ModelView) {
      * @private
      * @method _setViewMode
      * @param {String} newMode
-     * @param {Array[Calendar]} calendars [optional]
+     * @param {Array<Calendar>} calendars [optional]
      * @return {void}
      */
 

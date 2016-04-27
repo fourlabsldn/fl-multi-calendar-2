@@ -141,7 +141,7 @@ export default class MultiCalendar extends ModelView {
   /**
    * Moves all calendars to a view that shows the specified date.
    * @method goToDate
-   * @param  {String or Date} date       [description]
+   * @param  {String | Date} date       [description]
    * @param  {ControlBar} controlBar [opitonal]
    * @return {void}
    */
@@ -177,7 +177,7 @@ export default class MultiCalendar extends ModelView {
 
   /**
    * @method getDayCount Amount of days being shown in each calendar.
-   * @param  {Array[Calendar]} calendars [optional]
+   * @param  {Array<Calendar>} calendars [optional]
    * @return {Int} If there are no calendars it returns 0;
    */
   getDayCount(calendars = this.calendars) {
@@ -190,7 +190,7 @@ export default class MultiCalendar extends ModelView {
    * @private
    * @method _loadEvents
    * @param  {String}    loadUrl            [optional]
-   * @param  {Array[Calendar]}   calendars  [optional]
+   * @param  {Array<Calendar>}   calendars  [optional]
    * @param  {ControlBar}   controlBar      [optional]
    * @return {Promise}              Promise that will be resolved when events
    *                                 have been loaded and added to the calendars
@@ -246,8 +246,8 @@ export default class MultiCalendar extends ModelView {
    * Sets the events for all calendars
    * @private
    * @method _setEvents
-   * @param  {Array[Object]}  calEvents    [optional]
-   * @param  {Array[Calendar]}  calendars  [optional]
+   * @param  {Array<Object>}  calEvents    [optional]
+   * @param  {Array<Calendar>}  calendars  [optional]
    */
   _setEvents(calEvents = this.lastLoadedEvents, calendars = this.calendars) {
     if (typeof calEvents !== 'object') {
@@ -280,8 +280,8 @@ export default class MultiCalendar extends ModelView {
   /**
    * Sets the start date of all calendars and of the control bar.
    * @method setStartDate
-   * @param  {DateHandler or String}   date
-   * @param  {Array[Calendar]}        calendars  [optional]
+   * @param  {DateHandler | String}   date
+   * @param  {Array<Calendar>}        calendars  [optional]
    */
   setStartDate(date, calendars = this.calendars) {
     // This function may be called before a view mode is set. In this clase
@@ -314,7 +314,7 @@ export default class MultiCalendar extends ModelView {
    * @private
    * @method _setViewMode
    * @param {String} newMode
-   * @param {Array[Calendar]} calendars [optional]
+   * @param {Array<Calendar>} calendars [optional]
    * @return {void}
    */
   _setViewMode(modeName, calendars = this.calendars) {
