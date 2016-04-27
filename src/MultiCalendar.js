@@ -239,9 +239,10 @@ export default class MultiCalendar extends ModelView {
       this.setEvents(loadedCalEvents, calendars);
       controlBar.setLoadingState('success');
     })
-    .catch(() => {
+    .catch((e) => {
       if (thisRequest.cancelled) { return; }
       controlBar.setLoadingState('error');
+      console.error(e);
     });
   }
 

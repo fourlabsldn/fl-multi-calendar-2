@@ -1800,11 +1800,12 @@ var MultiCalendar = function (_ModelView) {
         }
         _this3.setEvents(loadedCalEvents, calendars);
         controlBar.setLoadingState('success');
-      }).catch(function () {
+      }).catch(function (e) {
         if (thisRequest.cancelled) {
           return;
         }
         controlBar.setLoadingState('error');
+        console.error(e);
       });
     }
 
