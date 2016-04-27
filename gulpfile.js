@@ -80,7 +80,7 @@ gulp.task('docs', () => {
   gulp.src(['src/*.js', 'README.md'], { base: '.' })
     .pipe(gulpDoxx({
       title: 'Multi Calendar 2',
-      urlPrefix: '/docs',
+      urlPrefix: '/fl-multi-calendar-2', // Name of git repo. This will be important in gh-pages
     }))
     .pipe(gulp.dest('docs'));
 });
