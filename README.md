@@ -77,7 +77,7 @@ myConfigObject = {
 
 Events sent from the server should follow this structure:
 
-``` json
+``` javascript
 {
    "title": "46 Hanover House,  London E14 8RH ",
    "description": "Mum's birthday",
