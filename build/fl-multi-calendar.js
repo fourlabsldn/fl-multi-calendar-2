@@ -1517,7 +1517,7 @@ var MultiCalendar = function (_ModelView) {
     _this.html.container.appendChild(_this.controlBar.html.container);
 
     assert(typeof config.loadUrl === 'string', 'No loadUrl provided.');
-    _this.loadUrl = config.loadUrl;
+    _this.loadUrl = _this._prepareLoadUrl(config.loadUrl);
 
     // Dates will be initialised in this.setStartDate
     _this.startDate = null;
@@ -1770,25 +1770,25 @@ var MultiCalendar = function (_ModelView) {
 
       controlBar.setLoadingState('loading');
 
+      // Crete array of calendar IDS
       var calIds = [];
       this.calendars.forEach(function (cal) {
         calIds.push(cal.getId());
       });
 
-      var requestConfig = {};
-      //  {
-      //   method: 'GET',
-      //   cache: 'no-cache',
-      //   credentials: 'include',
-      //   headers: new Headers({
-      //     'Content-Type': 'application/json',
-      //   }),
-      //   body: JSON.stringify({
-      //     ids: calIds,
-      //     start: DateHandler.format(this.startDate, 'X'),
-      //     end: DateHandler.format(this.endDate, 'X'),
-      //   }),
-      // };
+      var params = {
+        ids: calIds,
+        start: DateHandler.format(this.startDate, 'X'),
+        end: DateHandler.format(this.endDate, 'X')
+      };
+
+      var fullUrl = this._addParametersToUrl(params, loadUrl);
+
+      var requestConfig = {
+        method: 'GET',
+        cache: 'no-cache',
+        credentials: 'include'
+      };
 
       // Cancel last request. The function that made the request
       // will preserve this object in a closure so we can safely
@@ -1798,7 +1798,7 @@ var MultiCalendar = function (_ModelView) {
       this.lastRequest = thisRequest;
 
       // TODO: develop a timeout mechanism
-      return fetch(loadUrl, requestConfig).then(function (data) {
+      return fetch(fullUrl, requestConfig).then(function (data) {
         return data.json();
       })
       // The loaded object is indexed by calendar id and each element contains
@@ -2105,6 +2105,89 @@ var MultiCalendar = function (_ModelView) {
 
       var stickyCheckDebounded = debounce(stickyCheck, 50);
       window.addEventListener('scroll', stickyCheckDebounded);
+    }
+
+    /**
+     * Adds parameters as GET string parameters to a prepared URL
+     * @method _addParametersToUrl
+     * @param  {Object}            params
+     * @param  {String}            loadUrl [optional]
+     * @return {String}           The full URL with parameters
+     */
+
+  }, {
+    key: '_addParametersToUrl',
+    value: function _addParametersToUrl(params) {
+      var loadUrl = arguments.length <= 1 || arguments[1] === undefined ? this.loadUrl : arguments[1];
+
+      var getParams = [];
+      var keys = Object.keys(params);
+      var _iteratorNormalCompletion8 = true;
+      var _didIteratorError8 = false;
+      var _iteratorError8 = undefined;
+
+      try {
+        for (var _iterator8 = keys[Symbol.iterator](), _step8; !(_iteratorNormalCompletion8 = (_step8 = _iterator8.next()).done); _iteratorNormalCompletion8 = true) {
+          var param = _step8.value;
+
+          var value = params[param].toString();
+          if (Array.isArray(params[param])) {
+            value = '[' + value + ']';
+          }
+          getParams.push(param + '=' + value);
+        }
+      } catch (err) {
+        _didIteratorError8 = true;
+        _iteratorError8 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion8 && _iterator8.return) {
+            _iterator8.return();
+          }
+        } finally {
+          if (_didIteratorError8) {
+            throw _iteratorError8;
+          }
+        }
+      }
+
+      var unencodedGetParams = getParams.join('&');
+      var encodedGetParams = encodeURIComponent(unencodedGetParams);
+      var fullUrl = loadUrl + encodedGetParams;
+      return fullUrl;
+    }
+
+    /**
+     * Adds a proper domain an prepares the URL for query parameters.
+     * @private
+     * @method _prepareLoadUrl
+     * @param  {String}        url
+     * @return {String}            The usable loadUrl
+     */
+
+  }, {
+    key: '_prepareLoadUrl',
+    value: function _prepareLoadUrl(rawUrl) {
+      var url = void 0;
+      try {
+        url = new URL(rawUrl);
+      } catch (e) {
+        try {
+          url = new URL(location.origin + rawUrl);
+          assert.warn(false, 'No domain provided. Assuming domain: ' + location.origin);
+        } catch (e2) {
+          assert(false, 'Invalid URL: ${loadUrl}');
+        }
+      }
+
+      var fullUrl = void 0;
+      if (url.search.length > 0) {
+        url.search = url.search + '&';
+        fullUrl = url.href;
+      } else {
+        fullUrl = url.href + '?';
+      }
+      return fullUrl;
     }
   }]);
   return MultiCalendar;

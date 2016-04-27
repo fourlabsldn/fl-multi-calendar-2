@@ -53,7 +53,7 @@ export default class MultiCalendar extends ModelView {
 
     assert(typeof config.loadUrl === 'string',
       'No loadUrl provided.');
-    this.loadUrl = config.loadUrl;
+    this.loadUrl = this._prepareLoadUrl(config.loadUrl);
 
     // Dates will be initialised in this.setStartDate
     this.startDate = null;
@@ -202,25 +202,25 @@ export default class MultiCalendar extends ModelView {
   loadEvents(loadUrl = this.loadUrl, calendars = this.calendars, controlBar = this.controlBar) {
     controlBar.setLoadingState('loading');
 
+    // Crete array of calendar IDS
     const calIds = [];
     this.calendars.forEach((cal) => {
       calIds.push(cal.getId());
     });
 
-    const requestConfig = {};
-    //  {
-    //   method: 'GET',
-    //   cache: 'no-cache',
-    //   credentials: 'include',
-    //   headers: new Headers({
-    //     'Content-Type': 'application/json',
-    //   }),
-    //   body: JSON.stringify({
-    //     ids: calIds,
-    //     start: DateHandler.format(this.startDate, 'X'),
-    //     end: DateHandler.format(this.endDate, 'X'),
-    //   }),
-    // };
+    const params = {
+      ids: calIds,
+      start: DateHandler.format(this.startDate, 'X'),
+      end: DateHandler.format(this.endDate, 'X'),
+    };
+
+    const fullUrl = this._addParametersToUrl(params, loadUrl);
+
+    const requestConfig = {
+      method: 'GET',
+      cache: 'no-cache',
+      credentials: 'include',
+    };
 
     // Cancel last request. The function that made the request
     // will preserve this object in a closure so we can safely
@@ -230,7 +230,7 @@ export default class MultiCalendar extends ModelView {
     this.lastRequest = thisRequest;
 
     // TODO: develop a timeout mechanism
-    return fetch(loadUrl, requestConfig)
+    return fetch(fullUrl, requestConfig)
     .then((data) => { return data.json(); })
     // The loaded object is indexed by calendar id and each element contains
     // an array of event objects.
@@ -411,5 +411,59 @@ export default class MultiCalendar extends ModelView {
 
     const stickyCheckDebounded = debounce(stickyCheck, 50);
     window.addEventListener('scroll', stickyCheckDebounded);
+  }
+
+  /**
+   * Adds parameters as GET string parameters to a prepared URL
+   * @method _addParametersToUrl
+   * @param  {Object}            params
+   * @param  {String}            loadUrl [optional]
+   * @return {String}           The full URL with parameters
+   */
+  _addParametersToUrl(params, loadUrl = this.loadUrl) {
+    const getParams = [];
+    const keys = Object.keys(params);
+    for (const param of keys) {
+      let value = params[param].toString();
+      if (Array.isArray(params[param])) {
+        value = `[${value}]`;
+      }
+      getParams.push(`${param}=${value}`);
+    }
+
+    const unencodedGetParams = getParams.join('&');
+    const encodedGetParams = encodeURIComponent(unencodedGetParams);
+    const fullUrl = loadUrl + encodedGetParams;
+    return fullUrl;
+  }
+
+  /**
+   * Adds a proper domain an prepares the URL for query parameters.
+   * @private
+   * @method _prepareLoadUrl
+   * @param  {String}        url
+   * @return {String}            The usable loadUrl
+   */
+  _prepareLoadUrl(rawUrl) {
+    let url;
+    try {
+      url = new URL(rawUrl);
+    } catch (e) {
+      try {
+        url = new URL(location.origin + rawUrl);
+        assert.warn(false, `No domain provided. Assuming domain: ${location.origin}`);
+      } catch (e2) {
+        assert(false, 'Invalid URL: ${loadUrl}');
+      }
+    }
+
+    let fullUrl;
+    if (url.search.length > 0) {
+      url.search = `${url.search}&`;
+      fullUrl = url.href;
+    } else {
+      fullUrl = `${url.href}?`;
+    }
+    return fullUrl;
   }
 }
