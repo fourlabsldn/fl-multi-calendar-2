@@ -69,7 +69,8 @@ myConfigObject = {
     titleClick: titleClick, //optional
     dayHeaderClick: dayHeaderClick, //optional
     eventClick: eventClick, //optional
-  }, ],
+  }
+ ],
 }
 ```
 

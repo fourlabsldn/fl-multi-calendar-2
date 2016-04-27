@@ -313,6 +313,7 @@ $border-size: 2px;
 .fl-mc-cal-days {
   flex: 1 1 auto;
   background-color: inherit; //For the day-header effect
+  overflow: hidden;
 
   display: flex;
   flex-flow: row nowrap;
@@ -375,12 +376,15 @@ $border-size: 2px;
 //      Event
 //--------------------------------
 .fl-mc-cal-day-event {
+  $event-padding: .5em;
+
   display: block;
   position: relative; // for the tooltip.
-  padding: .5em;
+  padding: $event-padding;
   border-radius: 5px;
   margin: 0 0 .1em;
   font-size: ms(-1);
+  overflow: hidden; // Important for fc-mc-multiple-days-placeholder
 
   background-color: $c-main;
   color: $c-main-text;
@@ -403,6 +407,27 @@ $border-size: 2px;
 
   &:active {
     filter: brightness(95%);
+  }
+
+  @for $i from 2 through 7 {
+    $content: $i * 100%;
+    $margins: ($i) * ($border-size);
+    $paddings: ($i * $event-padding);
+    $event-container-width: calc( #{$content} + #{$margins} );
+    $event-content-width: calc( #{$content} + #{$margins} + #{$paddings} );
+
+    &.fl-mc-multiple-days-#{$i} {
+      width: $event-container-width;
+      z-index: 1;
+    }
+
+    &.fl-mc-multiple-days-placeholder-#{$i} {
+      visibility: hidden;
+
+      * {
+        width: $event-content-width;
+      }
+    }
   }
 }
 

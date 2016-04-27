@@ -165,8 +165,9 @@ var DateHandler = function () {
     key: 'diff',
     value: function diff(date1, date2) {
       var criterion = arguments.length <= 2 || arguments[2] === undefined ? 'minutes' : arguments[2];
+      var floatingPoint = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
 
-      return moment(date1).diff(moment(date2), criterion);
+      return moment(date1).diff(moment(date2), criterion, floatingPoint);
     }
   }, {
     key: 'sameDay',
@@ -723,8 +724,8 @@ var EVENT_CLASS = '-event';
 var Event = function (_ModelView) {
   babelHelpers.inherits(Event, _ModelView);
 
-  function Event(eventConfig, parentClass) {
-    var callbacks = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+  function Event(eventConfig, parentClass, parentDate) {
+    var callbacks = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
     babelHelpers.classCallCheck(this, Event);
 
     assert((typeof eventConfig === 'undefined' ? 'undefined' : babelHelpers.typeof(eventConfig)) === 'object', 'Invalid event configuration object provided: ' + eventConfig);
@@ -784,12 +785,7 @@ var Event = function (_ModelView) {
 
     Object.preventExtensions(_this);
 
-    // Add classes specified to event
-    if (Array.isArray(eventConfig.classes)) {
-      eventConfig.classes.forEach(function (className) {
-        _this.html.container.classList.add(className);
-      });
-    }
+    _this._attatchClasses(parentDate);
 
     // Setup eventClick callback
     if (typeof _this.callbacks.eventClick === 'function') {
@@ -815,6 +811,38 @@ var Event = function (_ModelView) {
     key: 'getConfig',
     value: function getConfig() {
       return this.config;
+    }
+  }, {
+    key: '_attatchClasses',
+    value: function _attatchClasses(parentDate) {
+      var _this2 = this;
+
+      var eventConfig = arguments.length <= 1 || arguments[1] === undefined ? this.config : arguments[1];
+
+      // Add classes specified in config
+      if (Array.isArray(eventConfig.classes)) {
+        eventConfig.classes.forEach(function (className) {
+          _this2.html.container.classList.add(className);
+        });
+      }
+
+      var startInParentDate = DateHandler.sameDay(parentDate, this.startDate);
+      var endInParentDate = DateHandler.sameDay(parentDate, this.endDate);
+
+      if (startInParentDate && endInParentDate) {
+        return;
+      }
+      if (startInParentDate) {
+        var daysToEnd = DateHandler.diff(this.endDate, parentDate, 'days', true);
+        var daysToEndRound = Math.ceil(daysToEnd);
+        var normalisedDaysToEnd = Math.min(daysToEndRound, 7);
+        this.html.container.classList.add('fl-mc-multiple-days-' + normalisedDaysToEnd);
+      } else {
+        var daySpan = DateHandler.diff(this.endDate, this.startDate, 'days', true);
+        var daySpanRound = Math.ceil(daySpan);
+        var normalisedSpan = Math.min(daySpanRound, 7);
+        this.html.container.classList.add('fl-mc-multiple-days-placeholder-' + normalisedSpan);
+      }
     }
 
     /**
@@ -898,7 +926,7 @@ var Day = function (_ModelView) {
   }, {
     key: 'addEvent',
     value: function addEvent(eventInfo) {
-      var newEvent = new Event(eventInfo, this.class, this.callbacks);
+      var newEvent = new Event(eventInfo, this.class, this.date, this.callbacks);
       assert(newEvent && newEvent.html && newEvent.html.container, 'New Event instance initialised without an HTML container.');
 
       // Insert new event in the right place in the HTML.

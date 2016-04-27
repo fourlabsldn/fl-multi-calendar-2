@@ -24,8 +24,8 @@ export default class DateHandler {
   }
 
   // Returns positive if date1 > date2 and 0 if they are equal.
-  static diff(date1, date2, criterion = 'minutes') {
-    return moment(date1).diff(moment(date2), criterion);
+  static diff(date1, date2, criterion = 'minutes', floatingPoint = false) {
+    return moment(date1).diff(moment(date2), criterion, floatingPoint);
   }
 
   static sameDay(date1, date2) {

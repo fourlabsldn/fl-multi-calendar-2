@@ -357,6 +357,7 @@
       -ms-flex: 1 1 auto;
           flex: 1 1 auto;
   background-color: inherit;
+  overflow: hidden;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -415,11 +416,12 @@
 .fl-mc-cal-day-event {
   display: block;
   position: relative;
-  padding: .5em;
+  padding: 0.5em;
   -webkit-border-radius: 5px;
           border-radius: 5px;
   margin: 0 0 .1em;
   font-size: 0.75em;
+  overflow: hidden;
   background-color: #d45240;
   color: #fafafa;
   -webkit-transition: all .1s ease;
@@ -466,6 +468,60 @@
   .fl-mc-cal-day-event:active {
     -webkit-filter: brightness(95%);
             filter: brightness(95%); }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-2 {
+    width: -webkit-calc( 200% + 4px);
+    width: calc( 200% + 4px);
+    z-index: 1; }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-2 {
+    visibility: hidden; }
+    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-2 * {
+      width: -webkit-calc( 200% + 4px + 1em);
+      width: calc( 200% + 4px + 1em); }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-3 {
+    width: -webkit-calc( 300% + 6px);
+    width: calc( 300% + 6px);
+    z-index: 1; }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-3 {
+    visibility: hidden; }
+    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-3 * {
+      width: -webkit-calc( 300% + 6px + 1.5em);
+      width: calc( 300% + 6px + 1.5em); }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-4 {
+    width: -webkit-calc( 400% + 8px);
+    width: calc( 400% + 8px);
+    z-index: 1; }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-4 {
+    visibility: hidden; }
+    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-4 * {
+      width: -webkit-calc( 400% + 8px + 2em);
+      width: calc( 400% + 8px + 2em); }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-5 {
+    width: -webkit-calc( 500% + 10px);
+    width: calc( 500% + 10px);
+    z-index: 1; }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-5 {
+    visibility: hidden; }
+    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-5 * {
+      width: -webkit-calc( 500% + 10px + 2.5em);
+      width: calc( 500% + 10px + 2.5em); }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-6 {
+    width: -webkit-calc( 600% + 12px);
+    width: calc( 600% + 12px);
+    z-index: 1; }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-6 {
+    visibility: hidden; }
+    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-6 * {
+      width: -webkit-calc( 600% + 12px + 3em);
+      width: calc( 600% + 12px + 3em); }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-7 {
+    width: -webkit-calc( 700% + 14px);
+    width: calc( 700% + 14px);
+    z-index: 1; }
+  .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-7 {
+    visibility: hidden; }
+    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-7 * {
+      width: -webkit-calc( 700% + 14px + 3.5em);
+      width: calc( 700% + 14px + 3.5em); }
 
 .fl-mc-event-color-blue {
   background-color: #2E9498; }

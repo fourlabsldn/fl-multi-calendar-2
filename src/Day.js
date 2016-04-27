@@ -51,7 +51,7 @@ export default class Day extends ModelView {
   }
 
   addEvent(eventInfo) {
-    const newEvent = new Event(eventInfo, this.class, this.callbacks);
+    const newEvent = new Event(eventInfo, this.class, this.date, this.callbacks);
     assert(newEvent && newEvent.html && newEvent.html.container,
       'New Event instance initialised without an HTML container.');
 

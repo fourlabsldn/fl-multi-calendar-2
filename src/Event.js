@@ -9,7 +9,7 @@ const EVENT_CLASS = '-event';
  * @private
  */
 class Event extends ModelView {
-  constructor(eventConfig, parentClass, callbacks = {}) {
+  constructor(eventConfig, parentClass, parentDate, callbacks = {}) {
     assert(typeof eventConfig === 'object',
       `Invalid event configuration object provided: ${eventConfig}`);
 
@@ -51,12 +51,7 @@ class Event extends ModelView {
 
     Object.preventExtensions(this);
 
-    // Add classes specified to event
-    if (Array.isArray(eventConfig.classes)) {
-      eventConfig.classes.forEach((className) => {
-        this.html.container.classList.add(className);
-      });
-    }
+    this._attatchClasses(parentDate);
 
     // Setup eventClick callback
     if (typeof this.callbacks.eventClick === 'function') {
@@ -78,6 +73,35 @@ class Event extends ModelView {
 
   getConfig() {
     return this.config;
+  }
+
+  _attatchClasses(parentDate, eventConfig = this.config) {
+    // Add classes specified in config
+    if (Array.isArray(eventConfig.classes)) {
+      eventConfig.classes.forEach((className) => {
+        this.html.container.classList.add(className);
+      });
+    }
+
+    const startInParentDate = DateHandler.sameDay(parentDate, this.startDate);
+    const endInParentDate = DateHandler.sameDay(parentDate, this.endDate);
+
+    if (startInParentDate && endInParentDate) { return; }
+    if (startInParentDate) {
+      const daysToEnd = DateHandler.diff(this.endDate, parentDate, 'days', true);
+      const daysToEndRound = Math.ceil(daysToEnd);
+      const normalisedDaysToEnd = Math.min(daysToEndRound, 7);
+      this.html.container.classList.add(
+        `fl-mc-multiple-days-${normalisedDaysToEnd}`
+      );
+    } else {
+      const daySpan = DateHandler.diff(this.endDate, this.startDate, 'days', true);
+      const daySpanRound = Math.ceil(daySpan);
+      const normalisedSpan = Math.min(daySpanRound, 7);
+      this.html.container.classList.add(
+        `fl-mc-multiple-days-placeholder-${normalisedSpan}`
+      );
+    }
   }
 
   /**
