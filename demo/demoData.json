@@ -6,7 +6,7 @@
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 18:00:00",
          "tooltip":"LOL",
-         "color": "red"
+         "classes": [ "fl-mc-event-color-red" ]
       },
       {
          "id":"2345",
@@ -14,7 +14,7 @@
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 18:00:00",
          "tooltip":"LOdsfL",
-         "color": "green"
+         "classes": [ "fl-mc-event-color-green" ]
       },
       {
          "id":"3456",
@@ -22,7 +22,7 @@
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 18:00:00",
          "tooltip":"LoooOL",
-         "color": "blue"
+         "classes": [ "fl-mc-event-color-blue" ]
       },
       {
          "id":"456",
@@ -30,7 +30,7 @@
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 18:00:00",
          "tooltip":"LOoooL",
-         "color": "yellow"
+         "classes": [ "fl-mc-event-color-yellow" ]
       },
       {
          "id":"567",
@@ -38,7 +38,7 @@
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 18:00:00",
          "tooltip":"LlololololololOL",
-         "color": "orange"
+         "classes": [ "fl-mc-event-color-orange" ]
       }
    ],
    "7899":[
@@ -55,7 +55,7 @@
          "duration":"60",
          "timespan-end":"12:00",
          "appointment":false,
-         "color": "black",
+         "classes": [ "fl-mc-event-color-black" ],
          "photographers":[
             59
          ],
@@ -69,7 +69,7 @@
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-27 10:00:00",
          "tooltip":"LlololololololOL",
-         "color": "white"
+         "classes": [ "fl-mc-event-color-white" ]
       },
       {
          "id":"7899",

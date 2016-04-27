@@ -655,16 +655,6 @@ var ButtonLoadingController = function () {
 
 var EVENT_CLASS = '-event';
 
-var possibleColors = {
-  blue: 'fl-mc-event-color-blue',
-  green: 'fl-mc-event-color-green',
-  yellow: 'fl-mc-event-color-yellow',
-  red: 'fl-mc-event-color-red',
-  orange: 'fl-mc-event-color-orange',
-  white: 'fl-mc-event-color-white',
-  black: 'fl-mc-event-color-black'
-};
-
 var Event = function (_ModelView) {
   babelHelpers.inherits(Event, _ModelView);
 
@@ -725,15 +715,16 @@ var Event = function (_ModelView) {
     assert(!eventConfig.tooltip || typeof eventConfig.tooltip === 'string', 'Invalid tooltip type: ' + eventConfig.tooltip);
     _this.tooltip = eventConfig.tooltip;
 
-    if (eventConfig.color) {
-      assert(possibleColors[eventConfig.color], 'Invalid color: ' + eventConfig.color);
-      var colorClass = possibleColors[eventConfig.color];
-      _this.html.container.classList.add(colorClass);
-    }
-
     _this.updateTime();
 
     Object.preventExtensions(_this);
+
+    // Add classes specified to event
+    if (Array.isArray(eventConfig.classes)) {
+      eventConfig.classes.forEach(function (className) {
+        _this.html.container.classList.add(className);
+      });
+    }
 
     // Setup eventClick callback
     if (typeof _this.callbacks.eventClick === 'function') {
