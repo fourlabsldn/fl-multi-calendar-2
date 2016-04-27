@@ -1669,19 +1669,20 @@ var MultiCalendar = function (_ModelView) {
         calIds.push(cal.getId());
       });
 
-      var requestConfig = {
-        method: 'GET',
-        cache: 'no-cache',
-        credentials: 'include',
-        headers: new Headers({
-          'Content-Type': 'application/json'
-        }),
-        body: {
-          ids: calIds,
-          start: DateHandler.format(this.startDate, 'X'),
-          end: DateHandler.format(this.endDate, 'X')
-        }
-      };
+      var requestConfig = {};
+      //  {
+      //   method: 'GET',
+      //   cache: 'no-cache',
+      //   credentials: 'include',
+      //   headers: new Headers({
+      //     'Content-Type': 'application/json',
+      //   }),
+      //   body: JSON.stringify({
+      //     ids: calIds,
+      //     start: DateHandler.format(this.startDate, 'X'),
+      //     end: DateHandler.format(this.endDate, 'X'),
+      //   }),
+      // };
 
       // Cancel last request. The function that made the request
       // will preserve this object in a closure so we can safely

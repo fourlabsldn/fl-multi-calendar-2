@@ -170,19 +170,20 @@ export default class MultiCalendar extends ModelView {
       calIds.push(cal.getId());
     });
 
-    const requestConfig = {
-      method: 'GET',
-      cache: 'no-cache',
-      credentials: 'include',
-      headers: new Headers({
-        'Content-Type': 'application/json',
-      }),
-      body: {
-        ids: calIds,
-        start: DateHandler.format(this.startDate, 'X'),
-        end: DateHandler.format(this.endDate, 'X'),
-      },
-    };
+    const requestConfig = {};
+    //  {
+    //   method: 'GET',
+    //   cache: 'no-cache',
+    //   credentials: 'include',
+    //   headers: new Headers({
+    //     'Content-Type': 'application/json',
+    //   }),
+    //   body: JSON.stringify({
+    //     ids: calIds,
+    //     start: DateHandler.format(this.startDate, 'X'),
+    //     end: DateHandler.format(this.endDate, 'X'),
+    //   }),
+    // };
 
     // Cancel last request. The function that made the request
     // will preserve this object in a closure so we can safely
