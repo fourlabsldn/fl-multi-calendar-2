@@ -96,6 +96,27 @@ assert.warn = function warn() {
   }
 };
 
+function debounce(func, wait, immediate) {
+  var _this = this;
+
+  var timeout = void 0;
+  return function () {
+    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+
+    var context = _this;
+    var later = function later() {
+      timeout = null;
+      if (!immediate) func.apply(context, args);
+    };
+    var callNow = immediate && !timeout;
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+    if (callNow) func.apply(context, args);
+  };
+}
+
 /* globals moment */
 
 // This class serves mainly to wrap moment.js
@@ -181,6 +202,27 @@ var DateHandler = function () {
   }]);
   return DateHandler;
 }();
+
+/**
+ * [triggerEvent description]
+ * @method triggerEvent
+ * @param  {String} eventName
+ * @param  {HTMLElement} [target]
+ * @param  {Object} [data] - Data to be sent in the event
+ * @return {void}
+ */
+function triggerEvent(eventName) {
+  var target = arguments.length <= 1 || arguments[1] === undefined ? document.body : arguments[1];
+  var data = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+
+  var ev = new CustomEvent(eventName, {
+    detail: data,
+    bubbles: true,
+    cancelable: true
+  });
+
+  target.dispatchEvent(ev);
+}
 
 /**
  * @class ModelView
@@ -1479,27 +1521,6 @@ var Calendar = function (_ModelView) {
   return Calendar;
 }(ModelView);
 
-function debounce(func, wait, immediate) {
-  var _this = this;
-
-  var timeout = void 0;
-  return function () {
-    for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
-
-    var context = _this;
-    var later = function later() {
-      timeout = null;
-      if (!immediate) func.apply(context, args);
-    };
-    var callNow = immediate && !timeout;
-    clearTimeout(timeout);
-    timeout = setTimeout(later, wait);
-    if (callNow) func.apply(context, args);
-  };
-}
-
 // Private variables
 var MULTI_CALENDAR_CLASS = 'fl-mc';
 var viewModeClassPrefix = MULTI_CALENDAR_CLASS + '-view-';
@@ -1522,6 +1543,11 @@ var viewModes = {
     dateGapUnit: 'day', // Gap when pressing forward or back
     dayCount: 1
   }
+};
+
+var multiCalendarEvents = {
+  loadingStart: 'fl-mc-loading-start',
+  loadingComplete: 'fl-mc-loading-complete'
 };
 
 /**
@@ -1818,6 +1844,8 @@ var MultiCalendar = function (_ModelView) {
       var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
       var controlBar = arguments.length <= 2 || arguments[2] === undefined ? this.controlBar : arguments[2];
 
+      triggerEvent(multiCalendarEvents.loadingStart, this.html.container);
+
       controlBar.setLoadingState('loading');
 
       // Crete array of calendar IDS
@@ -1865,6 +1893,10 @@ var MultiCalendar = function (_ModelView) {
         }
         controlBar.setLoadingState('error');
         console.error(e);
+      })
+      // After error or success
+      .then(function () {
+        triggerEvent(multiCalendarEvents.loadingComplete, _this3.html.container);
       });
     }
 

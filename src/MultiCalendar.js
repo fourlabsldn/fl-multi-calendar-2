@@ -1,9 +1,11 @@
 import assert from './utils/assert';
+import debounce from './utils/debounce';
 import DateHandler from './utils/DateHandler';
+import triggerEvent from './utils/triggerEvent';
+
 import ModelView from './ModelView';
 import ControlBar from './ControlBar';
 import Calendar from './Calendar';
-import debounce from './utils/debounce';
 
 // Private variables
 const MULTI_CALENDAR_CLASS = 'fl-mc';
@@ -27,6 +29,11 @@ const viewModes = {
     dateGapUnit: 'day', // Gap when pressing forward or back
     dayCount: 1,
   },
+};
+
+const multiCalendarEvents = {
+  loadingStart: 'fl-mc-loading-start',
+  loadingComplete: 'fl-mc-loading-complete',
 };
 
 /**
@@ -239,6 +246,8 @@ class MultiCalendar extends ModelView {
    *                                 have been loaded and added to the calendars
    */
   _loadEvents(loadUrl = this.loadUrl, calendars = this.calendars, controlBar = this.controlBar) {
+    triggerEvent(multiCalendarEvents.loadingStart, this.html.container);
+
     controlBar.setLoadingState('loading');
 
     // Crete array of calendar IDS
@@ -282,6 +291,10 @@ class MultiCalendar extends ModelView {
       if (thisRequest.cancelled) { return; }
       controlBar.setLoadingState('error');
       console.error(e);
+    })
+    // After error or success
+    .then(() => {
+      triggerEvent(multiCalendarEvents.loadingComplete, this.html.container);
     });
   }
 
