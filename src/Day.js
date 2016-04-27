@@ -59,8 +59,8 @@ export default class Day extends ModelView {
     let insertedBeforeEvent = false;
     for (const event of this.events) {
       const timeDiff = DateHandler.diff(
-        event.getStartTime(),
         newEvent.getStartTime(),
+        event.getStartTime(),
         'minutes'
       );
       const eventStartsAfter = timeDiff < 0;

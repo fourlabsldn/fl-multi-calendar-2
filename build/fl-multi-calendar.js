@@ -911,7 +911,7 @@ var Day = function (_ModelView) {
         for (var _iterator = this.events[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
           var event = _step.value;
 
-          var timeDiff = DateHandler.diff(event.getStartTime(), newEvent.getStartTime(), 'minutes');
+          var timeDiff = DateHandler.diff(newEvent.getStartTime(), event.getStartTime(), 'minutes');
           var eventStartsAfter = timeDiff < 0;
           if (eventStartsAfter) {
             var oldEventIndex = this.events.indexOf(event);
