@@ -411,7 +411,7 @@ $border-size: 2px;
 
   @for $i from 2 through 7 {
     $content: $i * 100%;
-    $margins: ($i) * ($border-size);
+    $margins: $i * ($border-size);
     $paddings: ($i * $event-padding);
     $event-container-width: calc( #{$content} + #{$margins} );
     $event-content-width: calc( #{$content} + #{$margins} + #{$paddings} );

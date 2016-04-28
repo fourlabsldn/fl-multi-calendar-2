@@ -35,6 +35,7 @@ gulp.task('rollup-module', () => {
       babel({
         exclude: 'node_modules/**',
         presets: ['es2015-rollup'],
+        plugins: ['lodash'],
       }),
     ],
   }))
