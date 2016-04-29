@@ -41,16 +41,8 @@ export default function organiseEventsConfig(eventsConfig, calStartDate, dayCoun
     arr.push(view);
   }
 
-  // Get all overlapping more-than-one-day events in overlapping groups
-  const chains = getOverlappingChains(multiDayViews);
-
-  // Create all possible ordering combinations for them
-  // and get the position combination with best score
-  const bestOrderings = [];
-  for (const chain of chains) {
-    const bestOrdering = getBestOrder(chain, dayCount);
-    bestOrderings.push(bestOrdering);
-  }
+  // // Get all overlapping more-than-one-day events in overlapping groups
+  // const chains = getOverlappingChains(multiDayViews);
 
   // Array of arrays, each representing a day of the calendar. And each
   // day array will have the events for that day.
@@ -60,14 +52,16 @@ export default function organiseEventsConfig(eventsConfig, calStartDate, dayCoun
     days[i] = [];
   }
 
-  // Fill days with config objects for events from ordered overlapping chains
-  for (const ordering of bestOrderings) {
-    const eventsByDay = ordering.getOrderedEventConfigs();
-    // Add events to the respective day.
-    eventsByDay.forEach((dayEvents, dayNum) => {
-      days[dayNum] = days[dayNum].concat(dayEvents);
-    });
-  }
+  // Create all possible ordering combinations for eventViews
+  // and get the position combination with best score
+  const bestOrdering = getBestOrder(multiDayViews, dayCount);
+
+  // Fill days with config objects for events from bestOrdering
+  const eventsByDay = bestOrdering.getOrderedEventConfigs();
+  // Add events to their respective day.
+  eventsByDay.forEach((dayEvents, dayNum) => {
+    days[dayNum] = days[dayNum].concat(dayEvents);
+  });
 
   // Add all other events configs to each day in the days array.
   // As singleDayViews is in chronological order, 'days' will be too.
@@ -86,6 +80,7 @@ export default function organiseEventsConfig(eventsConfig, calStartDate, dayCoun
  * @param  {Array<EventView>} multiDayViews
  * @return {Array<Array<EventView>>} - Chains of overlapping events.
  */
+// TODO: remove this function. It is not being used
 function getOverlappingChains(multiDayViews) {
   const chains = [];
 
@@ -136,5 +131,5 @@ function getBestOrder(eventViews, dayCount) {
     }
   }
 
-  return bestOrdering;
+  return bestOrdering || new Ordering([], dayCount);
 }

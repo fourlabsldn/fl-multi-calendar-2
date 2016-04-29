@@ -1450,7 +1450,7 @@ var EventView = function () {
     this.config.ordering.isPlaceholder = false;
 
     // Days from the beginning of the calendar to the day the event starts
-    this.offset = DateHandler.diff(this.endDate, calStartDate, 'days');
+    this.offset = DateHandler.diff(this.startDate, calStartDate, 'days');
   }
 
   babelHelpers.createClass(EventView, [{
@@ -1515,7 +1515,12 @@ function organiseEventsConfig(eventsConfig, calStartDate, dayCount) {
       arr.push(view);
     }
 
-    // Get all overlapping more-than-one-day events in overlapping groups
+    // // Get all overlapping more-than-one-day events in overlapping groups
+    // const chains = getOverlappingChains(multiDayViews);
+
+    // Array of arrays, each representing a day of the calendar. And each
+    // day array will have the events for that day.
+    // Create an array of length dayCount initialised with empty arrays.
   } catch (err) {
     _didIteratorError = true;
     _iteratorError = err;
@@ -1531,26 +1536,37 @@ function organiseEventsConfig(eventsConfig, calStartDate, dayCount) {
     }
   }
 
-  var chains = getOverlappingChains(multiDayViews);
+  var days = new Array(dayCount);
+  for (var i = 0; i < days.length; i++) {
+    days[i] = [];
+  }
 
-  // Create all possible ordering combinations for them
+  // Create all possible ordering combinations for eventViews
   // and get the position combination with best score
-  var bestOrderings = [];
+  var bestOrdering = getBestOrder(multiDayViews, dayCount);
+
+  // Fill days with config objects for events from bestOrdering
+  var eventsByDay = bestOrdering.getOrderedEventConfigs();
+  // Add events to their respective day.
+  eventsByDay.forEach(function (dayEvents, dayNum) {
+    days[dayNum] = days[dayNum].concat(dayEvents);
+  });
+
+  // Add all other events configs to each day in the days array.
+  // As singleDayViews is in chronological order, 'days' will be too.
   var _iteratorNormalCompletion2 = true;
   var _didIteratorError2 = false;
   var _iteratorError2 = undefined;
 
   try {
-    for (var _iterator2 = chains[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-      var chain = _step2.value;
+    for (var _iterator2 = singleDayViews[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      var _view = _step2.value;
 
-      var bestOrdering = getBestOrder(chain, dayCount);
-      bestOrderings.push(bestOrdering);
+      // The days[index] array minght still not have been initialised
+      days[_view.offset].push(_view.config);
     }
 
-    // Array of arrays, each representing a day of the calendar. And each
-    // day array will have the events for that day.
-    // Create an array of length dayCount initialised with empty arrays.
+    // Return array with all events for each day.
   } catch (err) {
     _didIteratorError2 = true;
     _iteratorError2 = err;
@@ -1566,134 +1582,7 @@ function organiseEventsConfig(eventsConfig, calStartDate, dayCount) {
     }
   }
 
-  var days = new Array(dayCount);
-  for (var i = 0; i < days.length; i++) {
-    days[i] = [];
-  }
-
-  // Fill days with config objects for events from ordered overlapping chains
-  var _iteratorNormalCompletion3 = true;
-  var _didIteratorError3 = false;
-  var _iteratorError3 = undefined;
-
-  try {
-    for (var _iterator3 = bestOrderings[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-      var ordering = _step3.value;
-
-      var eventsByDay = ordering.getOrderedEventConfigs();
-      // Add events to the respective day.
-      eventsByDay.forEach(function (dayEvents, dayNum) {
-        days[dayNum] = days[dayNum].concat(dayEvents);
-      });
-    }
-
-    // Add all other events configs to each day in the days array.
-    // As singleDayViews is in chronological order, 'days' will be too.
-  } catch (err) {
-    _didIteratorError3 = true;
-    _iteratorError3 = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion3 && _iterator3.return) {
-        _iterator3.return();
-      }
-    } finally {
-      if (_didIteratorError3) {
-        throw _iteratorError3;
-      }
-    }
-  }
-
-  var _iteratorNormalCompletion4 = true;
-  var _didIteratorError4 = false;
-  var _iteratorError4 = undefined;
-
-  try {
-    for (var _iterator4 = singleDayViews[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-      var _view = _step4.value;
-
-      // The days[index] array minght still not have been initialised
-      days[_view.offset].push(_view.config);
-    }
-
-    // Return array with all events for each day.
-  } catch (err) {
-    _didIteratorError4 = true;
-    _iteratorError4 = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion4 && _iterator4.return) {
-        _iterator4.return();
-      }
-    } finally {
-      if (_didIteratorError4) {
-        throw _iteratorError4;
-      }
-    }
-  }
-
   return days;
-}
-
-/**
- * Returns groups of events that overlap each other.
- * @function getOverlappingChains
- * @param  {Array<EventView>} multiDayViews
- * @return {Array<Array<EventView>>} - Chains of overlapping events.
- */
-function getOverlappingChains(multiDayViews) {
-  var chains = [];
-
-  multiDayViews.forEach(function (view1, idx1) {
-    multiDayViews.forEach(function (view2, idx2) {
-      // Avoid going here twice for the same pair
-      if (idx2 <= idx1) {
-        return;
-      }
-
-      if (!view1.overlaps(view2)) {
-        return;
-      }
-
-      // Check if any of the two views is in any chain already.
-      var _iteratorNormalCompletion5 = true;
-      var _didIteratorError5 = false;
-      var _iteratorError5 = undefined;
-
-      try {
-        for (var _iterator5 = chains[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-          var chain = _step5.value;
-
-          if (chain.includes(view1)) {
-            chain.push(view2);return;
-          }
-          if (chain.includes(view2)) {
-            chain.push(view1);return;
-          }
-        }
-
-        // If it overlaps and didn't fit in any of the previous chains,
-        // then create a new one for it.
-      } catch (err) {
-        _didIteratorError5 = true;
-        _iteratorError5 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion5 && _iterator5.return) {
-            _iterator5.return();
-          }
-        } finally {
-          if (_didIteratorError5) {
-            throw _iteratorError5;
-          }
-        }
-      }
-
-      chains.push([view1, view2]);
-    });
-  });
-
-  return chains;
 }
 
 /**
@@ -1709,13 +1598,13 @@ function getBestOrder(eventViews, dayCount) {
   var possibleOrders = permute(eventViews);
   var bestOrdering = void 0;
   var bestScore = 99; // just something big will work.
-  var _iteratorNormalCompletion6 = true;
-  var _didIteratorError6 = false;
-  var _iteratorError6 = undefined;
+  var _iteratorNormalCompletion4 = true;
+  var _didIteratorError4 = false;
+  var _iteratorError4 = undefined;
 
   try {
-    for (var _iterator6 = possibleOrders[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-      var order = _step6.value;
+    for (var _iterator4 = possibleOrders[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+      var order = _step4.value;
 
       var ordering = new Ordering(order, dayCount);
       var score = ordering.getScore();
@@ -1728,21 +1617,21 @@ function getBestOrder(eventViews, dayCount) {
       }
     }
   } catch (err) {
-    _didIteratorError6 = true;
-    _iteratorError6 = err;
+    _didIteratorError4 = true;
+    _iteratorError4 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion6 && _iterator6.return) {
-        _iterator6.return();
+      if (!_iteratorNormalCompletion4 && _iterator4.return) {
+        _iterator4.return();
       }
     } finally {
-      if (_didIteratorError6) {
-        throw _iteratorError6;
+      if (_didIteratorError4) {
+        throw _iteratorError4;
       }
     }
   }
 
-  return bestOrdering;
+  return bestOrdering || new Ordering([], dayCount);
 }
 
 var CALENDAR_CLASS = '-cal';

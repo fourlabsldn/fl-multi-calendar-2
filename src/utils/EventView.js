@@ -25,7 +25,7 @@ export default class EventView {
     this.config.ordering.isPlaceholder = false;
 
     // Days from the beginning of the calendar to the day the event starts
-    this.offset = DateHandler.diff(this.endDate, calStartDate, 'days');
+    this.offset = DateHandler.diff(this.startDate, calStartDate, 'days');
   }
 
   overlaps(otherView) {
