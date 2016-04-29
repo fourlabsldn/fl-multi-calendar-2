@@ -162,5 +162,6 @@ export default class Calendar extends ModelView {
       day.setDate(DateHandler.addDays(date, counter));
       counter++;
     }
+    this.startDate = date;
   }
 }

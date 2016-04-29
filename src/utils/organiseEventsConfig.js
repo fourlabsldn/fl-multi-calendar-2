@@ -20,13 +20,17 @@ export default function organiseEventsConfig(eventsConfig, calStartDate, dayCoun
   }
 
   // Get all eventViews;
-  const eventViews = eventsConfig.map((eConfig) => {
+  const UnfilteredEventViews = eventsConfig.map((eConfig) => {
     return new EventView(eConfig, calStartDate, dayCount);
+  });
+
+  const eventViews = UnfilteredEventViews.filter((eView) => {
+    return eView.length > 0;
   });
 
   // Organise all events chronologically
   eventViews.sort((v1, v2) => {
-    return v1.diff(v2, 'minutes');
+    return v2.diff(v1, 'minutes');
   });
 
   // Get all single-day and more-than-one-day events
@@ -116,7 +120,7 @@ function getBestOrder(eventViews, dayCount) {
   // Find the best of all possible orderings
   const possibleOrders = permute(eventViews);
   let bestOrdering;
-  let bestScore;
+  let bestScore = 99; // just something big will work.
   for (const order of possibleOrders) {
     const ordering = new Ordering(order, dayCount);
     const score = ordering.getScore();
@@ -124,8 +128,8 @@ function getBestOrder(eventViews, dayCount) {
       bestOrdering = ordering;
       break;
     } else if (score < bestScore) {
-      bestScore = ordering;
-      bestOrdering = order;
+      bestScore = score;
+      bestOrdering = ordering;
     }
   }
 

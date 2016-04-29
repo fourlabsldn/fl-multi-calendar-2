@@ -79,9 +79,9 @@ export default class Ordering {
 
   _getFirstEventOfLevel(days, level) {
     // Will return the first value in that level != from undefined
-    return days.reduce((prev, curr) => {
-      return (prev[level]) ? prev[level] : curr[level];
-    });
+    return days.reduce((firstOfLevel, day) => {
+      return firstOfLevel || day[level];
+    }, null);
   }
 
   _getLevelThatEventWillFit(eView, days) {
@@ -101,9 +101,9 @@ export default class Ordering {
     return level;
   }
 
-  _calcScore(nonPaddedLaidOutEvents = this._nonPaddedLaidOutEvent) {
+  _calcScore(nonPaddedLaidOutEvents = this._nonPaddedLaidOutEvents) {
     const days = nonPaddedLaidOutEvents;
-    let score;
+    let score = 0;
     days.forEach((day) => {
       day.forEach((eventConfig) => {
         score += (eventConfig === undefined) ? 0 : 1;

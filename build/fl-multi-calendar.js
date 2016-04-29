@@ -838,9 +838,10 @@ var Event = function (_ModelView) {
     value: function _setPlaceHolderStatus(parentDate) {
       var eventConfig = arguments.length <= 1 || arguments[1] === undefined ? this.config : arguments[1];
 
-      assert(typeof eventConfig.ordering.span === 'number', 'Event configuration object not propperly handled. No "span" property found.');
-
       var span = eventConfig.ordering.span;
+      assert(typeof span === 'number', 'Event configuration object not propperly handled. No "span" property found.');
+      assert(span > 0, 'Invalid span value for event configuration: ' + span);
+
       if (this.isPlaceholder) {
         this.html.container.classList.add('fl-mc-multiple-days-placeholder-' + span);
       } else if (span > 0) {
@@ -859,24 +860,6 @@ var Event = function (_ModelView) {
         eventConfig.classes.forEach(function (className) {
           _this2.html.container.classList.add(className);
         });
-      }
-
-      var startInParentDate = DateHandler.sameDay(parentDate, this.startDate);
-      var endInParentDate = DateHandler.sameDay(parentDate, this.endDate);
-
-      if (startInParentDate && endInParentDate) {
-        return;
-      }
-      if (startInParentDate) {
-        var daysToEnd = DateHandler.diff(this.endDate, parentDate, 'days', true);
-        var daysToEndRound = Math.ceil(daysToEnd);
-        var normalisedDaysToEnd = Math.min(daysToEndRound, 7);
-        this.html.container.classList.add('fl-mc-multiple-days-' + normalisedDaysToEnd);
-      } else {
-        var daySpan = DateHandler.diff(this.endDate, this.startDate, 'days', true);
-        var daySpanRound = Math.ceil(daySpan);
-        var normalisedSpan = Math.min(daySpanRound, 7);
-        this.html.container.classList.add('fl-mc-multiple-days-placeholder-' + normalisedSpan);
       }
     }
 
@@ -1394,9 +1377,9 @@ var Ordering = function () {
     key: "_getFirstEventOfLevel",
     value: function _getFirstEventOfLevel(days, level) {
       // Will return the first value in that level != from undefined
-      return days.reduce(function (prev, curr) {
-        return prev[level] ? prev[level] : curr[level];
-      });
+      return days.reduce(function (firstOfLevel, day) {
+        return firstOfLevel || day[level];
+      }, null);
     }
   }, {
     key: "_getLevelThatEventWillFit",
@@ -1419,10 +1402,10 @@ var Ordering = function () {
   }, {
     key: "_calcScore",
     value: function _calcScore() {
-      var nonPaddedLaidOutEvents = arguments.length <= 0 || arguments[0] === undefined ? this._nonPaddedLaidOutEvent : arguments[0];
+      var nonPaddedLaidOutEvents = arguments.length <= 0 || arguments[0] === undefined ? this._nonPaddedLaidOutEvents : arguments[0];
 
       var days = nonPaddedLaidOutEvents;
-      var score = void 0;
+      var score = 0;
       days.forEach(function (day) {
         day.forEach(function (eventConfig) {
           score += eventConfig === undefined ? 0 : 1;
@@ -1442,13 +1425,19 @@ var EventView = function () {
     this.config = config;
     this.startDate = DateHandler.max(config.start, calStartDate);
 
-    var calEndDate = DateHandler.add(calStartDate, dayCount - 1);
+    var calEndDate = DateHandler.add(calStartDate, dayCount - 1, 'days').endOf('day');
     this.endDate = DateHandler.min(config.end, calEndDate);
 
-    var decimalDiff = DateHandler.diff(this.startDate, this.endDate, 'days', true);
+    var decimalDiff = DateHandler.diff(this.endDate, this.startDate, 'days', true);
     // How many days the Event object created with this event config will take
     // given the current calendar start and end date
-    this.length = Math.ceil(decimalDiff);
+    this.length = Math.ceil(decimalDiff) || 1;
+
+    // If calendar finished before this event's end date or ends
+    // before this event's start date, then there is nothing else to do.
+    if (this.length < 1) {
+      return;
+    }
 
     // NOTE: This is altering the config object iself.
     // This will be used by the Event class afterwards.
@@ -1457,7 +1446,7 @@ var EventView = function () {
     this.config.ordering.isPlaceholder = false;
 
     // Days from the beginning of the calendar to the day the event starts
-    this.offset = DateHandler.diff(calStartDate, this.endDate, 'days');
+    this.offset = DateHandler.diff(this.endDate, calStartDate, 'days');
   }
 
   babelHelpers.createClass(EventView, [{
@@ -1494,13 +1483,17 @@ function organiseEventsConfig(eventsConfig, calStartDate, dayCount) {
   }
 
   // Get all eventViews;
-  var eventViews = eventsConfig.map(function (eConfig) {
+  var UnfilteredEventViews = eventsConfig.map(function (eConfig) {
     return new EventView(eConfig, calStartDate, dayCount);
+  });
+
+  var eventViews = UnfilteredEventViews.filter(function (eView) {
+    return eView.length > 0;
   });
 
   // Organise all events chronologically
   eventViews.sort(function (v1, v2) {
-    return v1.diff(v2, 'minutes');
+    return v2.diff(v1, 'minutes');
   });
 
   // Get all single-day and more-than-one-day events
@@ -1708,7 +1701,7 @@ function getBestOrder(eventViews, dayCount) {
   // Find the best of all possible orderings
   var possibleOrders = permute(eventViews);
   var bestOrdering = void 0;
-  var bestScore = void 0;
+  var bestScore = 99; // just something big will work.
   var _iteratorNormalCompletion6 = true;
   var _didIteratorError6 = false;
   var _iteratorError6 = undefined;
@@ -1723,8 +1716,8 @@ function getBestOrder(eventViews, dayCount) {
         bestOrdering = ordering;
         break;
       } else if (score < bestScore) {
-        bestScore = ordering;
-        bestOrdering = order;
+        bestScore = score;
+        bestOrdering = ordering;
       }
     }
   } catch (err) {
@@ -1985,6 +1978,8 @@ var Calendar = function (_ModelView) {
           }
         }
       }
+
+      this.startDate = date;
     }
   }]);
   return Calendar;

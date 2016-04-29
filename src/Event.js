@@ -85,10 +85,11 @@ class Event extends ModelView {
   }
 
   _setPlaceHolderStatus(parentDate, eventConfig = this.config) {
-    assert(typeof eventConfig.ordering.span === 'number',
-      'Event configuration object not propperly handled. No "span" property found.');
-
     const span = eventConfig.ordering.span;
+    assert(typeof span === 'number',
+      'Event configuration object not propperly handled. No "span" property found.');
+    assert(span > 0, `Invalid span value for event configuration: ${span}`);
+
     if (this.isPlaceholder) {
       this.html.container.classList.add(
         `fl-mc-multiple-days-placeholder-${span}`
@@ -106,26 +107,6 @@ class Event extends ModelView {
       eventConfig.classes.forEach((className) => {
         this.html.container.classList.add(className);
       });
-    }
-
-    const startInParentDate = DateHandler.sameDay(parentDate, this.startDate);
-    const endInParentDate = DateHandler.sameDay(parentDate, this.endDate);
-
-    if (startInParentDate && endInParentDate) { return; }
-    if (startInParentDate) {
-      const daysToEnd = DateHandler.diff(this.endDate, parentDate, 'days', true);
-      const daysToEndRound = Math.ceil(daysToEnd);
-      const normalisedDaysToEnd = Math.min(daysToEndRound, 7);
-      this.html.container.classList.add(
-        `fl-mc-multiple-days-${normalisedDaysToEnd}`
-      );
-    } else {
-      const daySpan = DateHandler.diff(this.endDate, this.startDate, 'days', true);
-      const daySpanRound = Math.ceil(daySpan);
-      const normalisedSpan = Math.min(daySpanRound, 7);
-      this.html.container.classList.add(
-        `fl-mc-multiple-days-placeholder-${normalisedSpan}`
-      );
     }
   }
 
