@@ -2,6 +2,7 @@ import assert from './utils/assert.js';
 import DateHandler from './utils/DateHandler';
 import ModelView from './ModelView';
 import Day from './Day';
+import organiseEventsConfig from './utils/organiseEventsConfig';
 
 const CALENDAR_CLASS = '-cal';
 
@@ -95,24 +96,29 @@ export default class Calendar extends ModelView {
     return days.length;
   }
 
+  /**
+   * Updates events being shown to events created drom eventsArray.
+   * @method setEvents
+   * @param {Array<Object>} eventsArray - Array of events configuration objects
+   */
   setEvents(eventsArray) {
     assert(Array.isArray(eventsArray), 'The parameter provided is not an array.');
 
-    // Create a map indexed by day
-    const daysMap = new Map();
-    this.days.forEach((d) => { return daysMap.set(d, []); });
+    const endDate = DateHandler.add(
+      this.startDate,
+      this.days.length - 1,
+      'days'
+    );
 
+    const organisedEvents = organiseEventsConfig(
+      eventsArray,
+      this.startDate,
+      calEndDate,
+      this.days.length
+    );
 
-    for (const newEvent of eventsArray) {
-      const eventDays = this.findDaysInRange(newEvent.start, newEvent.end);
-
-      for (const day of eventDays) {
-        daysMap.get(day).push(newEvent);
-      }
-    }
-
-    for (const keyVal of daysMap) {
-      keyVal[0].setEvents(keyVal[1]);
+    for (let dayIdx = 0; dayIdx < events.length; dayIdx++) {
+      this.days[dayIdx].setEvents(events[dayIdx]);
     }
   }
 

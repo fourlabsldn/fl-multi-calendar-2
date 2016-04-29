@@ -49,4 +49,12 @@ export default class DateHandler {
   static isValid(date) {
     return date.isValid();
   }
+
+  static max(date1, date2, criterion) {
+    return DateHandler.diff(date1, date2, criterion) > 0 ? date1 : date2;
+  }
+
+  static min(date1, date2, criterion) {
+    return DateHandler.diff(date1, date2, criterion) < 0 ? date1 : date2;
+  }
 }
