@@ -51,14 +51,13 @@ export default class Ordering {
       // Fill the days where this event will be with its config. all
       // of this will yield placeholder events when the Event class creates them.
       for (let dayNum = view.offset + 1; dayNum < view.length; dayNum++) {
-        days[view.offset][level] = view.config;
+        days[dayNum][level] = view.config;
       }
     });
     return days;
   }
 
-  _addPadding(eventViews = this.eventViews,
-       nonPaddedLaidOutEvents = this._nonPaddedLaidOutEvents) {
+  _addPadding(nonPaddedLaidOutEvents = this._nonPaddedLaidOutEvents) {
     const days = Array.from(nonPaddedLaidOutEvents);
     let level = 0;
     let lastEvent = this._getFirstEventOfLevel(days, level);
@@ -68,7 +67,7 @@ export default class Ordering {
     while (lastEvent) {
       for (let dayNum = 0; dayNum < days.length; dayNum++) {
         if (days[dayNum][level] === undefined) {
-          days[dayNum][level] = lastEvent.config;
+          days[dayNum][level] = lastEvent;
         } else {
           lastEvent = days[dayNum][level];
         }

@@ -1345,7 +1345,7 @@ var Ordering = function () {
         // Fill the days where this event will be with its config. all
         // of this will yield placeholder events when the Event class creates them.
         for (var dayNum = view.offset + 1; dayNum < view.length; dayNum++) {
-          days[view.offset][level] = view.config;
+          days[dayNum][level] = view.config;
         }
       });
       return days;
@@ -1353,8 +1353,7 @@ var Ordering = function () {
   }, {
     key: "_addPadding",
     value: function _addPadding() {
-      var eventViews = arguments.length <= 0 || arguments[0] === undefined ? this.eventViews : arguments[0];
-      var nonPaddedLaidOutEvents = arguments.length <= 1 || arguments[1] === undefined ? this._nonPaddedLaidOutEvents : arguments[1];
+      var nonPaddedLaidOutEvents = arguments.length <= 0 || arguments[0] === undefined ? this._nonPaddedLaidOutEvents : arguments[0];
 
       var days = Array.from(nonPaddedLaidOutEvents);
       var level = 0;
@@ -1365,7 +1364,7 @@ var Ordering = function () {
       while (lastEvent) {
         for (var dayNum = 0; dayNum < days.length; dayNum++) {
           if (days[dayNum][level] === undefined) {
-            days[dayNum][level] = lastEvent.config;
+            days[dayNum][level] = lastEvent;
           } else {
             lastEvent = days[dayNum][level];
           }
