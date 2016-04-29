@@ -104,21 +104,14 @@ export default class Calendar extends ModelView {
   setEvents(eventsArray) {
     assert(Array.isArray(eventsArray), 'The parameter provided is not an array.');
 
-    const endDate = DateHandler.add(
-      this.startDate,
-      this.days.length - 1,
-      'days'
-    );
-
     const organisedEvents = organiseEventsConfig(
       eventsArray,
       this.startDate,
-      calEndDate,
       this.days.length
     );
 
-    for (let dayIdx = 0; dayIdx < events.length; dayIdx++) {
-      this.days[dayIdx].setEvents(events[dayIdx]);
+    for (let day = 0; day < this.days.length; day++) {
+      this.days[day].setEvents(organisedEvents[day]);
     }
   }
 
