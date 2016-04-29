@@ -24,6 +24,8 @@ export default class Ordering {
     return this.laidOutEvents;
   }
 
+  // Specifies who will be a placeholder and who won't and puts everyone
+  // in the right place in an array of dayCount size.
   _layOut(eventViews = this.eventViews, dayCount = this.dayCount) {
     const days = new Array(dayCount).fill([]); // Array of arrays.
 
@@ -31,12 +33,16 @@ export default class Ordering {
       const level = this._getLevelThatEventWillFit(view, days);
 
       // NOTE: This is a very important part of this algorythym.
-      // This creates the viewConfig object of the event that will be visible
+      // This creates the eventConfig object of the event that will be visible
       // spanning through more than one day. The Event class only know that
-      // the wide event is visible because it has the 'span' property.
-      const wideEventConfig = Object.create(view.config);
-      wideEventConfig.span = view.length;
-      days[view.offset][level] = wideEventConfig;
+      // the event will be visible because of the isPlaceholder value.
+      const visibleEventConfig = Object.create(view.config);
+      visibleEventConfig.ordering = Object.create(view.config.ordering);
+      // All configs apart from the visibleEventConfig are set to be
+      // placeholders.
+      visibleEventConfig.ordering.isPlaceholder = false;
+      view.config.ordering.isPlaceholder = true;
+      days[view.offset][level] = visibleEventConfig;
 
       // Fill the days where this event will be with its config. all
       // of this will yield placeholder events when the Event class creates them.

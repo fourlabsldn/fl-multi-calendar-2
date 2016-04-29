@@ -49,7 +49,16 @@ class Event extends ModelView {
 
     this.updateTime();
 
+    assert(!eventConfig.ordering ||
+        typeof eventConfig.ordering.isPlaceholder !== 'boolean',
+        'Event ordering not initialised');
+    this.isPlaceholder = eventConfig.ordering.isPlaceholder;
+
     Object.preventExtensions(this);
+
+    this._setPlaceHolderStatus(parentDate);
+
+    if (this.isPlaceholder) { return; }
 
     this._attatchClasses(parentDate);
 
@@ -73,6 +82,22 @@ class Event extends ModelView {
 
   getConfig() {
     return this.config;
+  }
+
+  _setPlaceHolderStatus(parentDate, eventConfig = this.config) {
+    assert(typeof eventConfig.ordering.span === 'number',
+      'Event configuration object not propperly handled. No "span" property found.');
+
+    const span = eventConfig.ordering.span;
+    if (this.isPlaceholder) {
+      this.html.container.classList.add(
+        `fl-mc-multiple-days-placeholder-${span}`
+      );
+    } else if (span > 0) {
+      this.html.container.classList.add(
+        `fl-mc-multiple-days-${span}`
+      );
+    } // Else we don't need to do anything.
   }
 
   _attatchClasses(parentDate, eventConfig = this.config) {

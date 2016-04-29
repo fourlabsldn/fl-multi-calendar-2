@@ -13,6 +13,12 @@ export default class EventView {
     // given the current calendar start and end date
     this.length = Math.ceil(decimalDiff);
 
+    // NOTE: This is altering the config object iself.
+    // This will be used by the Event class afterwards.
+    this.config.ordering = this.config.ordering || {};
+    this.config.ordering.span = this.length;
+    this.config.ordering.isPlaceholder = false;
+
     // Days from the beginning of the calendar to the day the event starts
     this.offset = DateHandler.diff(calStartDate, this.endDate, 'days');
   }
