@@ -62,6 +62,7 @@ function processCondition(condition, errorMessage) {
   if (!condition) {
     var completeErrorMessage = '';
 
+    // Strict mode doesn't allow us to use callers
     // The assert function is calling this processCondition and we are
     // really interested is in who is calling the assert function.
     var assertFunction = processCondition.caller;
@@ -731,7 +732,7 @@ var EVENT_CLASS = '-event';
  * @private
  */
 
-var Event$1 = function (_ModelView) {
+var Event = function (_ModelView) {
   babelHelpers.inherits(Event, _ModelView);
 
   function Event(eventConfig, parentClass, parentDate) {
@@ -793,7 +794,16 @@ var Event$1 = function (_ModelView) {
 
     _this.updateTime();
 
+    assert(eventConfig.ordering && typeof eventConfig.ordering.isPlaceholder === 'boolean', 'Event ordering not initialised');
+    _this.isPlaceholder = eventConfig.ordering.isPlaceholder;
+
     Object.preventExtensions(_this);
+
+    _this._setPlaceHolderStatus(parentDate);
+
+    if (_this.isPlaceholder) {
+      return babelHelpers.possibleConstructorReturn(_this);
+    }
 
     _this._attatchClasses(parentDate);
 
@@ -821,6 +831,20 @@ var Event$1 = function (_ModelView) {
     key: 'getConfig',
     value: function getConfig() {
       return this.config;
+    }
+  }, {
+    key: '_setPlaceHolderStatus',
+    value: function _setPlaceHolderStatus(parentDate) {
+      var eventConfig = arguments.length <= 1 || arguments[1] === undefined ? this.config : arguments[1];
+
+      assert(typeof eventConfig.ordering.span === 'number', 'Event configuration object not propperly handled. No "span" property found.');
+
+      var span = eventConfig.ordering.span;
+      if (this.isPlaceholder) {
+        this.html.container.classList.add('fl-mc-multiple-days-placeholder-' + span);
+      } else if (span > 0) {
+        this.html.container.classList.add('fl-mc-multiple-days-' + span);
+      } // Else we don't need to do anything.
     }
   }, {
     key: '_attatchClasses',
@@ -936,7 +960,7 @@ var Day = function (_ModelView) {
   }, {
     key: 'addEvent',
     value: function addEvent(eventInfo) {
-      var newEvent = new Event$1(eventInfo, this.class, this.date, this.callbacks);
+      var newEvent = new Event(eventInfo, this.class, this.date, this.callbacks);
       assert(newEvent && newEvent.html && newEvent.html.container, 'New Event instance initialised without an HTML container.');
 
       // Insert new event in the right place in the HTML.
@@ -996,7 +1020,7 @@ var Day = function (_ModelView) {
     value: function setEvents(newEventsConfig) {
       assert.warn(Array.isArray(newEventsConfig), 'Invalid array of configuration events,\n      clearing all events from day ' + this.date.toString() + '.');
 
-      var diff = arrayDifference(this.events, newEventsConfig, Event$1.areSame);
+      var diff = arrayDifference(this.events, newEventsConfig, Event.areSame);
 
       // Events that we have and newEventsConfig doesn't.
       var missingEvents = diff.missingFromArr2;
@@ -1147,7 +1171,7 @@ var Day = function (_ModelView) {
     key: 'hasEvent',
     value: function hasEvent(eventConfig) {
       return this.events.some(function (x) {
-        return Event$1.isSame(x.config(), eventConfig);
+        return Event.isSame(x.config(), eventConfig);
       });
     }
   }]);
@@ -1246,466 +1270,7 @@ function arrayDifference(arr1, arr2, compare) {
   };
 }
 
-var EventCreator = function () {
-  function EventCreator() {
-    babelHelpers.classCallCheck(this, EventCreator);
-
-    return this;
-  }
-
-  /**
-   * Creates events for all days of a calendar given a configuration array.
-   * The result contains the events in the order they must be added.
-   * @method createEvents
-   * @param  {Array<Object>} eventsConfig - Array of event configuration objects
-   * @param  {DateHandler} startDate - Calendar start date
-   * @param  {DateHandler} calEndDate - Last day showing in the calendar
-   * @return {Array<Array<Event>>} Array containing one array of events for each day.
-   */
-
-
-  babelHelpers.createClass(EventCreator, [{
-    key: 'createEvents',
-    value: function createEvents(eventsConfig, calStartDate, calEndDate) {
-      // Get all eventViews;
-      var eventViews = eventsConfig.map(function (eConfig) {
-        return new EventView(eConfig, calStartDate, calEndDate);
-      });
-
-      // Organise all events chronologically
-      eventViews.sort(function (v1, v2) {
-        return DateHandler.diff(v1.startDate, v2.startDate, 'minutes');
-      });
-
-      // Get all single-day and more-than-one-day events
-      var multiDayViews = [];
-      var singleDayViews = [];
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
-
-      try {
-        for (var _iterator = eventViews[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var view = _step.value;
-
-          var arr = view.length > 1 ? multiDayViews : singleDayViews;
-          arr.push(view);
-        }
-
-        // Get all overlapping more-than-one-day events in overlapping groups
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      var chains = this._getOverlappingChains(multiDayViews);
-
-      // Create all possible ordering combinations for them
-      // and get the position combination with best score
-      var bestOrderings = [];
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = chains[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var chain = _step2.value;
-
-          var bestOrder = this._getBestOrder(chain);
-          var bestOrdering = new Ordering(bestOrder);
-          bestOrderings.push(bestOrdering);
-        }
-
-        // Array of arrays, each representing a day of the calendar. And each
-        // day array will have the events for that day.
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
-
-      var dayCountDecimal = DateHandler.diff(calStartDate, calEndDate);
-      var dayCount = Math.ceil(dayCountDecimal);
-      var days = new Array(dayCount); // Create an array of length dayCount
-      days.fill([]); // Initialise with empty arrays.
-
-      // Fill days with config objects for events from ordered overlapping chains
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
-
-      try {
-        for (var _iterator3 = bestOrderings[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var ordering = _step3.value;
-
-          var eventsByDay = ordering.getEventsForPeriod(calStartDate, calEndDate);
-          // Add events to the respective day.
-          eventsByDay.forEach(function (dayEvents, dayNum) {
-            days[dayNum] = days[dayNum].concat(dayEvents);
-          });
-        }
-
-        // Add all other events configs to each day in the days array.
-        // As sinfleDayViews is in chronological order, 'days' will be too.
-      } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
-          }
-        } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
-          }
-        }
-      }
-
-      var _iteratorNormalCompletion4 = true;
-      var _didIteratorError4 = false;
-      var _iteratorError4 = undefined;
-
-      try {
-        for (var _iterator4 = singleDayViews[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-          var _view = _step4.value;
-
-          // The days[index] array minght still not have been initialised
-          days[_view.offset].push(_view.config);
-        }
-
-        // Return array with all events for each day.
-      } catch (err) {
-        _didIteratorError4 = true;
-        _iteratorError4 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion4 && _iterator4.return) {
-            _iterator4.return();
-          }
-        } finally {
-          if (_didIteratorError4) {
-            throw _iteratorError4;
-          }
-        }
-      }
-
-      return days;
-    }
-
-    /**
-     * Returns groups of events that overlap each other.
-     * @method _getOverlappingChains
-     * @param  {Array<EventView>} multiDayViews
-     * @return {Array<Array<EventView>>} - Chains of overlapping events.
-     */
-
-  }, {
-    key: '_getOverlappingChains',
-    value: function _getOverlappingChains(multiDayViews) {
-      var chains = [];
-
-      multiDayViews.forEach(function (view1, idx1) {
-        multiDayViews.forEach(function (view2, idx2) {
-          // Avoid going here twice for the same pair
-          if (idx2 <= idx1) {
-            return;
-          }
-
-          if (!view1.overlaps(view2)) {
-            return;
-          }
-
-          // Check if any of the two views is in any chain already.
-          var _iteratorNormalCompletion5 = true;
-          var _didIteratorError5 = false;
-          var _iteratorError5 = undefined;
-
-          try {
-            for (var _iterator5 = chains[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
-              var chain = _step5.value;
-
-              if (chain.includes(view1)) {
-                chain.push(view2);return;
-              }
-              if (chain.includes(view2)) {
-                chain.push(view1);return;
-              }
-            }
-
-            // If it overlaps and didn't fit in any of the previous chains,
-            // then create a new one for it.
-          } catch (err) {
-            _didIteratorError5 = true;
-            _iteratorError5 = err;
-          } finally {
-            try {
-              if (!_iteratorNormalCompletion5 && _iterator5.return) {
-                _iterator5.return();
-              }
-            } finally {
-              if (_didIteratorError5) {
-                throw _iteratorError5;
-              }
-            }
-          }
-
-          chains.push([view1, view2]);
-        });
-      });
-
-      return chains;
-    }
-
-    /**
-     * @method _getBestOrdering
-     * @param  {Array<EventView>} eventViews - This array is ordered chronologically
-     * @return {Array<Ordering>}
-     */
-
-  }, {
-    key: '_getBestOrder',
-    value: function _getBestOrder(eventViews) {
-      // TODO: Remove events with equal start and end date from the count
-      // (only if there are more than four events overlapping).
-
-      // Find the best of all possible orderings
-      var possibleOrders = permute(eventViews);
-      var bestOrder = void 0;
-      var bestScore = void 0;
-      var _iteratorNormalCompletion6 = true;
-      var _didIteratorError6 = false;
-      var _iteratorError6 = undefined;
-
-      try {
-        for (var _iterator6 = possibleOrders[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
-          var order = _step6.value;
-
-          var score = Ordering.calcScore(order);
-          if (score === 0) {
-            bestOrder = order;
-            break;
-          } else if (score < bestScore) {
-            bestScore = score;
-            bestOrder = order;
-          }
-        }
-      } catch (err) {
-        _didIteratorError6 = true;
-        _iteratorError6 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion6 && _iterator6.return) {
-            _iterator6.return();
-          }
-        } finally {
-          if (_didIteratorError6) {
-            throw _iteratorError6;
-          }
-        }
-      }
-
-      return bestOrder;
-    }
-  }]);
-  return EventCreator;
-}();
-
-var EventView = function () {
-  function EventView(config, calStartDate, calEndDate) {
-    babelHelpers.classCallCheck(this, EventView);
-
-    this.config = config;
-    this.startDate = DateHandler.max(config.startDate, calStartDate);
-    this.endDate = DateHandler.min(config.endDate, calEndDate);
-    var decimalDiff = DateHandler.diff(this.startDate, this.endDate, 'days', true);
-    // How many days the Event object created with this event config will take
-    // given the current calendar start and end date
-    this.length = Math.ceil(decimalDiff);
-
-    // Days from the beginning of the calendar to the day the event starts
-    this.offset = DateHandler.diff(calStartDate, this.endDate, 'days');
-  }
-
-  babelHelpers.createClass(EventView, [{
-    key: 'overlaps',
-    value: function overlaps(otherView) {
-      return DateHandler.rangesOverlap(this.startDate, this.endDate, otherView.startDate, otherView.endDate);
-    }
-  }]);
-  return EventView;
-}();
-
-var Ordering = function () {
-  /**
-   * @constructor
-   * @param {Array<EventView>} eventViews - Event views in the order they should
-   *                                      	be inserted into days.
-   * @param {int} dayCount - Amount of days in the week all these events will
-   *                       		be inserted.
-   */
-
-  function Ordering(eventViews, dayCount) {
-    babelHelpers.classCallCheck(this, Ordering);
-
-    var days = new Array(dayCount).fill([]); // Array of arrays.
-    var level = 0;
-    var lastEvent = eventViews[0].config;
-
-    // Go through all days of the week and create events for all levels.
-    while (lastEvent) {
-      for (var dayNum = 0; dayNum < dayCount; dayNum++) {
-
-        if (eventViewsDays[i][level] || lastEvent) {
-          var parentDate = DateHandler.add(calStartDate, offset, 'days');
-          eventsDays[i][level] = new Event(eventViewsDays[i][level].config, parentClass, parentDate, callbacks);
-          lastEvent = eventViewsDays[i][level];
-        } else {
-          // This should create a placeholder for the event that will still
-          // appear at this level.
-          console.warn('One undealt with blank space passed.');
-        }
-      }
-      level++;
-    }
-  }
-
-  /**
-   * [createEvents description]
-   * @method createEvents
-   * @param  {Array<Array<EventView>>} eventViewsDays - Each subarray represents a day
-   * @param  {DateHandler} calStartDate [description]
-   * @param  {[type]} eventStuff [description]
-   * @return {[type]} [description]
-   */
-
-
-  babelHelpers.createClass(Ordering, null, [{
-    key: 'createEvents',
-    value: function createEvents(eventViewsDays, calStartDate, parentClass, callbacks) {
-      var offset = void 0;
-      // Get first element to find out from which day of
-      // the week eventViewsDays is starting and make sure to
-      // count that as an offset so that our returning array
-      // starts from the correct date.
-      var _iteratorNormalCompletion7 = true;
-      var _didIteratorError7 = false;
-      var _iteratorError7 = undefined;
-
-      try {
-        for (var _iterator7 = eventViewsDays[0][Symbol.iterator](), _step7; !(_iteratorNormalCompletion7 = (_step7 = _iterator7.next()).done); _iteratorNormalCompletion7 = true) {
-          var view = _step7.value;
-
-          if (!view) {
-            continue;
-          }
-          offset = view.offset;
-        }
-      } catch (err) {
-        _didIteratorError7 = true;
-        _iteratorError7 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion7 && _iterator7.return) {
-            _iterator7.return();
-          }
-        } finally {
-          if (_didIteratorError7) {
-            throw _iteratorError7;
-          }
-        }
-      }
-
-      var level = 0;
-      var lastEvent = void 0;
-      var eventsDays = [];
-      // Go through all days of the week and create events for all levels.
-      do {
-        lastEvent = null;
-        for (var _i = offset; _i < eventViewsDays.length; _i++) {
-          eventsDays[_i] = eventsDays[_i] || [];
-          if (eventViewsDays[_i][level] || lastEvent) {
-            var parentDate = DateHandler.add(calStartDate, offset, 'days');
-            eventsDays[_i][level] = new Event(eventViewsDays[_i][level].config, parentClass, parentDate, callbacks);
-            lastEvent = eventViewsDays[_i][level];
-          } else {
-            // This should create a placeholder for the event that will still
-            // appear at this level.
-            console.warn('One undealt with blank space passed.');
-          }
-        }
-        level++;
-      } while (lastEvent);
-
-      // Make sure all elements are initialised before returning.
-      for (var _i2 = 0; _i2 < eventsDays.length; _i2++) {
-        eventsDays[_i2] = eventsDays[_i2] || [];
-      }
-      return eventsDays;
-    }
-  }, {
-    key: 'calcScore',
-    value: function calcScore(eventViews) {
-      var days = [];
-
-      eventViews.forEach(function (view) {
-        var offset = view.offset;
-        var okForAllLevels = false;
-        var level = 0;
-
-        while (!okForAllLevels) {
-          okForAllLevels = true;
-
-          for (var dayIndex = offset; dayIndex < view.length; dayIndex++) {
-            days[dayIndex] = days[dayIndex] || [];
-
-            if (days[dayIndex][level] !== undefined) {
-              okForAllLevels = false;
-              level++;
-              break;
-            }
-          }
-        }
-
-        // Fill day with event data.
-        for (var _dayIndex = offset; _dayIndex < view.length; _dayIndex++) {
-          days[_dayIndex][level] = view;
-        }
-      });
-
-      // Now that everything is accommodated, let's calculate the scode.
-      var score = void 0;
-      days.forEach(function (day) {
-        day.forEach(function (val) {
-          score += val === undefined ? 0 : 1;
-        });
-      });
-
-      return score;
-    }
-  }]);
-  return Ordering;
-}();
-
+// Returns all possible permutations of an array of values.
 function permute(inp) {
   var permArr = [];
   var usedChars = [];
@@ -1727,6 +1292,456 @@ function permute(inp) {
   }
 
   return perm(inp);
+}
+
+var Ordering = function () {
+  /**
+   * @constructor
+   * @param {Array<EventView>} eventViews - Event views in the order they should
+   *                                      	be inserted into days.
+   * @param {int} dayCount - Amount of days in the week all these events will
+   *                       		be inserted.
+   */
+
+  function Ordering(eventViews, dayCount) {
+    babelHelpers.classCallCheck(this, Ordering);
+
+    this.eventViews = eventViews;
+    this.dayCount = dayCount;
+    this._nonPaddedLaidOutEvents = this._layOut();
+    // Now that all events are occupying their position it is time to
+    // fill all 'undefined' spaces with configs to generate placeholders.
+    this.laidOutEvents = this._addPadding();
+    this.score = this._calcScore();
+  }
+
+  babelHelpers.createClass(Ordering, [{
+    key: "getScore",
+    value: function getScore() {
+      return this.score;
+    }
+  }, {
+    key: "getOrderedEventConfigs",
+    value: function getOrderedEventConfigs() {
+      return this.laidOutEvents;
+    }
+
+    // Specifies who will be a placeholder and who won't and puts everyone
+    // in the right place in an array of dayCount size.
+
+  }, {
+    key: "_layOut",
+    value: function _layOut() {
+      var _this = this;
+
+      var eventViews = arguments.length <= 0 || arguments[0] === undefined ? this.eventViews : arguments[0];
+      var dayCount = arguments.length <= 1 || arguments[1] === undefined ? this.dayCount : arguments[1];
+
+      var days = new Array(dayCount).fill([]); // Array of arrays.
+
+      eventViews.forEach(function (view) {
+        var level = _this._getLevelThatEventWillFit(view, days);
+
+        // NOTE: This is a very important part of this algorythym.
+        // This creates the eventConfig object of the event that will be visible
+        // spanning through more than one day. The Event class only know that
+        // the event will be visible because of the isPlaceholder value.
+        var visibleEventConfig = Object.create(view.config);
+        visibleEventConfig.ordering = Object.create(view.config.ordering);
+        // All configs apart from the visibleEventConfig are set to be
+        // placeholders.
+        visibleEventConfig.ordering.isPlaceholder = false;
+        view.config.ordering.isPlaceholder = true;
+        days[view.offset][level] = visibleEventConfig;
+
+        // Fill the days where this event will be with its config. all
+        // of this will yield placeholder events when the Event class creates them.
+        for (var dayNum = view.offset + 1; dayNum < view.length; dayNum++) {
+          days[view.offset][level] = view.config;
+        }
+      });
+      return days;
+    }
+  }, {
+    key: "_addPadding",
+    value: function _addPadding() {
+      var eventViews = arguments.length <= 0 || arguments[0] === undefined ? this.eventViews : arguments[0];
+      var nonPaddedLaidOutEvents = arguments.length <= 1 || arguments[1] === undefined ? this._nonPaddedLaidOutEvents : arguments[1];
+
+      var days = Array.from(nonPaddedLaidOutEvents);
+      var level = 0;
+      var lastEvent = this._getFirstEventOfLevel(days, level);
+
+      // Go through all days of the week and add events in undefined
+      // slots of all levels.
+      while (lastEvent) {
+        for (var dayNum = 0; dayNum < days.length; dayNum++) {
+          if (days[dayNum][level] === undefined) {
+            days[dayNum][level] = lastEvent.config;
+          } else {
+            lastEvent = days[dayNum][level];
+          }
+        }
+
+        level++;
+        lastEvent = this._getFirstEventOfLevel(days, level);
+      }
+
+      return days;
+    }
+  }, {
+    key: "_getFirstEventOfLevel",
+    value: function _getFirstEventOfLevel(days, level) {
+      // Will return the first value in that level != from undefined
+      return days.reduce(function (prev, curr) {
+        return prev[level] ? prev[level] : curr[level];
+      });
+    }
+  }, {
+    key: "_getLevelThatEventWillFit",
+    value: function _getLevelThatEventWillFit(eView, days) {
+      var level = 0;
+      var fitsInLevel = false;
+      while (!fitsInLevel) {
+        fitsInLevel = true;
+
+        for (var dayNum = eView.offset; dayNum < eView.length; dayNum++) {
+          if (days[dayNum][level] !== undefined) {
+            fitsInLevel = false;
+            level++;
+            break;
+          }
+        }
+      }
+      return level;
+    }
+  }, {
+    key: "_calcScore",
+    value: function _calcScore() {
+      var nonPaddedLaidOutEvents = arguments.length <= 0 || arguments[0] === undefined ? this._nonPaddedLaidOutEvent : arguments[0];
+
+      var days = nonPaddedLaidOutEvents;
+      var score = void 0;
+      days.forEach(function (day) {
+        day.forEach(function (eventConfig) {
+          score += eventConfig === undefined ? 0 : 1;
+        });
+      });
+
+      return score;
+    }
+  }]);
+  return Ordering;
+}();
+
+var EventView = function () {
+  function EventView(config, calStartDate, dayCount) {
+    babelHelpers.classCallCheck(this, EventView);
+
+    this.config = config;
+    this.startDate = DateHandler.max(config.start, calStartDate);
+
+    var calEndDate = DateHandler.add(calStartDate, dayCount - 1);
+    this.endDate = DateHandler.min(config.end, calEndDate);
+
+    var decimalDiff = DateHandler.diff(this.startDate, this.endDate, 'days', true);
+    // How many days the Event object created with this event config will take
+    // given the current calendar start and end date
+    this.length = Math.ceil(decimalDiff);
+
+    // NOTE: This is altering the config object iself.
+    // This will be used by the Event class afterwards.
+    this.config.ordering = this.config.ordering || {};
+    this.config.ordering.span = this.length;
+    this.config.ordering.isPlaceholder = false;
+
+    // Days from the beginning of the calendar to the day the event starts
+    this.offset = DateHandler.diff(calStartDate, this.endDate, 'days');
+  }
+
+  babelHelpers.createClass(EventView, [{
+    key: 'overlaps',
+    value: function overlaps(otherView) {
+      return DateHandler.rangesOverlap(this.startDate, this.endDate, otherView.startDate, otherView.endDate);
+    }
+  }, {
+    key: 'diff',
+    value: function diff(otherView) {
+      var criterion = arguments.length <= 1 || arguments[1] === undefined ? 'minutes' : arguments[1];
+
+      return DateHandler.diff(this.startDate, otherView.startDate, criterion);
+    }
+  }]);
+  return EventView;
+}();
+
+/**
+ * Creates events for all days of a calendar given a configuration array.
+ * The result contains the events in the order they must be added.
+ * It also modifies the configuration object of events that span through
+ * more than one day.
+ * @function organiseEventsConfig
+ * @param  {Array<Object>} eventsConfig - Array of event configuration objects
+ * @param  {DateHandler} startDate - Calendar start date
+ * @param  {Int} dayCount - Amount of days in calendar. Minimum value = 1
+ * @return {Array<Array<Event>>} Array containing one array of events for each day.
+ */
+function organiseEventsConfig(eventsConfig, calStartDate, dayCount) {
+  // We don't want to do unnecessary work.
+  if (eventsConfig.length === 0 || dayCount === 0) {
+    return [];
+  }
+
+  // Get all eventViews;
+  var eventViews = eventsConfig.map(function (eConfig) {
+    return new EventView(eConfig, calStartDate, dayCount);
+  });
+
+  // Organise all events chronologically
+  eventViews.sort(function (v1, v2) {
+    return v1.diff(v2, 'minutes');
+  });
+
+  // Get all single-day and more-than-one-day events
+  var multiDayViews = [];
+  var singleDayViews = [];
+  var _iteratorNormalCompletion = true;
+  var _didIteratorError = false;
+  var _iteratorError = undefined;
+
+  try {
+    for (var _iterator = eventViews[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+      var view = _step.value;
+
+      var arr = view.length > 1 ? multiDayViews : singleDayViews;
+      arr.push(view);
+    }
+
+    // Get all overlapping more-than-one-day events in overlapping groups
+  } catch (err) {
+    _didIteratorError = true;
+    _iteratorError = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion && _iterator.return) {
+        _iterator.return();
+      }
+    } finally {
+      if (_didIteratorError) {
+        throw _iteratorError;
+      }
+    }
+  }
+
+  var chains = getOverlappingChains(multiDayViews);
+
+  // Create all possible ordering combinations for them
+  // and get the position combination with best score
+  var bestOrderings = [];
+  var _iteratorNormalCompletion2 = true;
+  var _didIteratorError2 = false;
+  var _iteratorError2 = undefined;
+
+  try {
+    for (var _iterator2 = chains[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+      var chain = _step2.value;
+
+      var bestOrdering = getBestOrder(chain, dayCount);
+      bestOrderings.push(bestOrdering);
+    }
+
+    // Array of arrays, each representing a day of the calendar. And each
+    // day array will have the events for that day.
+    // Create an array of length dayCount initialised with empty arrays.
+  } catch (err) {
+    _didIteratorError2 = true;
+    _iteratorError2 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion2 && _iterator2.return) {
+        _iterator2.return();
+      }
+    } finally {
+      if (_didIteratorError2) {
+        throw _iteratorError2;
+      }
+    }
+  }
+
+  var days = new Array(dayCount).fill([]);
+
+  // Fill days with config objects for events from ordered overlapping chains
+  var _iteratorNormalCompletion3 = true;
+  var _didIteratorError3 = false;
+  var _iteratorError3 = undefined;
+
+  try {
+    for (var _iterator3 = bestOrderings[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+      var ordering = _step3.value;
+
+      var eventsByDay = ordering.getOrderedEventConfigs();
+      // Add events to the respective day.
+      eventsByDay.forEach(function (dayEvents, dayNum) {
+        days[dayNum] = days[dayNum].concat(dayEvents);
+      });
+    }
+
+    // Add all other events configs to each day in the days array.
+    // As singleDayViews is in chronological order, 'days' will be too.
+  } catch (err) {
+    _didIteratorError3 = true;
+    _iteratorError3 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion3 && _iterator3.return) {
+        _iterator3.return();
+      }
+    } finally {
+      if (_didIteratorError3) {
+        throw _iteratorError3;
+      }
+    }
+  }
+
+  var _iteratorNormalCompletion4 = true;
+  var _didIteratorError4 = false;
+  var _iteratorError4 = undefined;
+
+  try {
+    for (var _iterator4 = singleDayViews[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+      var _view = _step4.value;
+
+      // The days[index] array minght still not have been initialised
+      days[_view.offset].push(_view.config);
+    }
+
+    // Return array with all events for each day.
+  } catch (err) {
+    _didIteratorError4 = true;
+    _iteratorError4 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion4 && _iterator4.return) {
+        _iterator4.return();
+      }
+    } finally {
+      if (_didIteratorError4) {
+        throw _iteratorError4;
+      }
+    }
+  }
+
+  return days;
+}
+
+/**
+ * Returns groups of events that overlap each other.
+ * @function getOverlappingChains
+ * @param  {Array<EventView>} multiDayViews
+ * @return {Array<Array<EventView>>} - Chains of overlapping events.
+ */
+function getOverlappingChains(multiDayViews) {
+  var chains = [];
+
+  multiDayViews.forEach(function (view1, idx1) {
+    multiDayViews.forEach(function (view2, idx2) {
+      // Avoid going here twice for the same pair
+      if (idx2 <= idx1) {
+        return;
+      }
+
+      if (!view1.overlaps(view2)) {
+        return;
+      }
+
+      // Check if any of the two views is in any chain already.
+      var _iteratorNormalCompletion5 = true;
+      var _didIteratorError5 = false;
+      var _iteratorError5 = undefined;
+
+      try {
+        for (var _iterator5 = chains[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+          var chain = _step5.value;
+
+          if (chain.includes(view1)) {
+            chain.push(view2);return;
+          }
+          if (chain.includes(view2)) {
+            chain.push(view1);return;
+          }
+        }
+
+        // If it overlaps and didn't fit in any of the previous chains,
+        // then create a new one for it.
+      } catch (err) {
+        _didIteratorError5 = true;
+        _iteratorError5 = err;
+      } finally {
+        try {
+          if (!_iteratorNormalCompletion5 && _iterator5.return) {
+            _iterator5.return();
+          }
+        } finally {
+          if (_didIteratorError5) {
+            throw _iteratorError5;
+          }
+        }
+      }
+
+      chains.push([view1, view2]);
+    });
+  });
+
+  return chains;
+}
+
+/**
+ * @function _getBestOrdering
+ * @param  {Array<EventView>} eventViews - This array is ordered chronologically
+ * @return {Array<Ordering>}
+ */
+function getBestOrder(eventViews, dayCount) {
+  // TODO: Remove events with equal start and end date from the count
+  // (only if there are more than four events overlapping).
+
+  // Find the best of all possible orderings
+  var possibleOrders = permute(eventViews);
+  var bestOrdering = void 0;
+  var bestScore = void 0;
+  var _iteratorNormalCompletion6 = true;
+  var _didIteratorError6 = false;
+  var _iteratorError6 = undefined;
+
+  try {
+    for (var _iterator6 = possibleOrders[Symbol.iterator](), _step6; !(_iteratorNormalCompletion6 = (_step6 = _iterator6.next()).done); _iteratorNormalCompletion6 = true) {
+      var order = _step6.value;
+
+      var ordering = new Ordering(order, dayCount);
+      var score = ordering.getScore();
+      if (score === 0) {
+        bestOrdering = ordering;
+        break;
+      } else if (score < bestScore) {
+        bestScore = ordering;
+        bestOrdering = order;
+      }
+    }
+  } catch (err) {
+    _didIteratorError6 = true;
+    _iteratorError6 = err;
+  } finally {
+    try {
+      if (!_iteratorNormalCompletion6 && _iterator6.return) {
+        _iterator6.return();
+      }
+    } finally {
+      if (_didIteratorError6) {
+        throw _iteratorError6;
+      }
+    }
+  }
+
+  return bestOrdering;
 }
 
 var CALENDAR_CLASS = '-cal';
@@ -1781,8 +1796,6 @@ var Calendar = function (_ModelView) {
     // The days array is ordered chronologically.
     _this.days = [];
 
-    _this.eventCreator = new EventCreator();
-
     Object.preventExtensions(_this);
 
     // Prepare title click callback
@@ -1834,16 +1847,22 @@ var Calendar = function (_ModelView) {
 
       return days.length;
     }
+
+    /**
+     * Updates events being shown to events created drom eventsArray.
+     * @method setEvents
+     * @param {Array<Object>} eventsArray - Array of events configuration objects
+     */
+
   }, {
     key: 'setEvents',
     value: function setEvents(eventsArray) {
       assert(Array.isArray(eventsArray), 'The parameter provided is not an array.');
 
-      var endDate = DateHandler.add(this.startDate, this.days.length - 1, 'days');
-      var events = this.eventCreator.createEvents(eventsArray, this.startDate, endDate, 'fl-mc-cal-day', this.callbacks);
+      var organisedEvents = organiseEventsConfig(eventsArray, this.startDate, this.days.length);
 
-      for (var dayIdx = 0; dayIdx < events.length; dayIdx++) {
-        this.days[dayIdx].setEvents(events[dayIdx]);
+      for (var day = 0; day < this.days.length; day++) {
+        this.days[day].setEvents(organisedEvents[day]);
       }
     }
   }, {

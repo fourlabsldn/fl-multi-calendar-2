@@ -14,6 +14,11 @@ import EventView from './EventView';
  * @return {Array<Array<Event>>} Array containing one array of events for each day.
  */
 export default function organiseEventsConfig(eventsConfig, calStartDate, dayCount) {
+  // We don't want to do unnecessary work.
+  if (eventsConfig.length === 0 || dayCount === 0) {
+    return [];
+  }
+
   // Get all eventViews;
   const eventViews = eventsConfig.map((eConfig) => {
     return new EventView(eConfig, calStartDate, dayCount);
@@ -58,7 +63,7 @@ export default function organiseEventsConfig(eventsConfig, calStartDate, dayCoun
   }
 
   // Add all other events configs to each day in the days array.
-  // As sinfleDayViews is in chronological order, 'days' will be too.
+  // As singleDayViews is in chronological order, 'days' will be too.
   for (const view of singleDayViews) {
     // The days[index] array minght still not have been initialised
     days[view.offset].push(view.config);

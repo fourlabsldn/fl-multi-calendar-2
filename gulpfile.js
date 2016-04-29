@@ -52,8 +52,10 @@ gulp.task('rollup-tests', () => {
   .pipe(rollup({
     plugins: [
       babel({
+        useStrict: true,
         exclude: 'node_modules/**',
         presets: ['es2015-rollup'],
+        plugins: ['transform-strict-mode'],
       }),
     ],
   }))

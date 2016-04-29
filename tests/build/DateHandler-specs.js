@@ -1,3 +1,4 @@
+use strict
 /* eslint-env jasmine */
 
 describe('A DateHandler class\'s instance should', function () {

@@ -3,10 +3,10 @@ import DateHandler from './DateHandler';
 export default class EventView {
   constructor(config, calStartDate, dayCount) {
     this.config = config;
-    this.startDate = DateHandler.max(config.startDate, calStartDate);
+    this.startDate = DateHandler.max(config.start, calStartDate);
 
     const calEndDate = DateHandler.add(calStartDate, dayCount - 1);
-    this.endDate = DateHandler.min(config.endDate, calEndDate);
+    this.endDate = DateHandler.min(config.end, calEndDate);
 
     const decimalDiff = DateHandler.diff(this.startDate, this.endDate, 'days', true);
     // How many days the Event object created with this event config will take

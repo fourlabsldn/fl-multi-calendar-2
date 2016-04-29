@@ -5,7 +5,7 @@ function processCondition(condition, errorMessage) {
   if (!condition) {
     let completeErrorMessage = '';
 
-
+    // Strict mode doesn't allow us to use callers
     // The assert function is calling this processCondition and we are
     // really interested is in who is calling the assert function.
     const assertFunction = processCondition.caller;

@@ -1,3 +1,4 @@
+use strict
 /* eslint-env jasmine */
 
 describe('A ControlBar class\'s instance should', function () {

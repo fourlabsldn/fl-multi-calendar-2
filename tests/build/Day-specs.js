@@ -1,3 +1,4 @@
+use strict
 /* eslint-env jasmine */
 
 describe('A Day class\'s instance should', function () {

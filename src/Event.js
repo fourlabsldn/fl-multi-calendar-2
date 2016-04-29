@@ -49,8 +49,8 @@ class Event extends ModelView {
 
     this.updateTime();
 
-    assert(!eventConfig.ordering ||
-        typeof eventConfig.ordering.isPlaceholder !== 'boolean',
+    assert(eventConfig.ordering &&
+        typeof eventConfig.ordering.isPlaceholder === 'boolean',
         'Event ordering not initialised');
     this.isPlaceholder = eventConfig.ordering.isPlaceholder;
 
