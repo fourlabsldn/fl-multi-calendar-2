@@ -947,48 +947,38 @@ var Day = function (_ModelView) {
       var newEvent = new Event(eventInfo, this.class, this.date, this.callbacks);
       assert(newEvent && newEvent.html && newEvent.html.container, 'New Event instance initialised without an HTML container.');
 
-      // Insert new event in the right place in the HTML.
-      var insertedBeforeEvent = false;
-      var _iteratorNormalCompletion = true;
-      var _didIteratorError = false;
-      var _iteratorError = undefined;
+      // TODO: Check on adding new events when other events are
+      // already there. This is what the commented out code is for.
+      // // Insert new event in the right place in the HTML.
+      // let insertedBeforeEvent = false;
+      // for (const event of this.events) {
+      //   const timeDiff = DateHandler.diff(
+      //     newEvent.getStartTime(),
+      //     event.getStartTime(),
+      //     'minutes'
+      //   );
+      //   const eventStartsAfter = timeDiff < 0;
+      //   if (eventStartsAfter) {
+      //     const oldEventIndex = this.events.indexOf(event);
+      //     assert(typeof oldEventIndex === 'number',
+      //       'Weird bug in time comparison.');
+      //     insertedBeforeEvent = true;
+      //
+      //     // insert before event that starts later.
+      //     this.html.events.insertBefore(
+      //       newEvent.html.container,
+      //       event.html.container
+      //     );
+      //   }
+      // }
+      //
+      // if (!insertedBeforeEvent) {
+      //   // Either there are no events in this.events or all
+      //   // of them begin before newEvent.
+      //   this.html.events.appendChild(newEvent.html.container);
+      // }
 
-      try {
-        for (var _iterator = this.events[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-          var event = _step.value;
-
-          var timeDiff = DateHandler.diff(newEvent.getStartTime(), event.getStartTime(), 'minutes');
-          var eventStartsAfter = timeDiff < 0;
-          if (eventStartsAfter) {
-            var oldEventIndex = this.events.indexOf(event);
-            assert(typeof oldEventIndex === 'number', 'Weird bug in time comparison.');
-            insertedBeforeEvent = true;
-
-            // insert before event that starts later.
-            this.html.events.insertBefore(newEvent.html.container, event.html.container);
-          }
-        }
-      } catch (err) {
-        _didIteratorError = true;
-        _iteratorError = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion && _iterator.return) {
-            _iterator.return();
-          }
-        } finally {
-          if (_didIteratorError) {
-            throw _iteratorError;
-          }
-        }
-      }
-
-      if (!insertedBeforeEvent) {
-        // Either there are no events in this.events or all
-        // of them begin before newEvent.
-        this.html.events.appendChild(newEvent.html.container);
-      }
-
+      this.html.events.appendChild(newEvent.html.container);
       // Now add it to the events array.
       this.events.push(newEvent);
     }
@@ -1014,27 +1004,27 @@ var Day = function (_ModelView) {
         // Use the crearEvents method as it performs better than removeEvent
         this.clearEvents();
       } else {
-        var _iteratorNormalCompletion2 = true;
-        var _didIteratorError2 = false;
-        var _iteratorError2 = undefined;
+        var _iteratorNormalCompletion = true;
+        var _didIteratorError = false;
+        var _iteratorError = undefined;
 
         try {
-          for (var _iterator2 = missingEvents[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-            var eventConfig = _step2.value;
+          for (var _iterator = missingEvents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+            var eventConfig = _step.value;
 
             this.removeEvent(eventConfig);
           }
         } catch (err) {
-          _didIteratorError2 = true;
-          _iteratorError2 = err;
+          _didIteratorError = true;
+          _iteratorError = err;
         } finally {
           try {
-            if (!_iteratorNormalCompletion2 && _iterator2.return) {
-              _iterator2.return();
+            if (!_iteratorNormalCompletion && _iterator.return) {
+              _iterator.return();
             }
           } finally {
-            if (_didIteratorError2) {
-              throw _iteratorError2;
+            if (_didIteratorError) {
+              throw _iteratorError;
             }
           }
         }
@@ -1042,27 +1032,27 @@ var Day = function (_ModelView) {
 
       // Events that newEventsConfig has and we don't.
       var newEvents = diff.missingFromArr1;
-      var _iteratorNormalCompletion3 = true;
-      var _didIteratorError3 = false;
-      var _iteratorError3 = undefined;
+      var _iteratorNormalCompletion2 = true;
+      var _didIteratorError2 = false;
+      var _iteratorError2 = undefined;
 
       try {
-        for (var _iterator3 = newEvents[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-          var _eventConfig = _step3.value;
+        for (var _iterator2 = newEvents[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
+          var _eventConfig = _step2.value;
 
           this.addEvent(_eventConfig);
         }
       } catch (err) {
-        _didIteratorError3 = true;
-        _iteratorError3 = err;
+        _didIteratorError2 = true;
+        _iteratorError2 = err;
       } finally {
         try {
-          if (!_iteratorNormalCompletion3 && _iterator3.return) {
-            _iterator3.return();
+          if (!_iteratorNormalCompletion2 && _iterator2.return) {
+            _iterator2.return();
           }
         } finally {
-          if (_didIteratorError3) {
-            throw _iteratorError3;
+          if (_didIteratorError2) {
+            throw _iteratorError2;
           }
         }
       }
@@ -1168,13 +1158,13 @@ function arrayDifference(arr1, arr2, compare) {
   var sArr2 = Array.from(arr2);
 
   var missingFromArr2 = [];
-  var _iteratorNormalCompletion4 = true;
-  var _didIteratorError4 = false;
-  var _iteratorError4 = undefined;
+  var _iteratorNormalCompletion3 = true;
+  var _didIteratorError3 = false;
+  var _iteratorError3 = undefined;
 
   try {
     var _loop = function _loop() {
-      var el1 = _step4.value;
+      var el1 = _step3.value;
 
       var el2Idx = sArr2.findIndex(function (el2) {
         return compare(el1, el2);
@@ -1187,32 +1177,32 @@ function arrayDifference(arr1, arr2, compare) {
       }
     };
 
-    for (var _iterator4 = arr1[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
+    for (var _iterator3 = arr1[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
       _loop();
     }
   } catch (err) {
-    _didIteratorError4 = true;
-    _iteratorError4 = err;
+    _didIteratorError3 = true;
+    _iteratorError3 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion4 && _iterator4.return) {
-        _iterator4.return();
+      if (!_iteratorNormalCompletion3 && _iterator3.return) {
+        _iterator3.return();
       }
     } finally {
-      if (_didIteratorError4) {
-        throw _iteratorError4;
+      if (_didIteratorError3) {
+        throw _iteratorError3;
       }
     }
   }
 
   var missingFromArr1 = [];
-  var _iteratorNormalCompletion5 = true;
-  var _didIteratorError5 = false;
-  var _iteratorError5 = undefined;
+  var _iteratorNormalCompletion4 = true;
+  var _didIteratorError4 = false;
+  var _iteratorError4 = undefined;
 
   try {
     var _loop2 = function _loop2() {
-      var el2 = _step5.value;
+      var el2 = _step4.value;
 
       // if it is one of the elements we set to null, then just skip it.
       if (!el2) {
@@ -1228,22 +1218,22 @@ function arrayDifference(arr1, arr2, compare) {
       }
     };
 
-    for (var _iterator5 = sArr2[Symbol.iterator](), _step5; !(_iteratorNormalCompletion5 = (_step5 = _iterator5.next()).done); _iteratorNormalCompletion5 = true) {
+    for (var _iterator4 = sArr2[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
       var _ret2 = _loop2();
 
       if (_ret2 === 'continue') continue;
     }
   } catch (err) {
-    _didIteratorError5 = true;
-    _iteratorError5 = err;
+    _didIteratorError4 = true;
+    _iteratorError4 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion5 && _iterator5.return) {
-        _iterator5.return();
+      if (!_iteratorNormalCompletion4 && _iterator4.return) {
+        _iterator4.return();
       }
     } finally {
-      if (_didIteratorError5) {
-        throw _iteratorError5;
+      if (_didIteratorError4) {
+        throw _iteratorError4;
       }
     }
   }
@@ -1344,7 +1334,7 @@ var Ordering = function () {
 
         // Fill the days where this event will be with its config. all
         // of this will yield placeholder events when the Event class creates them.
-        for (var dayNum = view.offset + 1; dayNum < view.length; dayNum++) {
+        for (var dayNum = view.offset + 1; dayNum < view.offset + view.length; dayNum++) {
           days[dayNum][level] = view.config;
         }
       });
@@ -1432,15 +1422,17 @@ var EventView = function () {
     this.endDate = DateHandler.min(config.end, calEndDate);
 
     var decimalDiff = DateHandler.diff(this.endDate, this.startDate, 'days', true);
-    // How many days the Event object created with this event config will take
-    // given the current calendar start and end date
-    this.length = Math.ceil(decimalDiff) || 1;
-
     // If calendar finished before this event's end date or ends
     // before this event's start date, then there is nothing else to do.
-    if (this.length < 1) {
+    if (decimalDiff < 0) {
+      // Negative length specifies that the view should not be added to calendar
+      this.length = -1;
       return;
     }
+
+    // How many days the Event object created with this event config will take
+    // given the current calendar start and end date
+    this.length = Math.ceil(decimalDiff);
 
     // NOTE: This is altering the config object iself.
     // This will be used by the Event class afterwards.

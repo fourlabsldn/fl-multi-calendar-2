@@ -10,13 +10,17 @@ export default class EventView {
     this.endDate = DateHandler.min(config.end, calEndDate);
 
     const decimalDiff = DateHandler.diff(this.endDate, this.startDate, 'days', true);
-    // How many days the Event object created with this event config will take
-    // given the current calendar start and end date
-    this.length = Math.ceil(decimalDiff) || 1;
-
     // If calendar finished before this event's end date or ends
     // before this event's start date, then there is nothing else to do.
-    if (this.length < 1) { return; }
+    if (decimalDiff < 0) {
+      // Negative length specifies that the view should not be added to calendar
+      this.length = -1;
+      return;
+    }
+
+    // How many days the Event object created with this event config will take
+    // given the current calendar start and end date
+    this.length = Math.ceil(decimalDiff);
 
     // NOTE: This is altering the config object iself.
     // This will be used by the Event class afterwards.

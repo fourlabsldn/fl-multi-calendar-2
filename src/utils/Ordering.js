@@ -50,7 +50,7 @@ export default class Ordering {
 
       // Fill the days where this event will be with its config. all
       // of this will yield placeholder events when the Event class creates them.
-      for (let dayNum = view.offset + 1; dayNum < view.length; dayNum++) {
+      for (let dayNum = view.offset + 1; dayNum < (view.offset + view.length); dayNum++) {
         days[dayNum][level] = view.config;
       }
     });

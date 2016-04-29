@@ -72,6 +72,7 @@
          "classes": [ "fl-mc-event-color-white" ]
       },
       {
+        "debug":true,
          "id":"7899",
          "title":"46 Hanover House,  London E14 8RH",
          "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. .",
