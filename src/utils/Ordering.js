@@ -27,7 +27,11 @@ export default class Ordering {
   // Specifies who will be a placeholder and who won't and puts everyone
   // in the right place in an array of dayCount size.
   _layOut(eventViews = this.eventViews, dayCount = this.dayCount) {
-    const days = new Array(dayCount).fill([]); // Array of arrays.
+    // Create days as an Array of arrays of length dayCount.
+    const days = new Array(dayCount);
+    for (let i = 0; i < days.length; i++) {
+      days[i] = [];
+    }
 
     eventViews.forEach((view) => {
       const level = this._getLevelThatEventWillFit(view, days);

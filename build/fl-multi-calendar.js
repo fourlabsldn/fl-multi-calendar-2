@@ -1321,7 +1321,11 @@ var Ordering = function () {
       var eventViews = arguments.length <= 0 || arguments[0] === undefined ? this.eventViews : arguments[0];
       var dayCount = arguments.length <= 1 || arguments[1] === undefined ? this.dayCount : arguments[1];
 
-      var days = new Array(dayCount).fill([]); // Array of arrays.
+      // Create days as an Array of arrays of length dayCount.
+      var days = new Array(dayCount);
+      for (var i = 0; i < days.length; i++) {
+        days[i] = [];
+      }
 
       eventViews.forEach(function (view) {
         var level = _this._getLevelThatEventWillFit(view, days);
@@ -1562,7 +1566,10 @@ function organiseEventsConfig(eventsConfig, calStartDate, dayCount) {
     }
   }
 
-  var days = new Array(dayCount).fill([]);
+  var days = new Array(dayCount);
+  for (var i = 0; i < days.length; i++) {
+    days[i] = [];
+  }
 
   // Fill days with config objects for events from ordered overlapping chains
   var _iteratorNormalCompletion3 = true;

@@ -55,7 +55,10 @@ export default function organiseEventsConfig(eventsConfig, calStartDate, dayCoun
   // Array of arrays, each representing a day of the calendar. And each
   // day array will have the events for that day.
   // Create an array of length dayCount initialised with empty arrays.
-  const days = new Array(dayCount).fill([]);
+  const days = new Array(dayCount);
+  for (let i = 0; i < days.length; i++) {
+    days[i] = [];
+  }
 
   // Fill days with config objects for events from ordered overlapping chains
   for (const ordering of bestOrderings) {
