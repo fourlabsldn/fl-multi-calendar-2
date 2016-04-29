@@ -6,18 +6,18 @@ function processCondition(condition, errorMessage) {
     let completeErrorMessage = '';
 
     // Strict mode doesn't allow us to use callers
-    // The assert function is calling this processCondition and we are
-    // really interested is in who is calling the assert function.
-    const assertFunction = processCondition.caller;
-
-    if (!assertFunction) {
-      // The program should never ever ever come here.
-      throw new Error('No "assert" function as a caller?');
-    }
-
-    if (assertFunction.caller && assertFunction.caller.name) {
-      completeErrorMessage = `${assertFunction.caller.name}: `;
-    }
+    // // The assert function is calling this processCondition and we are
+    // // really interested is in who is calling the assert function.
+    // const assertFunction = processCondition.caller;
+    //
+    // if (!assertFunction) {
+    //   // The program should never ever ever come here.
+    //   throw new Error('No "assert" function as a caller?');
+    // }
+    //
+    // if (assertFunction.caller && assertFunction.caller.name) {
+    //   completeErrorMessage = `${assertFunction.caller.name}: `;
+    // }
 
     completeErrorMessage += errorMessage;
     return completeErrorMessage;

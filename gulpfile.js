@@ -31,6 +31,7 @@ gulp.task('rollup-module', () => {
   ])
   .pipe(sourcemaps.init())
   .pipe(rollup({
+    banner: '\'use strict\'',
     plugins: [
       babel({
         exclude: 'node_modules/**',
@@ -52,10 +53,8 @@ gulp.task('rollup-tests', () => {
   .pipe(rollup({
     plugins: [
       babel({
-        useStrict: true,
         exclude: 'node_modules/**',
         presets: ['es2015-rollup'],
-        plugins: ['transform-strict-mode'],
       }),
     ],
   }))

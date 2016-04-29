@@ -1,4 +1,3 @@
-use strict
 /* eslint-env jasmine */
 
 describe('An instance of the Event class should', function () {

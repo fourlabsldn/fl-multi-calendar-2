@@ -1,4 +1,3 @@
-use strict
 /* eslint-env jasmine */
 
 describe('An instance of the Calendar class should', function () {
