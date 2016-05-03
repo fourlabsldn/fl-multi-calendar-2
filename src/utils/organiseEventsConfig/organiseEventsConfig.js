@@ -1,7 +1,8 @@
-import permute from './permute';
+import permute from '../permute';
+import DateHandler from '../DateHandler';
+
 import Ordering from './Ordering';
 import EventView from './EventView';
-import DateHandler from './DateHandler';
 
 /**
  * Creates events for all days of a calendar given a configuration array.

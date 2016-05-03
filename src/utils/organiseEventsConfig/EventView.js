@@ -1,5 +1,4 @@
-import DateHandler from './DateHandler';
-import assert from './assert';
+import DateHandler from '../DateHandler';
 
 export default class EventView {
   constructor(config, calStartDate, dayCount) {

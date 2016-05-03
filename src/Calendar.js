@@ -2,7 +2,7 @@ import assert from './utils/assert.js';
 import DateHandler from './utils/DateHandler';
 import ModelView from './ModelView';
 import Day from './Day';
-import organiseEventsConfig from './utils/organiseEventsConfig';
+import organiseEventsConfig from './utils/organiseEventsConfig/organiseEventsConfig';
 
 const CALENDAR_CLASS = '-cal';
 
