@@ -1,6 +1,7 @@
 import permute from './permute';
 import Ordering from './Ordering';
 import EventView from './EventView';
+import DateHandler from './DateHandler';
 
 /**
  * Creates events for all days of a calendar given a configuration array.
@@ -30,7 +31,7 @@ export default function organiseEventsConfig(eventsConfig, calStartDate, dayCoun
 
   // Organise all events chronologically
   eventViews.sort((v1, v2) => {
-    return v2.diff(v1, 'minutes');
+    return DateHandler.diff(v1.startDate, v2.startDate, 'minutes');
   });
 
   // Get all single-day and more-than-one-day events

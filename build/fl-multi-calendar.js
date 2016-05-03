@@ -1369,7 +1369,7 @@ function organiseEventsConfig(eventsConfig, calStartDate, dayCount) {
 
   // Organise all events chronologically
   eventViews.sort(function (v1, v2) {
-    return v2.diff(v1, 'minutes');
+    return DateHandler.diff(v1.startDate, v2.startDate, 'minutes');
   });
 
   // Get all single-day and more-than-one-day events

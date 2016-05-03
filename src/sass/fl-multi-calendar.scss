@@ -432,6 +432,10 @@ $events-container-padding: 2px;
 
   //Multiple days events cannot contain a description.
   &[class*="fl-mc-multiple-days"] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
     .fl-mc-cal-day-event-time,
     .fl-mc-cal-day-event-title {
       display: inline;

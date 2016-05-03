@@ -516,12 +516,16 @@
     visibility: hidden;
     width: -webkit-calc( 700% + 12px + 24px);
     width: calc( 700% + 12px + 24px); }
-  .fl-mc-cal-day-event[class*="fl-mc-multiple-days"] .fl-mc-cal-day-event-time,
-  .fl-mc-cal-day-event[class*="fl-mc-multiple-days"] .fl-mc-cal-day-event-title {
-    display: inline;
-    padding-right: 1em; }
-  .fl-mc-cal-day-event[class*="fl-mc-multiple-days"] .fl-mc-cal-day-event-description {
-    display: none; }
+  .fl-mc-cal-day-event[class*="fl-mc-multiple-days"] {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; }
+    .fl-mc-cal-day-event[class*="fl-mc-multiple-days"] .fl-mc-cal-day-event-time,
+    .fl-mc-cal-day-event[class*="fl-mc-multiple-days"] .fl-mc-cal-day-event-title {
+      display: inline;
+      padding-right: 1em; }
+    .fl-mc-cal-day-event[class*="fl-mc-multiple-days"] .fl-mc-cal-day-event-description {
+      display: none; }
 
 .fl-mc-event-color-blue {
   background-color: #2E9498; }
