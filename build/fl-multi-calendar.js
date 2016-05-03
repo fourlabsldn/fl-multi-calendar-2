@@ -1326,15 +1326,19 @@ var Ordering = function () {
         // the event will be visible because of the isPlaceholder value.
         var visibleEventConfig = Object.create(view.config);
         visibleEventConfig.ordering = Object.create(view.config.ordering);
+
         // All configs apart from the visibleEventConfig are set to be
         // placeholders.
         visibleEventConfig.ordering.isPlaceholder = false;
         view.config.ordering.isPlaceholder = true;
-        days[view.offset][level] = visibleEventConfig;
+
+        var eventStartIdx = view.offset;
+        var eventEndIdx = view.offset + view.length - 1;
+        days[eventStartIdx][level] = visibleEventConfig;
 
         // Fill the days where this event will be with its config. all
         // of this will yield placeholder events when the Event class creates them.
-        for (var dayNum = view.offset + 1; dayNum < view.offset + view.length; dayNum++) {
+        for (var dayNum = eventStartIdx + 1; dayNum <= eventEndIdx; dayNum++) {
           days[dayNum][level] = view.config;
         }
       });
@@ -1343,46 +1347,60 @@ var Ordering = function () {
   }, {
     key: "_addPadding",
     value: function _addPadding() {
+      var _this2 = this;
+
       var nonPaddedLaidOutEvents = arguments.length <= 0 || arguments[0] === undefined ? this._nonPaddedLaidOutEvents : arguments[0];
 
-      var days = Array.from(nonPaddedLaidOutEvents);
-      var level = 0;
-      var lastEvent = this._getFirstEventOfLevel(days, level);
-
-      // Go through all days of the week and add events in undefined
-      // slots of all levels.
-      while (lastEvent) {
-        for (var dayNum = 0; dayNum < days.length; dayNum++) {
-          if (days[dayNum][level] === undefined) {
-            days[dayNum][level] = lastEvent;
-          } else {
-            lastEvent = days[dayNum][level];
+      var days = nonPaddedLaidOutEvents.slice(0);
+      days.forEach(function (day, dayNum) {
+        // We need to use a for loop instead of a forEach because the forEach
+        // will skip unset Array values and those are exactly the ones we are
+        // trying to find.
+        for (var levelNum = 0; levelNum < day.length; levelNum++) {
+          if (day[levelNum] === undefined) {
+            day[levelNum] = _this2._getPlaceholderFor(days, dayNum, levelNum);
           }
         }
-
-        level++;
-        lastEvent = this._getFirstEventOfLevel(days, level);
-      }
-
+      });
       return days;
     }
+
+    /**
+     * Returns the first placeholder element found in the specified
+     * level counting from the dayNum given.
+     * @method _getPlaceholderFor
+     * @param  {Array<Array<Object>>} days - Array of Arrays containing eventConfig data
+     * @param  {int} dayNum - Number of day from which to search for a placeholder
+     * @param  {int} levelNum - Level where placeholder must be found.
+     * @return {Object} Will return undefined if nothing is found.
+     */
+
   }, {
-    key: "_getFirstEventOfLevel",
-    value: function _getFirstEventOfLevel(days, level) {
-      // Will return the first value in that level != from undefined
-      return days.reduce(function (firstOfLevel, day) {
-        return firstOfLevel || day[level];
-      }, null);
+    key: "_getPlaceholderFor",
+    value: function _getPlaceholderFor(days, dayNum, levelNum) {
+      for (var i = dayNum; i < days.length; i++) {
+        var slotContent = days[i][levelNum];
+        if (slotContent && slotContent.ordering && slotContent.ordering.isPlaceholder) {
+          return slotContent;
+        }
+      }
+
+      return undefined;
     }
   }, {
     key: "_getLevelThatEventWillFit",
     value: function _getLevelThatEventWillFit(eView, days) {
       var level = 0;
       var fitsInLevel = false;
+
+      // Minus one because length starts from 1 and indexes start from 0.
+      var eventEndIdx = eView.offset + eView.length - 1;
+      var eventStartIdx = eView.offset;
+
       while (!fitsInLevel) {
         fitsInLevel = true;
 
-        for (var dayNum = eView.offset; dayNum < eView.length; dayNum++) {
+        for (var dayNum = eventStartIdx; dayNum <= eventEndIdx; dayNum++) {
           if (days[dayNum][level] !== undefined) {
             fitsInLevel = false;
             level++;
@@ -1400,9 +1418,12 @@ var Ordering = function () {
       var days = nonPaddedLaidOutEvents;
       var score = 0;
       days.forEach(function (day) {
-        day.forEach(function (eventConfig) {
-          score += eventConfig === undefined ? 0 : 1;
-        });
+        // We need to use a for loop instead of a forEach because the forEach
+        // will skip unset Array values and those are exactly the ones we are
+        // trying to cound.
+        for (var level = 0; level < day.length; level++) {
+          score += day[level] === undefined ? 0 : 1;
+        }
       });
 
       return score;
