@@ -1,5 +1,33 @@
 {
    "12345":[
+     {
+        "id":"12345",
+        "title":"Simple title",
+        "start":"2016-04-25 09:00:00",
+        "end":"2016-04-26 18:00:00",
+        "tooltip":"LOL",
+        "classes": [ "fl-mc-event-color-red" ]
+     },
+     {
+        "id":"2345",
+        "title":"Awesome meeting",
+        "start":"2016-04-27 09:00:00",
+        "end":"2016-04-28 18:00:00",
+        "tooltip":"LOdsfL",
+        "classes": [ "fl-mc-event-color-green" ]
+     },
+     {
+        "id":"3456",
+        "title":"Awesome meeting 02 - 30",
+        "start":"2016-04-26 09:00:00",
+        "end":"2016-04-27 18:00:00",
+        "tooltip":"LoooOL",
+        "classes": [ "fl-mc-event-color-blue" ]
+     },
+
+
+
+
       {
          "id":"12345",
          "title":"Simple title 02 - 04",
