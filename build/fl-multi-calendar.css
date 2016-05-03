@@ -226,7 +226,7 @@
     display: inline-block; }
 
 .fl-mc-ctrl-refresh.fl-mc-loading-error {
-  background-color: #C43232;
+  background-color: #c43232;
   color: #fafafa;
   pointer-events: none; }
   .fl-mc-ctrl-refresh.fl-mc-loading-error .icon-refresh {
@@ -328,11 +328,11 @@
             filter: brightness(95%); }
 
 .fl-mc-view-oneDay .fl-mc-cal-header {
+  border: 2px solid #cbcbcb;
   -webkit-box-flex: 1;
   -webkit-flex: auto;
       -ms-flex: auto;
           flex: auto;
-  border: 2px solid #cbcbcb;
   border-width: 2px 0; }
 
 .fl-mc-cal-title {
@@ -528,25 +528,25 @@
       display: none; }
 
 .fl-mc-event-color-blue {
-  background-color: #2E9498; }
+  background-color: #2e9498; }
 
 .fl-mc-event-color-green {
-  background-color: #A7B531; }
+  background-color: #a7b531; }
 
 .fl-mc-event-color-yellow {
-  background-color: #D4AD40; }
+  background-color: #d4ad40; }
 
 .fl-mc-event-color-red {
-  background-color: #C43232; }
+  background-color: #c43232; }
 
 .fl-mc-event-color-orange {
-  background-color: #DA5730; }
+  background-color: #da5730; }
 
 .fl-mc-event-color-black {
   background-color: #303030; }
 
 .fl-mc-event-color-white {
-  background-color: white;
+  background-color: #fff;
   color: inherit;
   border: 1px solid #303030; }
 
