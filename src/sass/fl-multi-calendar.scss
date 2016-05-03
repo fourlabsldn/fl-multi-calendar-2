@@ -365,11 +365,12 @@ $border-size: 2px;
 }
 
 // Events container
+$events-container-padding: 2px;
 .fl-mc-cal-day-events {
   display: flex;
   flex-flow: column nowrap;
   justify-content: flex-start;
-  padding: .1em;
+  padding: $events-container-padding;
 }
 
 //--------------------------------
@@ -411,22 +412,30 @@ $border-size: 2px;
 
   @for $i from 2 through 7 {
     $content: $i * 100%;
-    $margins: $i * ($border-size);
-    $paddings: ($i * $event-padding);
-    $event-container-width: calc( #{$content} + #{$margins} );
-    $event-content-width: calc( #{$content} + #{$margins} + #{$paddings} );
+    $borders: ($i - 1) * $border-size;
+    $margins: ($i - 1) * 2 * $events-container-padding;
+    $event-width: calc( #{$content} + #{$borders} + #{$margins});
 
     &.fl-mc-multiple-days-#{$i} {
-      width: $event-container-width;
+      width: $event-width;
       z-index: 1;
     }
 
     &.fl-mc-multiple-days-placeholder-#{$i} {
       visibility: hidden;
+      width: $event-width;
+    }
+  }
 
-      * {
-        width: $event-content-width;
-      }
+  //Multiple days events cannot contain a description.
+  &[class*="fl-mc-multiple-days"] {
+    .fl-mc-cal-day-event-time,
+    .fl-mc-cal-day-event-title {
+      display: inline;
+      padding-right: 1em;
+    }
+    .fl-mc-cal-day-event-description {
+      display: none;
     }
   }
 }

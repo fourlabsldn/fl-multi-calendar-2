@@ -411,7 +411,7 @@
   -webkit-justify-content: flex-start;
       -ms-flex-pack: start;
           justify-content: flex-start;
-  padding: .1em; }
+  padding: 2px; }
 
 .fl-mc-cal-day-event {
   display: block;
@@ -469,59 +469,59 @@
     -webkit-filter: brightness(95%);
             filter: brightness(95%); }
   .fl-mc-cal-day-event.fl-mc-multiple-days-2 {
-    width: -webkit-calc( 200% + 4px);
-    width: calc( 200% + 4px);
+    width: -webkit-calc( 200% + 2px + 4px);
+    width: calc( 200% + 2px + 4px);
     z-index: 1; }
   .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-2 {
-    visibility: hidden; }
-    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-2 * {
-      width: -webkit-calc( 200% + 4px + 1em);
-      width: calc( 200% + 4px + 1em); }
+    visibility: hidden;
+    width: -webkit-calc( 200% + 2px + 4px);
+    width: calc( 200% + 2px + 4px); }
   .fl-mc-cal-day-event.fl-mc-multiple-days-3 {
-    width: -webkit-calc( 300% + 6px);
-    width: calc( 300% + 6px);
+    width: -webkit-calc( 300% + 4px + 8px);
+    width: calc( 300% + 4px + 8px);
     z-index: 1; }
   .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-3 {
-    visibility: hidden; }
-    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-3 * {
-      width: -webkit-calc( 300% + 6px + 1.5em);
-      width: calc( 300% + 6px + 1.5em); }
+    visibility: hidden;
+    width: -webkit-calc( 300% + 4px + 8px);
+    width: calc( 300% + 4px + 8px); }
   .fl-mc-cal-day-event.fl-mc-multiple-days-4 {
-    width: -webkit-calc( 400% + 8px);
-    width: calc( 400% + 8px);
+    width: -webkit-calc( 400% + 6px + 12px);
+    width: calc( 400% + 6px + 12px);
     z-index: 1; }
   .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-4 {
-    visibility: hidden; }
-    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-4 * {
-      width: -webkit-calc( 400% + 8px + 2em);
-      width: calc( 400% + 8px + 2em); }
+    visibility: hidden;
+    width: -webkit-calc( 400% + 6px + 12px);
+    width: calc( 400% + 6px + 12px); }
   .fl-mc-cal-day-event.fl-mc-multiple-days-5 {
-    width: -webkit-calc( 500% + 10px);
-    width: calc( 500% + 10px);
+    width: -webkit-calc( 500% + 8px + 16px);
+    width: calc( 500% + 8px + 16px);
     z-index: 1; }
   .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-5 {
-    visibility: hidden; }
-    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-5 * {
-      width: -webkit-calc( 500% + 10px + 2.5em);
-      width: calc( 500% + 10px + 2.5em); }
+    visibility: hidden;
+    width: -webkit-calc( 500% + 8px + 16px);
+    width: calc( 500% + 8px + 16px); }
   .fl-mc-cal-day-event.fl-mc-multiple-days-6 {
-    width: -webkit-calc( 600% + 12px);
-    width: calc( 600% + 12px);
+    width: -webkit-calc( 600% + 10px + 20px);
+    width: calc( 600% + 10px + 20px);
     z-index: 1; }
   .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-6 {
-    visibility: hidden; }
-    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-6 * {
-      width: -webkit-calc( 600% + 12px + 3em);
-      width: calc( 600% + 12px + 3em); }
+    visibility: hidden;
+    width: -webkit-calc( 600% + 10px + 20px);
+    width: calc( 600% + 10px + 20px); }
   .fl-mc-cal-day-event.fl-mc-multiple-days-7 {
-    width: -webkit-calc( 700% + 14px);
-    width: calc( 700% + 14px);
+    width: -webkit-calc( 700% + 12px + 24px);
+    width: calc( 700% + 12px + 24px);
     z-index: 1; }
   .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-7 {
-    visibility: hidden; }
-    .fl-mc-cal-day-event.fl-mc-multiple-days-placeholder-7 * {
-      width: -webkit-calc( 700% + 14px + 3.5em);
-      width: calc( 700% + 14px + 3.5em); }
+    visibility: hidden;
+    width: -webkit-calc( 700% + 12px + 24px);
+    width: calc( 700% + 12px + 24px); }
+  .fl-mc-cal-day-event[class*="fl-mc-multiple-days"] .fl-mc-cal-day-event-time,
+  .fl-mc-cal-day-event[class*="fl-mc-multiple-days"] .fl-mc-cal-day-event-title {
+    display: inline;
+    padding-right: 1em; }
+  .fl-mc-cal-day-event[class*="fl-mc-multiple-days"] .fl-mc-cal-day-event-description {
+    display: none; }
 
 .fl-mc-event-color-blue {
   background-color: #2E9498; }

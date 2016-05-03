@@ -94,7 +94,7 @@ class Event extends ModelView {
       this.html.container.classList.add(
         `fl-mc-multiple-days-placeholder-${span}`
       );
-    } else if (span > 0) {
+    } else if (span > 1) {
       this.html.container.classList.add(
         `fl-mc-multiple-days-${span}`
       );

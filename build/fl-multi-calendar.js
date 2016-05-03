@@ -844,7 +844,7 @@ var Event = function (_ModelView) {
 
       if (this.isPlaceholder) {
         this.html.container.classList.add('fl-mc-multiple-days-placeholder-' + span);
-      } else if (span > 0) {
+      } else if (span > 1) {
         this.html.container.classList.add('fl-mc-multiple-days-' + span);
       } // Else we don't need to do anything.
     }
