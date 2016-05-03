@@ -16,5 +16,4 @@ describe('An instance of the MultiCalendar class should', () => {
   xit('add a new calendar with the same number of days as other already present calendars');
   xit('find function should return the correctly found calendar if it exists');
   xit('find function should return undefined if calendar not found');
-
 });

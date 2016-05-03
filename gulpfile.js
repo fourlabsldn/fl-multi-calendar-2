@@ -93,3 +93,5 @@ gulp.task('rollup', ['rollup-module', 'rollup-tests']);
 gulp.task('build', ['rollup', 'sass', 'assets']);
 
 gulp.task('dev', ['build', 'watch', 'webserver']);
+
+// gulp.task('test', ['rollup-tests', 'jasmine', 'watch-tests', 'webserver-tests']);
