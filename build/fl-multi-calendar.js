@@ -992,70 +992,24 @@ var Day = function (_ModelView) {
   }, {
     key: 'setEvents',
     value: function setEvents(newEventsConfig) {
+      var _this2 = this;
+
       assert.warn(Array.isArray(newEventsConfig), 'Invalid array of configuration events,\n      clearing all events from day ' + this.date.toString() + '.');
 
-      var diff = arrayDifference(this.events, newEventsConfig, Event.areSame);
+      var sameAmountOfEvents = newEventsConfig.length === this.events.length;
+      var allEventsAreSame = newEventsConfig.reduce(function (outcome, newEvent, newEventIdx) {
+        var areSameEvents = Event.areSame(newEvent, _this2.events[newEventIdx]);
+        return outcome && areSameEvents;
+      }, true);
 
-      // Events that we have and newEventsConfig doesn't.
-      var missingEvents = diff.missingFromArr2;
-
-      // If all events must be removed.
-      if (missingEvents.length === this.events.length) {
-        // Use the crearEvents method as it performs better than removeEvent
-        this.clearEvents();
-      } else {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
-
-        try {
-          for (var _iterator = missingEvents[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var eventConfig = _step.value;
-
-            this.removeEvent(eventConfig);
-          }
-        } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
-        } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
-        }
+      if (sameAmountOfEvents && allEventsAreSame) {
+        return;
       }
 
-      // Events that newEventsConfig has and we don't.
-      var newEvents = diff.missingFromArr1;
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
-
-      try {
-        for (var _iterator2 = newEvents[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var _eventConfig = _step2.value;
-
-          this.addEvent(_eventConfig);
-        }
-      } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
-      } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
-      }
+      this.clearEvents();
+      newEventsConfig.forEach(function (newEvent) {
+        _this2.addEvent(newEvent);
+      });
     }
   }, {
     key: 'getDate',
@@ -1151,98 +1105,6 @@ var Day = function (_ModelView) {
   }]);
   return Day;
 }(ModelView);
-
-function arrayDifference(arr1, arr2, compare) {
-  // We will use a surrogate array because we will
-  // modify the values that are found so they are not compared again.
-  var sArr2 = Array.from(arr2);
-
-  var missingFromArr2 = [];
-  var _iteratorNormalCompletion3 = true;
-  var _didIteratorError3 = false;
-  var _iteratorError3 = undefined;
-
-  try {
-    var _loop = function _loop() {
-      var el1 = _step3.value;
-
-      var el2Idx = sArr2.findIndex(function (el2) {
-        return compare(el1, el2);
-      });
-
-      if (el2Idx >= 0) {
-        sArr2[el2Idx] = null;
-      } else {
-        missingFromArr2.push(el1);
-      }
-    };
-
-    for (var _iterator3 = arr1[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
-      _loop();
-    }
-  } catch (err) {
-    _didIteratorError3 = true;
-    _iteratorError3 = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion3 && _iterator3.return) {
-        _iterator3.return();
-      }
-    } finally {
-      if (_didIteratorError3) {
-        throw _iteratorError3;
-      }
-    }
-  }
-
-  var missingFromArr1 = [];
-  var _iteratorNormalCompletion4 = true;
-  var _didIteratorError4 = false;
-  var _iteratorError4 = undefined;
-
-  try {
-    var _loop2 = function _loop2() {
-      var el2 = _step4.value;
-
-      // if it is one of the elements we set to null, then just skip it.
-      if (!el2) {
-        return 'continue';
-      }
-
-      var match = arr1.find(function (el1) {
-        return compare(el1, el2);
-      });
-
-      if (!match) {
-        missingFromArr1.push(el2);
-      }
-    };
-
-    for (var _iterator4 = sArr2[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-      var _ret2 = _loop2();
-
-      if (_ret2 === 'continue') continue;
-    }
-  } catch (err) {
-    _didIteratorError4 = true;
-    _iteratorError4 = err;
-  } finally {
-    try {
-      if (!_iteratorNormalCompletion4 && _iterator4.return) {
-        _iterator4.return();
-      }
-    } finally {
-      if (_didIteratorError4) {
-        throw _iteratorError4;
-      }
-    }
-  }
-
-  return {
-    missingFromArr2: missingFromArr2,
-    missingFromArr1: missingFromArr1
-  };
-}
 
 // Returns all possible permutations of an array of values.
 function permute(inp) {
@@ -1352,13 +1214,13 @@ var Ordering = function () {
       var nonPaddedLaidOutEvents = arguments.length <= 0 || arguments[0] === undefined ? this._nonPaddedLaidOutEvents : arguments[0];
 
       var days = nonPaddedLaidOutEvents.slice(0);
-      days.forEach(function (day, dayNum) {
+      days.forEach(function (day) {
         // We need to use a for loop instead of a forEach because the forEach
         // will skip unset Array values and those are exactly the ones we are
         // trying to find.
         for (var levelNum = 0; levelNum < day.length; levelNum++) {
           if (day[levelNum] === undefined) {
-            day[levelNum] = _this2._getPlaceholderFor(days, dayNum, levelNum);
+            day[levelNum] = _this2._getPlaceholderFor(days, levelNum);
           }
         }
       });
@@ -1366,19 +1228,17 @@ var Ordering = function () {
     }
 
     /**
-     * Returns the first placeholder element found in the specified
-     * level counting from the dayNum given.
+     * Returns the first placeholder element found in the specified level
      * @method _getPlaceholderFor
      * @param  {Array<Array<Object>>} days - Array of Arrays containing eventConfig data
-     * @param  {int} dayNum - Number of day from which to search for a placeholder
      * @param  {int} levelNum - Level where placeholder must be found.
      * @return {Object} Will return undefined if nothing is found.
      */
 
   }, {
     key: "_getPlaceholderFor",
-    value: function _getPlaceholderFor(days, dayNum, levelNum) {
-      for (var i = dayNum; i < days.length; i++) {
+    value: function _getPlaceholderFor(days, levelNum) {
+      for (var i = 0; i < days.length; i++) {
         var slotContent = days[i][levelNum];
         if (slotContent && slotContent.ordering && slotContent.ordering.isPlaceholder) {
           return slotContent;

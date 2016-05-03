@@ -63,13 +63,13 @@ export default class Ordering {
 
   _addPadding(nonPaddedLaidOutEvents = this._nonPaddedLaidOutEvents) {
     const days = nonPaddedLaidOutEvents.slice(0);
-    days.forEach((day, dayNum) => {
+    days.forEach((day) => {
       // We need to use a for loop instead of a forEach because the forEach
       // will skip unset Array values and those are exactly the ones we are
       // trying to find.
       for (let levelNum = 0; levelNum < day.length; levelNum++) {
         if (day[levelNum] === undefined) {
-          day[levelNum] = this._getPlaceholderFor(days, dayNum, levelNum);
+          day[levelNum] = this._getPlaceholderFor(days, levelNum);
         }
       }
     });
@@ -77,16 +77,14 @@ export default class Ordering {
   }
 
   /**
-   * Returns the first placeholder element found in the specified
-   * level counting from the dayNum given.
+   * Returns the first placeholder element found in the specified level
    * @method _getPlaceholderFor
    * @param  {Array<Array<Object>>} days - Array of Arrays containing eventConfig data
-   * @param  {int} dayNum - Number of day from which to search for a placeholder
    * @param  {int} levelNum - Level where placeholder must be found.
    * @return {Object} Will return undefined if nothing is found.
    */
-  _getPlaceholderFor(days, dayNum, levelNum) {
-    for (let i = dayNum; i < days.length; i++) {
+  _getPlaceholderFor(days, levelNum) {
+    for (let i = 0; i < days.length; i++) {
       const slotContent = days[i][levelNum];
       if (slotContent &&
           slotContent.ordering &&

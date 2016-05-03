@@ -4,7 +4,7 @@ import ModelView from './ModelView';
 import Event from './Event';
 
 const DAY_CLASS = '-day';
-const DEFAULT_HEADER_FORMAT =  'dddd, MMM DD';
+const DEFAULT_HEADER_FORMAT = 'dddd, MMM DD';
 
 /**
  * @class Day
@@ -101,26 +101,18 @@ export default class Day extends ModelView {
       `Invalid array of configuration events,
       clearing all events from day ${this.date.toString()}.`);
 
-    const diff = arrayDifference(this.events, newEventsConfig, Event.areSame);
+    const sameAmountOfEvents = newEventsConfig.length === this.events.length;
+    const allEventsAreSame = newEventsConfig.reduce((outcome, newEvent, newEventIdx) => {
+      const areSameEvents = Event.areSame(newEvent, this.events[newEventIdx]);
+      return outcome && areSameEvents;
+    }, true);
 
-    // Events that we have and newEventsConfig doesn't.
-    const missingEvents = diff.missingFromArr2;
+    if (sameAmountOfEvents && allEventsAreSame) { return; }
 
-    // If all events must be removed.
-    if (missingEvents.length === this.events.length) {
-      // Use the crearEvents method as it performs better than removeEvent
-      this.clearEvents();
-    } else {
-      for (const eventConfig of missingEvents) {
-        this.removeEvent(eventConfig);
-      }
-    }
-
-    // Events that newEventsConfig has and we don't.
-    const newEvents = diff.missingFromArr1;
-    for (const eventConfig of newEvents) {
-      this.addEvent(eventConfig);
-    }
+    this.clearEvents();
+    newEventsConfig.forEach(newEvent => {
+      this.addEvent(newEvent);
+    });
   }
 
   getDate() {
@@ -197,41 +189,4 @@ export default class Day extends ModelView {
       return Event.isSame(x.config(), eventConfig);
     });
   }
-}
-
-
-function arrayDifference(arr1, arr2, compare) {
-  // We will use a surrogate array because we will
-  // modify the values that are found so they are not compared again.
-  const sArr2 = Array.from(arr2);
-
-  const missingFromArr2 = [];
-  for (const el1 of arr1) {
-    const el2Idx = sArr2.findIndex((el2) => {
-      return compare(el1, el2);
-    });
-
-    if (el2Idx >= 0) {
-      sArr2[el2Idx] = null;
-    } else {
-      missingFromArr2.push(el1);
-    }
-  }
-
-  const missingFromArr1 = [];
-  for (const el2 of sArr2) {
-    // if it is one of the elements we set to null, then just skip it.
-    if (!el2) { continue; }
-
-    const match = arr1.find((el1) => {
-      return compare(el1, el2);
-    });
-
-    if (!match) { missingFromArr1.push(el2); }
-  }
-
-  return {
-    missingFromArr2,
-    missingFromArr1,
-  };
 }
