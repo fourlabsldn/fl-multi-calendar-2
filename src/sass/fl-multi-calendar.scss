@@ -365,6 +365,9 @@ $border-size: 2px;
 }
 
 // Events container
+// This padding must have an absolute measure because this is used to
+// calculate the size of multi-day events and event font-size in
+// the event object may change, so ems are not appropriate.
 $events-container-padding: 2px;
 .fl-mc-cal-day-events {
   display: flex;
@@ -383,7 +386,7 @@ $events-container-padding: 2px;
   position: relative; // for the tooltip.
   padding: $event-padding;
   border-radius: 5px;
-  margin: 0 0 .1em;
+  margin: 0 0 .2em;
   font-size: ms(-1);
   overflow: hidden; // Important for fc-mc-multiple-days-placeholder
 
