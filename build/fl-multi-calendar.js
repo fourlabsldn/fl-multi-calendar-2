@@ -802,11 +802,11 @@ var Event = function (_ModelView) {
 
     _this._setPlaceHolderStatus(parentDate);
 
+    _this._attatchClasses(parentDate);
+
     if (_this.isPlaceholder) {
       return babelHelpers.possibleConstructorReturn(_this);
     }
-
-    _this._attatchClasses(parentDate);
 
     // Setup eventClick callback
     if (typeof _this.callbacks.eventClick === 'function') {

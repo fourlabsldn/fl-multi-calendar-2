@@ -58,9 +58,9 @@ class Event extends ModelView {
 
     this._setPlaceHolderStatus(parentDate);
 
-    if (this.isPlaceholder) { return; }
-
     this._attatchClasses(parentDate);
+
+    if (this.isPlaceholder) { return; }
 
     // Setup eventClick callback
     if (typeof this.callbacks.eventClick === 'function') {
