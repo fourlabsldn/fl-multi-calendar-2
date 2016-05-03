@@ -75,38 +75,6 @@ export default function organiseEventsConfig(eventsConfig, calStartDate, dayCoun
 }
 
 /**
- * Returns groups of events that overlap each other.
- * @function getOverlappingChains
- * @param  {Array<EventView>} multiDayViews
- * @return {Array<Array<EventView>>} - Chains of overlapping events.
- */
-// TODO: remove this function. It is not being used
-function getOverlappingChains(multiDayViews) {
-  const chains = [];
-
-  multiDayViews.forEach((view1, idx1) => {
-    multiDayViews.forEach((view2, idx2) => {
-      // Avoid going here twice for the same pair
-      if (idx2 <= idx1) { return; }
-
-      if (!view1.overlaps(view2)) { return; }
-
-      // Check if any of the two views is in any chain already.
-      for (const chain of chains) {
-        if (chain.includes(view1)) { chain.push(view2); return; }
-        if (chain.includes(view2)) { chain.push(view1); return; }
-      }
-
-      // If it overlaps and didn't fit in any of the previous chains,
-      // then create a new one for it.
-      chains.push([view1, view2]);
-    });
-  });
-
-  return chains;
-}
-
-/**
  * @function _getBestOrdering
  * @param  {Array<EventView>} eventViews - This array is ordered chronologically
  * @return {Array<Ordering>}

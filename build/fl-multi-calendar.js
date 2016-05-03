@@ -1589,13 +1589,13 @@ function getBestOrder(eventViews, dayCount) {
   var possibleOrders = permute(eventViews);
   var bestOrdering = void 0;
   var bestScore = 99; // just something big will work.
-  var _iteratorNormalCompletion4 = true;
-  var _didIteratorError4 = false;
-  var _iteratorError4 = undefined;
+  var _iteratorNormalCompletion3 = true;
+  var _didIteratorError3 = false;
+  var _iteratorError3 = undefined;
 
   try {
-    for (var _iterator4 = possibleOrders[Symbol.iterator](), _step4; !(_iteratorNormalCompletion4 = (_step4 = _iterator4.next()).done); _iteratorNormalCompletion4 = true) {
-      var order = _step4.value;
+    for (var _iterator3 = possibleOrders[Symbol.iterator](), _step3; !(_iteratorNormalCompletion3 = (_step3 = _iterator3.next()).done); _iteratorNormalCompletion3 = true) {
+      var order = _step3.value;
 
       var ordering = new Ordering(order, dayCount);
       var score = ordering.getScore();
@@ -1608,16 +1608,16 @@ function getBestOrder(eventViews, dayCount) {
       }
     }
   } catch (err) {
-    _didIteratorError4 = true;
-    _iteratorError4 = err;
+    _didIteratorError3 = true;
+    _iteratorError3 = err;
   } finally {
     try {
-      if (!_iteratorNormalCompletion4 && _iterator4.return) {
-        _iterator4.return();
+      if (!_iteratorNormalCompletion3 && _iterator3.return) {
+        _iterator3.return();
       }
     } finally {
-      if (_didIteratorError4) {
-        throw _iteratorError4;
+      if (_didIteratorError3) {
+        throw _iteratorError3;
       }
     }
   }

@@ -64,15 +64,15 @@
          ]
       },
       {
+         "debug":true,
          "id":"567",
-         "title":"Awesome meeting",
+         "title":"White-Awesome meeting",
          "start":"2016-04-27 09:00:00",
          "end":"2016-04-28 10:00:00",
          "tooltip":"LlololololololOL",
          "classes": [ "fl-mc-event-color-white" ]
       },
       {
-        "debug":true,
          "id":"7899",
          "title":"46 Hanover House,  London E14 8RH",
          "description": "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. .",
