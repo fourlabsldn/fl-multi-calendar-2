@@ -1287,9 +1287,9 @@ describe('An instance of the Calendar class should', function () {
   var calendarDescription = 'Software Developer';
   var calendarId = '12345';
   var calendarConfig = {
-    calendarName: calendarName,
-    calendarDescription: calendarDescription,
-    calendarId: calendarId
+    name: calendarName,
+    description: calendarDescription,
+    id: calendarId
   };
   var calendarStartDate = new Date();
   var calendarParentClass = 'super-class';
@@ -1365,12 +1365,34 @@ describe('An instance of the Calendar class should', function () {
       newCalendar.addDay();
     }
     expect(newCalendar.getDayCount()).toEqual(daysToBeAdded);
-    for (var _i = daysToBeAdded; _i > 0; _i++) {
+    for (var _i = daysToBeAdded; _i > 0; _i--) {
       newCalendar.removeDay();
       expect(newCalendar.getDayCount()).toEqual(_i - 1);
     }
   });
 
-  it('change the date of all days when start date is changed', function () {});
+  it('change the date of all days when start date is changed', function () {
+    var calStart = new Date();
+    var newCalendar = new Calendar( // eslint-disable-line no-unused-vars
+    calendarConfig, calStart, calendarParentClass, calendarCallbacks);
+
+    var daysToBeAdded = 10;
+    for (var i = 0; i < daysToBeAdded; i++) {
+      newCalendar.addDay();
+    }
+
+    var calendarDays = [];
+    newCalendar.days.forEach(function (day) {
+      calendarDays.push(day.start);
+    });
+
+    calStart = moment(calStart).add(2, 'days');
+    newCalendar.setStartDate(calStart);
+
+    newCalendar.days.forEach(function (day, index) {
+      // Expect to find two days difference
+      expect(moment(day.start).diff(calendarDays[index], 'days')).toEqual(2);
+    });
+  });
 });
 //# sourceMappingURL=Calendar-specs.js.map

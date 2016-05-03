@@ -11,6 +11,7 @@ const autoprefixer = require('autoprefixer');
 const gulpDoxx = require('gulp-doxx');
 const jasmineBrowser = require('gulp-jasmine-browser');
 const open = require('gulp-open');
+const watch = require('gulp-watch');
 
 // -------------------------------------------------------
 //            SOURCE
@@ -100,13 +101,15 @@ gulp.task('rollup-tests', () => {
 });
 
 gulp.task('jasmine', () => {
-  return gulp.src(['tests/build/*-specs.js'])
+  return gulp.src(['node_modules/moment/min/moment.min.js', 'tests/build/*-specs.js'])
   .pipe(jasmineBrowser.specRunner({ console: true }))
   .pipe(jasmineBrowser.headless());
 });
 
 gulp.task('jasmine-debug', () => {
-  gulp.src(['tests/build/*-specs.js'])
+  const filesForTest = ['node_modules/moment/min/moment.min.js', 'tests/build/*-specs.js'];
+  gulp.src(filesForTest)
+  .pipe(watch(filesForTest))
   .pipe(jasmineBrowser.specRunner())
   .pipe(jasmineBrowser.server({ port: 8888 }));
 });
@@ -122,17 +125,18 @@ gulp.task('open-jasmine-debug', () => {
 gulp.task('build-docs', ['docs']);
 
 gulp.task('build-tests', ['rollup-tests']);
+gulp.task('test-debug', [
+  'build-tests',
+  'watch',
+  'jasmine-debug',
+  'open-jasmine-debug',
+]);
 
 gulp.task('demo', ['webserver']);
 gulp.task('rollup', ['rollup-module', 'rollup-tests']);
 gulp.task('build', ['rollup', 'sass', 'assets']);
 
 gulp.task('dev', ['build', 'watch', 'webserver']);
-gulp.task('dev-debug', [
-  'build-tests',
-  'watch',
-  'jasmine-debug',
-  'open-jasmine-debug',
-]);
+
 
 gulp.task('test', ['rollup-tests', 'jasmine']);

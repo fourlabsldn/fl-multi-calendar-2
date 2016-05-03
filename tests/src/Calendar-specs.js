@@ -1,4 +1,5 @@
 /* eslint-env jasmine */
+/* globals moment */
 
 import Calendar from '../../src/Calendar';
 
@@ -7,9 +8,9 @@ describe('An instance of the Calendar class should', () => {
   const calendarDescription = 'Software Developer';
   const calendarId = '12345';
   const calendarConfig = {
-    calendarName,
-    calendarDescription,
-    calendarId,
+    name: calendarName,
+    description: calendarDescription,
+    id: calendarId,
   };
   const calendarStartDate = new Date();
   const calendarParentClass = 'super-class';
@@ -100,13 +101,37 @@ describe('An instance of the Calendar class should', () => {
       newCalendar.addDay();
     }
     expect(newCalendar.getDayCount()).toEqual(daysToBeAdded);
-    for (let i = daysToBeAdded; i > 0; i++) {
+    for (let i = daysToBeAdded; i > 0; i--) {
       newCalendar.removeDay();
       expect(newCalendar.getDayCount()).toEqual(i - 1);
     }
   });
 
   it('change the date of all days when start date is changed', () => {
+    let calStart = new Date();
+    const newCalendar = new Calendar( // eslint-disable-line no-unused-vars
+      calendarConfig,
+      calStart,
+      calendarParentClass,
+      calendarCallbacks
+    );
 
+    const daysToBeAdded = 10;
+    for (let i = 0; i < daysToBeAdded; i++) {
+      newCalendar.addDay();
+    }
+
+    const calendarDays = [];
+    newCalendar.days.forEach(day => {
+      calendarDays.push(day.start);
+    });
+
+    calStart = moment(calStart).add(2, 'days');
+    newCalendar.setStartDate(calStart);
+
+    newCalendar.days.forEach((day, index) => {
+      // Expect to find two days difference
+      expect(moment(day.start).diff(calendarDays[index], 'days')).toEqual(2);
+    });
   });
 });

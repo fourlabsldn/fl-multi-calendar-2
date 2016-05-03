@@ -8,6 +8,7 @@
     "dev": "gulp dev",
     "build": "gulp build",
     "demo": "gulp demo",
+    "test-debug": "gulp test-debug",
     "deploy-gh-pages": "gulp build-docs && git-directory-deploy --directory docs --branch gh-pages"
   },
   "author": "Lazamar @ FourLabs",
@@ -27,11 +28,6 @@
     "gulp-sass": "^2.3.0",
     "gulp-server-livereload": "^1.7.4",
     "gulp-sourcemaps": "^1.6.0",
-    "jasmine": "^2.4.1",
-    "jasmine-core": "^2.4.1",
-    "karma-chrome-launcher": "^1.0.1",
-    "karma-jasmine": "^0.3.8",
-    "karma-phantomjs-launcher": "^1.0.0",
     "phantomjs-prebuilt": "^2.1.7",
     "rollup-plugin-babel": "^2.4.0",
     "url-search-params": "^0.5.0"
