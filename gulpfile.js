@@ -9,7 +9,12 @@ const sass = require('gulp-sass');
 const postcss = require('gulp-postcss');
 const autoprefixer = require('autoprefixer');
 const gulpDoxx = require('gulp-doxx');
+const jasmineBrowser = require('gulp-jasmine-browser');
+const open = require('gulp-open');
 
+// -------------------------------------------------------
+//            SOURCE
+// -------------------------------------------------------
 gulp.task('assets', () => {
   return gulp.src(['./src/assets/**/*.*'])
     .pipe(gulp.dest('./build/assets'));
@@ -44,7 +49,39 @@ gulp.task('rollup-module', () => {
   .pipe(gulp.dest('./build'));
 });
 
+gulp.task('watch', () => {
+  gulp.watch('./src/**/*.js', ['build']);
+  gulp.watch('./src/sass/*.*', ['sass']);
+  gulp.watch('./src/assets/*.*', ['assets']);
+  gulp.watch('./tests/src/*.*', ['build-tests']);
+});
 
+gulp.task('webserver', () => {
+  gulp.src('./')
+    .pipe(server({
+      livereload: true,
+      directoryListing: false,
+      open: true,
+      defaultFile: '/demo/index.html',
+    }));
+});
+
+// -------------------------------------------------------
+//            DOCS
+// -------------------------------------------------------
+gulp.task('docs', () => {
+  gulp.src(['src/*.js', 'README.md'], { base: '.' })
+    .pipe(gulpDoxx({
+      title: 'Multi Calendar 2',
+      urlPrefix: '/fl-multi-calendar-2', // Name of git repo. This will be important in gh-pages
+    }))
+    .pipe(gulp.dest('docs'));
+});
+
+
+// -------------------------------------------------------
+//            TESTS
+// -------------------------------------------------------
 gulp.task('rollup-tests', () => {
   gulp.src([
     './tests/src/*',
@@ -62,36 +99,40 @@ gulp.task('rollup-tests', () => {
   .pipe(gulp.dest('./tests/build'));
 });
 
-gulp.task('watch', () => {
-  gulp.watch('./src/**/*.js', ['build']);
-  gulp.watch('./src/sass/*.*', ['sass']);
-  gulp.watch('./src/assets/*.*', ['assets']);
+gulp.task('jasmine', () => {
+  return gulp.src(['tests/build/*-specs.js'])
+  .pipe(jasmineBrowser.specRunner({ console: true }))
+  .pipe(jasmineBrowser.headless());
 });
 
-gulp.task('webserver', () => {
-  gulp.src('./')
-    .pipe(server({
-      livereload: true,
-      directoryListing: false,
-      open: true,
-      defaultFile: '/demo/index.html',
-    }));
+gulp.task('jasmine-debug', () => {
+  gulp.src(['tests/build/*-specs.js'])
+  .pipe(jasmineBrowser.specRunner())
+  .pipe(jasmineBrowser.server({ port: 8888 }));
 });
 
-gulp.task('docs', () => {
-  gulp.src(['src/*.js', 'README.md'], { base: '.' })
-    .pipe(gulpDoxx({
-      title: 'Multi Calendar 2',
-      urlPrefix: '/fl-multi-calendar-2', // Name of git repo. This will be important in gh-pages
-    }))
-    .pipe(gulp.dest('docs'));
+gulp.task('open-jasmine-debug', () => {
+  gulp.src(['./'])
+  .pipe(open({
+    uri: 'http://localhost:8888',
+    app: 'google-chrome',
+  }));
 });
 
 gulp.task('build-docs', ['docs']);
+
+gulp.task('build-tests', ['rollup-tests']);
+
 gulp.task('demo', ['webserver']);
 gulp.task('rollup', ['rollup-module', 'rollup-tests']);
 gulp.task('build', ['rollup', 'sass', 'assets']);
 
 gulp.task('dev', ['build', 'watch', 'webserver']);
+gulp.task('dev-debug', [
+  'build-tests',
+  'watch',
+  'jasmine-debug',
+  'open-jasmine-debug',
+]);
 
-// gulp.task('test', ['rollup-tests', 'jasmine', 'watch-tests', 'webserver-tests']);
+gulp.task('test', ['rollup-tests', 'jasmine']);

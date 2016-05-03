@@ -33,7 +33,7 @@ describe('An instance of the Calendar class should', () => {
     // ===================
     // Presentation
     // ===================
-    xit('create a title element with the appropriate content form the config', () => {
+    it('create a title element with the appropriate content form the config', () => {
       expect(calendar.html).toBeDefined();
       const calContainer = calendar.html.container;
       expect(calContainer).toBeDefined();
@@ -41,7 +41,7 @@ describe('An instance of the Calendar class should', () => {
       expect(calContainer.innerHTML.indexOf(calendarDescription) > 0).toBeTruthy();
     });
 
-    xit('create a container for day elements', () => {
+    it('create a container for day elements', () => {
       const calContainer = calendar.html.container;
       expect(calContainer.querySelector('[class*="days"]') !== undefined).toBeTruthy();
     });
@@ -50,7 +50,7 @@ describe('An instance of the Calendar class should', () => {
   // ===================
   // Functionality
   // ===================
-  xit('throw an error when initialised without a config', () => {
+  it('throw an error when initialised without a config', () => {
     expect(() => {
       const newCalendar = new Calendar( // eslint-disable-line no-unused-vars
         null,
@@ -61,7 +61,7 @@ describe('An instance of the Calendar class should', () => {
     }).toThrow();
   });
 
-  xit('be instantiated without any days', () => {
+  it('be instantiated without any days', () => {
     const newCalendar = new Calendar( // eslint-disable-line no-unused-vars
       calendarConfig,
       calendarStartDate,
@@ -72,7 +72,7 @@ describe('An instance of the Calendar class should', () => {
     expect(newCalendar.getDayCount()).toEqual(0);
   });
 
-  xit('add the correct number of days when requested', () => {
+  it('add the correct number of days when requested', () => {
     const newCalendar = new Calendar( // eslint-disable-line no-unused-vars
       calendarConfig,
       calendarStartDate,
@@ -87,7 +87,7 @@ describe('An instance of the Calendar class should', () => {
     }
   });
 
-  xit('remove the correct number of days when requested', () => {
+  it('remove the correct number of days when requested', () => {
     const newCalendar = new Calendar( // eslint-disable-line no-unused-vars
       calendarConfig,
       calendarStartDate,
@@ -106,7 +106,7 @@ describe('An instance of the Calendar class should', () => {
     }
   });
 
-  xit('change the date of all days when start date is changed', () => {
+  it('change the date of all days when start date is changed', () => {
 
   });
 });
