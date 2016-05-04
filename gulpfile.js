@@ -12,7 +12,7 @@ const gulpDoxx = require('gulp-doxx');
 const jasmineBrowser = require('gulp-jasmine-browser');
 const open = require('gulp-open');
 const watch = require('gulp-watch');
-
+const uglify = require('gulp-uglify');
 // -------------------------------------------------------
 //            SOURCE
 // -------------------------------------------------------
@@ -46,6 +46,7 @@ gulp.task('rollup-module', () => {
       }),
     ],
   }))
+  .pipe(uglify())
   .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('./build'));
 });
