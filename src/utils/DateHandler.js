@@ -1,4 +1,4 @@
-/* globals moment */
+import moment from '../../bower_components/moment/src/moment.js';
 
 // This class serves mainly to wrap moment.js
 export default class DateHandler {

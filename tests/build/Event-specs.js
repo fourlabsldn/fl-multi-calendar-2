@@ -56,6 +56,7 @@ babelHelpers.possibleConstructorReturn = function (self, call) {
 babelHelpers;
 
 /* eslint-env jasmine */
+/* globals moment */
 
 describe('An instance of the Event class should', function () {
 
@@ -63,7 +64,9 @@ describe('An instance of the Event class should', function () {
   var eventClickSpy = void 0;
   var eventStartDate = moment();
   var eventEndDate = moment().add(1, 'days');
-  var eventDescription = 'My Awesome event';
+  var eventTitle = 'My awesome event title';
+  var eventDescription = 'Super interesting description';
+  var eventTooltip = 'A tooltip';
 
   beforeEach(function () {
     eventClickSpy = jasmine.createSpy('spy');
@@ -76,7 +79,9 @@ describe('An instance of the Event class should', function () {
     var eventConfig = {
       startDate: eventStartDate,
       endDate: eventEndDate,
+      title: eventTitle,
       description: eventDescription,
+      tooltip: eventTooltip,
       ordering: {
         span: 2,
         isPlaceholder: false
@@ -89,12 +94,17 @@ describe('An instance of the Event class should', function () {
   // Presentation
   // ===================
   xit('create a title element', function () {
-    // expect(event.html.title).toBeDefined();
+    expect(event.html.title).toBeDefined();
+    expect(event.html.title.innerHTML).toEqual(eventTitle);
   });
   xit('create a description element', function () {
-    // expect(event.html.title).toBeDefined();
+    expect(event.html.description).toBeDefined();
+    expect(event.html.description.innerHTML).toEqual(eventDescription);
   });
-  xit('create a tooltip element to be shown on hover', function () {});
+  xit('create a tooltip element to be shown on hover', function () {
+    expect(event.html.tooltip).toBeDefined();
+    expect(event.html.tooltip.innerHTML).toEqual(eventTooltip);
+  });
   xit('create a time element', function () {});
 
   // ===================
