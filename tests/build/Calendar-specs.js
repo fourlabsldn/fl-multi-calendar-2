@@ -55,48 +55,6 @@ babelHelpers.possibleConstructorReturn = function (self, call) {
 
 babelHelpers;
 
-// Bug checking function that will throw an error whenever
-// the condition sent to it is evaluated to false
-
-function processCondition(condition, errorMessage) {
-  if (!condition) {
-    var completeErrorMessage = '';
-
-    // Strict mode doesn't allow us to use callers
-    // // The assert function is calling this processCondition and we are
-    // // really interested is in who is calling the assert function.
-    // const assertFunction = processCondition.caller;
-    //
-    // if (!assertFunction) {
-    //   // The program should never ever ever come here.
-    //   throw new Error('No "assert" function as a caller?');
-    // }
-    //
-    // if (assertFunction.caller && assertFunction.caller.name) {
-    //   completeErrorMessage = `${assertFunction.caller.name}: `;
-    // }
-
-    completeErrorMessage += errorMessage;
-    return completeErrorMessage;
-  }
-
-  return null;
-}
-
-function assert() {
-  var error = processCondition.apply(undefined, arguments);
-  if (typeof error === 'string') {
-    throw new Error(error);
-  }
-}
-
-assert.warn = function warn() {
-  var error = processCondition.apply(undefined, arguments);
-  if (typeof error === 'string') {
-    console.warn(error);
-  }
-};
-
 var hookCallback;
 
 function hooks() {
@@ -3999,6 +3957,48 @@ hooks.normalizeUnits = normalizeUnits;
 hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
 hooks.prototype = proto;
 
+// Bug checking function that will throw an error whenever
+// the condition sent to it is evaluated to false
+
+function processCondition(condition, errorMessage) {
+  if (!condition) {
+    var completeErrorMessage = '';
+
+    // Strict mode doesn't allow us to use callers
+    // // The assert function is calling this processCondition and we are
+    // // really interested is in who is calling the assert function.
+    // const assertFunction = processCondition.caller;
+    //
+    // if (!assertFunction) {
+    //   // The program should never ever ever come here.
+    //   throw new Error('No "assert" function as a caller?');
+    // }
+    //
+    // if (assertFunction.caller && assertFunction.caller.name) {
+    //   completeErrorMessage = `${assertFunction.caller.name}: `;
+    // }
+
+    completeErrorMessage += errorMessage;
+    return completeErrorMessage;
+  }
+
+  return null;
+}
+
+function assert() {
+  var error = processCondition.apply(undefined, arguments);
+  if (typeof error === 'string') {
+    throw new Error(error);
+  }
+}
+
+assert.warn = function warn() {
+  var error = processCondition.apply(undefined, arguments);
+  if (typeof error === 'string') {
+    console.warn(error);
+  }
+};
+
 // This class serves mainly to wrap moment.js
 
 var DateHandler = function () {
@@ -5241,12 +5241,12 @@ describe('An instance of the Calendar class should', function () {
       calendarDays.push(day.start);
     });
 
-    calStart = moment(calStart).add(2, 'days');
+    calStart = hooks(calStart).add(2, 'days');
     newCalendar.setStartDate(calStart);
 
     newCalendar.days.forEach(function (day, index) {
       // Expect to find two days difference
-      expect(moment(day.start).diff(calendarDays[index], 'days')).toEqual(2);
+      expect(hooks(day.start).diff(calendarDays[index], 'days')).toEqual(2);
     });
   });
 });

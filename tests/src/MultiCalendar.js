@@ -1,4 +1,5 @@
 /* eslint-env jasmine */
+import moment from '../../bower_components/moment/src/moment.js';
 
 describe('An instance of the MultiCalendar class should', () => {
   // ===================

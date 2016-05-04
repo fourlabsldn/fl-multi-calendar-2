@@ -1,12 +1,12 @@
 /* eslint-env jasmine */
-/* globals moment */
+
+import moment from '../../bower_components/moment/src/moment.js';
 
 describe('An instance of the Event class should', () => {
-
   let event;
   let eventClickSpy;
-  const eventStartDate = moment();
-  const eventEndDate = moment().add(1, 'days');
+  const eventStartDate = moment().format('DD/MM/YYYY');
+  const eventEndDate = moment().add(1, 'days').format('DD/MM/YYYY');
   const eventTitle = 'My awesome event title'
   const eventDescription = 'Super interesting description';
   const eventTooltip = 'A tooltip';
@@ -20,8 +20,8 @@ describe('An instance of the Event class should', () => {
     const parentClass = 'super-class';
     const parentDate = new Date();
     const eventConfig = {
-      startDate: eventStartDate,
-      endDate: eventEndDate,
+      start: eventStartDate,
+      end: eventEndDate,
       title: eventTitle,
       description: eventDescription,
       tooltip: eventTooltip,
@@ -36,27 +36,28 @@ describe('An instance of the Event class should', () => {
   // ===================
   // Presentation
   // ===================
-  xit('create a title element', () => {
+  it('create a title element', () => {
     expect(event.html.title).toBeDefined();
     expect(event.html.title.innerHTML).toEqual(eventTitle);
   });
-  xit('create a description element', () => {
+  it('create a description element', () => {
     expect(event.html.description).toBeDefined();
     expect(event.html.description.innerHTML).toEqual(eventDescription);
   });
-  xit('create a tooltip element to be shown on hover', () => {
+  it('create a tooltip element to be shown on hover', () => {
     expect(event.html.tooltip).toBeDefined();
     expect(event.html.tooltip.innerHTML).toEqual(eventTooltip);
   });
-  xit('create a time element', () => {
-
+  it('create a time element', () => {
+    expect(event.html.time).toBeDefined();
   });
 
   // ===================
   // Functionality
   // ===================
-  xit('trigger the eventClick when clicked upon', () => {
-
+  it('trigger the eventClick when clicked upon', () => {
+    event.html.container.click();
+    expect(eventClickSpy).toHaveBeenCalled();
   });
   xit('should fire the click event when clicked.', () => {
 

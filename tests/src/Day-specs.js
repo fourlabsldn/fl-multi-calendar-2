@@ -1,5 +1,5 @@
 /* eslint-env jasmine */
-/* globals moment */
+import moment from '../../bower_components/moment/src/moment.js';
 
 import Day from '../../src/Day';
 
