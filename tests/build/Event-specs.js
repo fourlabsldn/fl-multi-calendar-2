@@ -58,18 +58,49 @@ babelHelpers;
 /* eslint-env jasmine */
 
 describe('An instance of the Event class should', function () {
+
+  var event = void 0;
+  var eventClickSpy = void 0;
+  var eventStartDate = moment();
+  var eventEndDate = moment().add(1, 'days');
+  var eventDescription = 'My Awesome event';
+
+  beforeEach(function () {
+    eventClickSpy = jasmine.createSpy('spy');
+
+    var callbacks = {
+      eventClick: eventClickSpy
+    };
+    var parentClass = 'super-class';
+    var parentDate = new Date();
+    var eventConfig = {
+      startDate: eventStartDate,
+      endDate: eventEndDate,
+      description: eventDescription,
+      ordering: {
+        span: 2,
+        isPlaceholder: false
+      }
+    };
+
+    event = new Event(eventConfig, parentClass, parentDate, callbacks);
+  });
   // ===================
   // Presentation
   // ===================
-  xit('create a title element');
-  xit('create an info element');
-  xit('create a tooltip element to be shown on hover');
-  xit('create a time element');
+  xit('create a title element', function () {
+    // expect(event.html.title).toBeDefined();
+  });
+  xit('create a description element', function () {
+    // expect(event.html.title).toBeDefined();
+  });
+  xit('create a tooltip element to be shown on hover', function () {});
+  xit('create a time element', function () {});
 
   // ===================
   // Functionality
   // ===================
-  xit('trigger the eventClick when clicked upon');
-  xit('should fire the click event when clicked.');
+  xit('trigger the eventClick when clicked upon', function () {});
+  xit('should fire the click event when clicked.', function () {});
 });
 //# sourceMappingURL=Event-specs.js.map
