@@ -101,7 +101,10 @@ gulp.task('rollup-tests', () => {
 });
 
 gulp.task('jasmine', () => {
-  return gulp.src(['node_modules/moment/min/moment.min.js', 'tests/build/*-specs.js'])
+  return gulp.src([
+    'node_modules/babel-polyfill/dist/polyfill.js',
+    'node_modules/moment/min/moment.min.js',
+    'tests/build/*-specs.js'])
   .pipe(jasmineBrowser.specRunner({ console: true }))
   .pipe(jasmineBrowser.headless());
 });

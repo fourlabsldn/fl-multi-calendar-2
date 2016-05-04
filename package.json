@@ -4,11 +4,11 @@
   "description": "Multiple calendars at one",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"No tests specified\" && exit 0",
+    "test": "gulp test",
+    "test-debug": "gulp test-debug",
     "dev": "gulp dev",
     "build": "gulp build",
     "demo": "gulp demo",
-    "test-debug": "gulp test-debug",
     "deploy-gh-pages": "gulp build-docs && git-directory-deploy --directory docs --branch gh-pages"
   },
   "author": "Lazamar @ FourLabs",
@@ -16,6 +16,7 @@
   "devDependencies": {
     "autoprefixer": "^6.3.6",
     "babel-plugin-lodash": "^2.3.0",
+    "babel-polyfill": "^6.8.0",
     "babel-preset-es2015-rollup": "^1.1.1",
     "bower": "^1.7.9",
     "git-directory-deploy": "^1.5.0",
