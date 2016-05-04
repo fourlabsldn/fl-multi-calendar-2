@@ -4014,6 +4014,5 @@ describe('An instance of the Event class should', function () {
     event.html.container.click();
     expect(eventClickSpy).toHaveBeenCalled();
   });
-  xit('should fire the click event when clicked.', function () {});
 });
 //# sourceMappingURL=Event-specs.js.map

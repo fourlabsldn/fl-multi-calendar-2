@@ -1,10 +1,8 @@
 /* eslint-env jasmine */
 import moment from '../../bower_components/moment/src/moment.js';
-
 import Day from '../../src/Day';
 
 describe('A Day class\'s instance should', () => {
-
   const title1 = 'Simple title1';
   const title2 = 'Simple title3';
   const title3 = 'Simple title2';

@@ -55,48 +55,6 @@ babelHelpers.possibleConstructorReturn = function (self, call) {
 
 babelHelpers;
 
-// Bug checking function that will throw an error whenever
-// the condition sent to it is evaluated to false
-
-function processCondition(condition, errorMessage) {
-  if (!condition) {
-    var completeErrorMessage = '';
-
-    // Strict mode doesn't allow us to use callers
-    // // The assert function is calling this processCondition and we are
-    // // really interested is in who is calling the assert function.
-    // const assertFunction = processCondition.caller;
-    //
-    // if (!assertFunction) {
-    //   // The program should never ever ever come here.
-    //   throw new Error('No "assert" function as a caller?');
-    // }
-    //
-    // if (assertFunction.caller && assertFunction.caller.name) {
-    //   completeErrorMessage = `${assertFunction.caller.name}: `;
-    // }
-
-    completeErrorMessage += errorMessage;
-    return completeErrorMessage;
-  }
-
-  return null;
-}
-
-function assert() {
-  var error = processCondition.apply(undefined, arguments);
-  if (typeof error === 'string') {
-    throw new Error(error);
-  }
-}
-
-assert.warn = function warn() {
-  var error = processCondition.apply(undefined, arguments);
-  if (typeof error === 'string') {
-    console.warn(error);
-  }
-};
-
 var hookCallback;
 
 function hooks() {
@@ -3999,6 +3957,48 @@ hooks.normalizeUnits = normalizeUnits;
 hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
 hooks.prototype = proto;
 
+// Bug checking function that will throw an error whenever
+// the condition sent to it is evaluated to false
+
+function processCondition(condition, errorMessage) {
+  if (!condition) {
+    var completeErrorMessage = '';
+
+    // Strict mode doesn't allow us to use callers
+    // // The assert function is calling this processCondition and we are
+    // // really interested is in who is calling the assert function.
+    // const assertFunction = processCondition.caller;
+    //
+    // if (!assertFunction) {
+    //   // The program should never ever ever come here.
+    //   throw new Error('No "assert" function as a caller?');
+    // }
+    //
+    // if (assertFunction.caller && assertFunction.caller.name) {
+    //   completeErrorMessage = `${assertFunction.caller.name}: `;
+    // }
+
+    completeErrorMessage += errorMessage;
+    return completeErrorMessage;
+  }
+
+  return null;
+}
+
+function assert() {
+  var error = processCondition.apply(undefined, arguments);
+  if (typeof error === 'string') {
+    throw new Error(error);
+  }
+}
+
+assert.warn = function warn() {
+  var error = processCondition.apply(undefined, arguments);
+  if (typeof error === 'string') {
+    console.warn(error);
+  }
+};
+
 // This class serves mainly to wrap moment.js
 
 var DateHandler = function () {
@@ -4491,7 +4491,6 @@ var Day = function (_ModelView) {
 }(ModelView);
 
 describe('A Day class\'s instance should', function () {
-
   var title1 = 'Simple title1';
   var title2 = 'Simple title3';
   var title3 = 'Simple title2';
@@ -4569,13 +4568,13 @@ describe('A Day class\'s instance should', function () {
   });
   it('show the specified date', function () {
     day.setDate(new Date());
-    var diff = Math.abs(moment(day.html.header).diff(new Date(), 'days'));
+    var diff = Math.abs(hooks(day.html.header).diff(new Date(), 'days'));
     expect(diff).toEqual(0);
   });
   it('show the date in the correct format', function () {
     day.setDate(new Date());
     var dayHeader = day.html.header.innerHTML;
-    var dateInCorrectFormat = moment().format(dayHeaderFormat);
+    var dateInCorrectFormat = hooks().format(dayHeaderFormat);
     expect(dayHeader).toEqual(dateInCorrectFormat);
   });
 
@@ -4584,9 +4583,9 @@ describe('A Day class\'s instance should', function () {
   // ===================
   it('change day when commanded to.', function () {
     day.setDate(new Date());
-    var dayDate1 = moment(day.date).format(dayHeaderFormat);
-    day.setDate(moment().add(3, 'days'));
-    var dayDate2 = moment(day.date).format(dayHeaderFormat);
+    var dayDate1 = hooks(day.date).format(dayHeaderFormat);
+    day.setDate(hooks().add(3, 'days'));
+    var dayDate2 = hooks(day.date).format(dayHeaderFormat);
     expect(dayDate1).not.toEqual(dayDate2);
   });
 
@@ -4626,7 +4625,7 @@ describe('A Day class\'s instance should', function () {
   it('update all events on date change', function () {
     var eventGroup1 = [event1, event2];
     day.setEvents(eventGroup1);
-    day.setDate(moment().add(2, 'days'));
+    day.setDate(hooks().add(2, 'days'));
     expect(day.events.length).toEqual(0);
     expect(day.html.events.children.length).toEqual(0);
   });

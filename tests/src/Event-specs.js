@@ -59,7 +59,4 @@ describe('An instance of the Event class should', () => {
     event.html.container.click();
     expect(eventClickSpy).toHaveBeenCalled();
   });
-  xit('should fire the click event when clicked.', () => {
-
-  });
 });
