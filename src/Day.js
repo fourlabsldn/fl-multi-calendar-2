@@ -57,35 +57,6 @@ export default class Day extends ModelView {
 
     // TODO: Check on adding new events when other events are
     // already there. This is what the commented out code is for.
-    // // Insert new event in the right place in the HTML.
-    // let insertedBeforeEvent = false;
-    // for (const event of this.events) {
-    //   const timeDiff = DateHandler.diff(
-    //     newEvent.getStartTime(),
-    //     event.getStartTime(),
-    //     'minutes'
-    //   );
-    //   const eventStartsAfter = timeDiff < 0;
-    //   if (eventStartsAfter) {
-    //     const oldEventIndex = this.events.indexOf(event);
-    //     assert(typeof oldEventIndex === 'number',
-    //       'Weird bug in time comparison.');
-    //     insertedBeforeEvent = true;
-    //
-    //     // insert before event that starts later.
-    //     this.html.events.insertBefore(
-    //       newEvent.html.container,
-    //       event.html.container
-    //     );
-    //   }
-    // }
-    //
-    // if (!insertedBeforeEvent) {
-    //   // Either there are no events in this.events or all
-    //   // of them begin before newEvent.
-    //   this.html.events.appendChild(newEvent.html.container);
-    // }
-
     this.html.events.appendChild(newEvent.html.container);
     // Now add it to the events array.
     this.events.push(newEvent);
@@ -135,6 +106,7 @@ export default class Day extends ModelView {
     this.end = DateHandler.endOf(this.date, 'day');
     this.updateHeader();
     this._todayColor();
+    this.clearEvents();
   }
 
   clearEvents(events = this.events) {
@@ -174,19 +146,5 @@ export default class Day extends ModelView {
     } else {
       this.html.container.classList.remove(`${this.class}-today`);
     }
-  }
-
-  /**
-   * Checks whether an event that uses the same configuration object
-   * is already being displayer.
-   * @method hasEvent
-   * @api private
-   * @param  {Object}  eventConfig
-   * @return {Boolean}
-   */
-  hasEvent(eventConfig) {
-    return this.events.some((x) => {
-      return Event.isSame(x.config(), eventConfig);
-    });
   }
 }

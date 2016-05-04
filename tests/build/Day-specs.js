@@ -478,35 +478,6 @@ var Day = function (_ModelView) {
 
       // TODO: Check on adding new events when other events are
       // already there. This is what the commented out code is for.
-      // // Insert new event in the right place in the HTML.
-      // let insertedBeforeEvent = false;
-      // for (const event of this.events) {
-      //   const timeDiff = DateHandler.diff(
-      //     newEvent.getStartTime(),
-      //     event.getStartTime(),
-      //     'minutes'
-      //   );
-      //   const eventStartsAfter = timeDiff < 0;
-      //   if (eventStartsAfter) {
-      //     const oldEventIndex = this.events.indexOf(event);
-      //     assert(typeof oldEventIndex === 'number',
-      //       'Weird bug in time comparison.');
-      //     insertedBeforeEvent = true;
-      //
-      //     // insert before event that starts later.
-      //     this.html.events.insertBefore(
-      //       newEvent.html.container,
-      //       event.html.container
-      //     );
-      //   }
-      // }
-      //
-      // if (!insertedBeforeEvent) {
-      //   // Either there are no events in this.events or all
-      //   // of them begin before newEvent.
-      //   this.html.events.appendChild(newEvent.html.container);
-      // }
-
       this.html.events.appendChild(newEvent.html.container);
       // Now add it to the events array.
       this.events.push(newEvent);
@@ -567,6 +538,7 @@ var Day = function (_ModelView) {
       this.end = DateHandler.endOf(this.date, 'day');
       this.updateHeader();
       this._todayColor();
+      this.clearEvents();
     }
   }, {
     key: 'clearEvents',
@@ -614,38 +586,69 @@ var Day = function (_ModelView) {
         this.html.container.classList.remove(this.class + '-today');
       }
     }
-
-    /**
-     * Checks whether an event that uses the same configuration object
-     * is already being displayer.
-     * @method hasEvent
-     * @api private
-     * @param  {Object}  eventConfig
-     * @return {Boolean}
-     */
-
-  }, {
-    key: 'hasEvent',
-    value: function hasEvent(eventConfig) {
-      return this.events.some(function (x) {
-        return Event.isSame(x.config(), eventConfig);
-      });
-    }
   }]);
   return Day;
 }(ModelView);
 
 describe('A Day class\'s instance should', function () {
+
+  var title1 = 'Simple title1';
+  var title2 = 'Simple title3';
+  var title3 = 'Simple title2';
+  var event1 = {
+    id: '12345',
+    title: title1,
+    start: '2016-04-25 09:00:00',
+    end: '2016-04-26 18:00:00',
+    tooltip: 'LOL',
+    classes: ['fl-mc-event-color-red'],
+    ordering: {
+      span: 1,
+      isPlaceholder: false
+    }
+  };
+  var event2 = {
+    id: '2345',
+    title: title2,
+    start: '2016-04-27 09:00:00',
+    end: '2016-04-28 18:00:00',
+    tooltip: 'LOdsfL',
+    classes: ['fl-mc-event-color-green'],
+    ordering: {
+      span: 1,
+      isPlaceholder: false
+    }
+  };
+  var event3 = {
+    id: '3456',
+    title: title3,
+    start: '2016-04-26 09:00:00',
+    end: '2016-04-27 18:00:00',
+    tooltip: 'LoooOL',
+    classes: ['fl-mc-event-color-blue'],
+    ordering: {
+      span: 1,
+      isPlaceholder: false
+    }
+  };
+
   var day = void 0;
   var dayHeaderFormat = 'DD/MM/YYYY';
-  beforeAll(function () {
+  var headerClickSpy = void 0;
+
+  beforeEach(function (done) {
+    headerClickSpy = jasmine.createSpy('spy');
+
     var date = new Date();
     var parentClass = 'super-class';
     var config = {
       dayHeaderFormat: dayHeaderFormat
     };
-    var callbacks = {};
+    var callbacks = {
+      dayHeaderClick: headerClickSpy
+    };
     day = new Day(date, parentClass, config, callbacks);
+    done();
   });
   // ===================
   // Presentation
@@ -687,18 +690,91 @@ describe('A Day class\'s instance should', function () {
     expect(dayDate1).not.toEqual(dayDate2);
   });
 
-  xit('trigger title click event when the title is clicked.', function () {});
+  it('trigger title click event when the title is clicked.', function () {
+    day.html.header.click();
+    expect(headerClickSpy).toHaveBeenCalled();
+  });
 
-  xit('create events correctly', function () {});
-  xit('update events correctly', function () {});
+  it('create events correctly', function () {
+    var eventGroup = [event1, event2, event3];
+    day.setEvents(eventGroup);
+    expect(day.events.length).toEqual(3);
+    expect(day.events[0].html.title.innerHTML).toEqual(title1);
+    expect(day.events[1].html.title.innerHTML).toEqual(title2);
+    expect(day.events[2].html.title.innerHTML).toEqual(title3);
 
-  xit('update all events on date change', function () {});
-  xit('update all events without date change when requested', function () {});
+    // Check that events were added to the HTML
+    expect(day.html.events.children.length).toEqual(3);
+    expect(day.html.events.children[0].innerHTML).toContain(title1);
+    expect(day.html.events.children[1].innerHTML).toContain(title2);
+    expect(day.html.events.children[2].innerHTML).toContain(title3);
+  });
 
-  xit('clear all events when requested', function () {});
+  it('update events correctly', function () {
+    var eventGroup1 = [event1, event2];
+    day.setEvents(eventGroup1);
+    var eventGroup2 = [event3];
+    day.setEvents(eventGroup2);
+    expect(day.events.length).toEqual(1);
+    expect(day.events[0].html.title.innerHTML).toEqual(title3);
 
-  xit('not change HTML if setEvents is called with the same events as last call.', function () {});
-  xit('add new Event without deleting other ones that should stay.', function () {});
-  xit('remove events that are not present in the new array of events configuration.', function () {});
+    // Check that events were added to the HTML
+    expect(day.html.events.children.length).toEqual(1);
+    expect(day.html.events.children[0].innerHTML).toContain(title3);
+  });
+
+  it('update all events on date change', function () {
+    var eventGroup1 = [event1, event2];
+    day.setEvents(eventGroup1);
+    day.setDate(moment().add(2, 'days'));
+    expect(day.events.length).toEqual(0);
+    expect(day.html.events.children.length).toEqual(0);
+  });
+
+  it('clear all events when requested', function () {
+    var eventGroup1 = [event1, event2];
+    day.setEvents(eventGroup1);
+    day.clearEvents();
+    expect(day.events.length).toEqual(0);
+    expect(day.html.events.children.length).toEqual(0);
+  });
+
+  it('not change HTML if setEvents is called with the same events as last call.', function () {
+    var eventGroup1 = [event1, event2];
+    day.setEvents(eventGroup1);
+    var eventElBefore1 = day.html.events.children[0];
+    var eventElBefore2 = day.html.events.children[1];
+
+    day.setEvents(eventGroup1);
+    var eventElAfter1 = day.html.events.children[0];
+    var eventElAfter2 = day.html.events.children[1];
+    expect(eventElBefore1).toEqual(eventElAfter1);
+    expect(eventElBefore2).toEqual(eventElAfter2);
+  });
+
+  it('add new Event without deleting other ones that should stay.', function () {
+    var eventGroup1 = [event1];
+    day.setEvents(eventGroup1);
+    var eventElBefore1 = day.html.events.children[0];
+
+    var eventGroup2 = [event1, event2];
+    day.setEvents(eventGroup2);
+    var eventElAfter1 = day.html.events.children[0];
+    expect(eventElBefore1).toEqual(eventElAfter1);
+    expect(day.events.length).toEqual(eventGroup2.length);
+  });
+
+  it('remove events that are not present in the new array of events configuration.', function () {
+    var eventGroup1 = [event1, event2];
+    day.setEvents(eventGroup1);
+    var eventElBefore1 = day.html.events.children[0];
+
+    var eventGroup2 = [event1];
+    day.setEvents(eventGroup2);
+    var eventElAfter1 = day.html.events.children[0];
+    expect(eventElBefore1).toEqual(eventElAfter1);
+    expect(day.events.length).toEqual(eventGroup2.length);
+    expect(day.html.events.children.length).toEqual(eventGroup2.length);
+  });
 });
 //# sourceMappingURL=Day-specs.js.map
