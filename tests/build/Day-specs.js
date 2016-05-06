@@ -4254,8 +4254,14 @@ var Event = function (_ModelView) {
   }, {
     key: 'updateTime',
     value: function updateTime() {
-      // TODO: What if it starts or ends in a different day?
-      this.html.time.textContent = DateHandler.getTime(this.startDate) + ' - ' + DateHandler.getTime(this.endDate);
+      var multiDayEvent = this.config.ordering.span && this.config.ordering.span > 1;
+      var singleDayformat = 'HH:mm';
+      var multiDayFormat = 'MMM DD HH:mm';
+
+      var format = multiDayEvent ? multiDayFormat : singleDayformat;
+      var startTime = DateHandler.format(this.startDate, format);
+      var endTime = DateHandler.format(this.endDate, format);
+      this.html.time.textContent = startTime + ' - ' + endTime;
     }
   }, {
     key: 'getConfig',

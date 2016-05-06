@@ -75,9 +75,14 @@ class Event extends ModelView {
   }
 
   updateTime() {
-    // TODO: What if it starts or ends in a different day?
-    this.html.time.textContent =
-     `${DateHandler.getTime(this.startDate)} - ${DateHandler.getTime(this.endDate)}`;
+    const multiDayEvent = (this.config.ordering.span && this.config.ordering.span > 1);
+    const singleDayformat = 'HH:mm';
+    const multiDayFormat = 'MMM DD HH:mm';
+
+    const format = multiDayEvent ? multiDayFormat : singleDayformat;
+    const startTime = DateHandler.format(this.startDate, format);
+    const endTime = DateHandler.format(this.endDate, format);
+    this.html.time.textContent = `${startTime} - ${endTime}`;
   }
 
   getConfig() {
