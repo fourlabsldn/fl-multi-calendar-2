@@ -67,7 +67,7 @@ export default class Day extends ModelView {
    * @api private
    * @param  {Array<Object>}  newEventsConfig   array of event configuration objects
    */
-  setEvents(newEventsConfig) {
+  setEvents(newEventsConfig = []) {
     assert.warn(Array.isArray(newEventsConfig),
       `Invalid array of configuration events,
       clearing all events from day ${this.date.toString()}.`);

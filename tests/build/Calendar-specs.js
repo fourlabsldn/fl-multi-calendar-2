@@ -4391,8 +4391,10 @@ var Day = function (_ModelView) {
 
   }, {
     key: 'setEvents',
-    value: function setEvents(newEventsConfig) {
+    value: function setEvents() {
       var _this2 = this;
+
+      var newEventsConfig = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
 
       assert.warn(Array.isArray(newEventsConfig), 'Invalid array of configuration events,\n      clearing all events from day ' + this.date.toString() + '.');
 
