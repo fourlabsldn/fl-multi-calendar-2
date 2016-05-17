@@ -1,6 +1,5 @@
 // scss-lint:disable SelectorFormat
 
-@import url(https://fonts.googleapis.com/css?family=Lato:400,300,400italic,700);
 @import './_icons'; // scss-lint:disable ImportPath
 @import '../../bower_components/modular-scale/stylesheets/_modular-scale'; // scss-lint:disable ImportPath
 
@@ -71,7 +70,7 @@ $border-size: 2px;
 .fl-mc {
   @include main-border();
   display: block;
-  font-family: 'Lato';
+  font-family: 'Lato', sans-serif;
   padding: 0;
   box-sizing: border-box;
   background-color: $c-background;
