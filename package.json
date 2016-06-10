@@ -4,6 +4,7 @@
   "description": "Multiple calendars at one",
   "main": "index.js",
   "scripts": {
+    "start": "gulp demo",
     "postinstall": "bower install",
     "test": "gulp test",
     "test-debug": "gulp test-debug",

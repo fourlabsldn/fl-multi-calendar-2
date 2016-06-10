@@ -37,7 +37,11 @@ gulp.task('rollup-module', () => {
   ])
   .pipe(sourcemaps.init())
   .pipe(rollup({
-    banner: '\'use strict\'',
+    // Function names leak to the global namespace. To avoid that,
+    // let's just put everything within an immediate function, this way variables
+    // are all beautifully namespaced.
+    banner: '(function () {',
+    footer: '}());',
     plugins: [
       babel({
         exclude: 'node_modules/**',
