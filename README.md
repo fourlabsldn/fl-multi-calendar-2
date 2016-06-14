@@ -97,6 +97,12 @@ The main wrapper emmits the following events:
 - `fl-mc-loading-start` - Dispatched when an event request is sent to the server.
 - `fl-mc-loading-complete` - Dispatched after events from the server finished rendering.
 
+## Setting filters
+
+You can add filters by calling the `setFilters` method on the global `multiCalendar` object.
+It accepts an object as a parameter. The attributes and values of this object will be
+sent with each request as GET parameters.
+
 ## Calendar markup
 
 Example calendar markup:
