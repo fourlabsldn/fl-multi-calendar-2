@@ -99,7 +99,7 @@ The main wrapper emmits the following events:
 
 ## Setting filters
 
-You can add filters by calling the `setFilters` method on the global `multiCalendar` object.
+You can add filters by calling the `setFilter` method on the global `multiCalendar` object.
 It accepts an object as a parameter. The attributes and values of this object will be
 sent with each request as GET parameters.
 
