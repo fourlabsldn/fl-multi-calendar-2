@@ -1,3 +1,5 @@
+/* eslint-disable no-underscore-dangle */
+
 import assert from './utils/assert';
 import debounce from './utils/debounce';
 import DateHandler from './utils/DateHandler';
@@ -6,6 +8,7 @@ import triggerEvent from './utils/triggerEvent';
 import ModelView from './ModelView';
 import ControlBar from './ControlBar';
 import Calendar from './Calendar';
+import DataLoader from './DataLoader';
 
 // Private variables
 const MULTI_CALENDAR_CLASS = 'fl-mc';
@@ -64,9 +67,7 @@ class MultiCalendar extends ModelView {
     this.controlBar = new ControlBar(this.class, config.titleBarFormat);
     this.html.container.appendChild(this.controlBar.html.container);
 
-    assert(typeof config.loadUrl === 'string',
-      'No loadUrl provided.');
-    this.loadUrl = this._prepareLoadUrl(config.loadUrl);
+    this.dataLoader = new DataLoader(config.loadUrl);
 
     this.dayConfig = { dayHeaderFormat: config.dayHeaderFormat };
 
@@ -76,9 +77,6 @@ class MultiCalendar extends ModelView {
     this.calendars = [];
     this.lastLoadedEvents = {};
     this.currViewMode = null;
-
-    // Tell last requests whether they were cancelled.
-    this.lastRequest = { cancelled: false };
 
     // Nothing else will be added to the object from here on.
     Object.preventExtensions(this);
@@ -168,6 +166,10 @@ class MultiCalendar extends ModelView {
     this._loadEvents();
   }
 
+  setFilter(...args) {
+    this.dataLoader.setFilter(...args);
+  }
+
   /**
    * Shows or hides Saturday and Sunday from the current calendar view.
    * If calendar is in mobile mode (oneDay view) it does nothing.
@@ -216,7 +218,7 @@ class MultiCalendar extends ModelView {
       eventClick: config.eventClick,
     };
 
-    config.dayConfig = this.dayConfig;
+    config.dayConfig = this.dayConfig; // eslint-disable-line no-param-reassign
 
     const calendar = new Calendar(config, startDate, MULTI_CALENDAR_CLASS, calendarCallbacks);
     this.html.container.appendChild(calendar.html.container);
@@ -250,45 +252,19 @@ class MultiCalendar extends ModelView {
 
     controlBar.setLoadingState('loading');
 
-    // Crete array of calendar IDS
-    const calIds = [];
-    this.calendars.forEach((cal) => {
-      calIds.push(cal.getId());
-    });
+    const startDate = DateHandler.format(this.startDate, 'X');
+    const endDate = DateHandler.format(this.endDate, 'X');
+    const calendarIds = this.calendars.map(cal => cal.getId());
 
-    const params = {
-      ids: calIds,
-      start: DateHandler.format(this.startDate, 'X'),
-      end: DateHandler.format(this.endDate, 'X'),
-    };
-
-    const fullUrl = this._addParametersToUrl(params, loadUrl);
-
-    const requestConfig = {
-      method: 'GET',
-      cache: 'no-cache',
-      credentials: 'include',
-    };
-
-    // Cancel last request. The function that made the request
-    // will preserve this object in a closure so we can safely
-    // assign a new object to this.lastRequest.
-    this.lastRequest.cancelled = true;
-    const thisRequest = { cancelled: false };
-    this.lastRequest = thisRequest;
-
-    // TODO: develop a timeout mechanism
-    return fetch(fullUrl, requestConfig)
-    .then((data) => { return data.json(); })
-    // The loaded object is indexed by calendar id and each element contains
-    // an array of event objects.
+    return this.dataLoader.loadEvents(startDate, endDate, calendarIds)
     .then((loadedCalEvents) => {
-      if (thisRequest.cancelled) { return; }
+      // Loading interrupted
+      if (!loadedCalEvents) { return; }
+
       this._setEvents(loadedCalEvents, calendars);
       controlBar.setLoadingState('success');
     })
     .catch((e) => {
-      if (thisRequest.cancelled) { return; }
       controlBar.setLoadingState('error');
       console.error(e);
     })
@@ -473,59 +449,6 @@ class MultiCalendar extends ModelView {
 
     const stickyCheckDebounded = debounce(stickyCheck, 50);
     window.addEventListener('scroll', stickyCheckDebounded);
-  }
-
-  /**
-   * Adds parameters as GET string parameters to a prepared URL
-   * @private
-   * @method _addParametersToUrl
-   * @param  {Object}            params
-   * @param  {String}            loadUrl [optional]
-   * @return {String}           The full URL with parameters
-   */
-  _addParametersToUrl(params, loadUrl = this.loadUrl) {
-    const getParams = [];
-    const keys = Object.keys(params);
-    for (const param of keys) {
-      const value = params[param].toString();
-      const encodedParam = encodeURIComponent(param);
-      const encodedValue = encodeURIComponent(value);
-      getParams.push(`${encodedParam}=${encodedValue}`);
-    }
-
-    const encodedGetParams = getParams.join('&');
-    const fullUrl = loadUrl + encodedGetParams;
-    return fullUrl;
-  }
-
-  /**
-   * Adds a proper domain an prepares the URL for query parameters.
-   * @private
-   * @method _prepareLoadUrl
-   * @param  {String}        url
-   * @return {String}            The usable loadUrl
-   */
-  _prepareLoadUrl(rawUrl) {
-    let url;
-    try {
-      url = new URL(rawUrl);
-    } catch (e) {
-      try {
-        url = new URL(location.origin + rawUrl);
-        assert.warn(false, `No domain provided. Assuming domain: ${location.origin}`);
-      } catch (e2) {
-        assert(false, 'Invalid URL: ${loadUrl}');
-      }
-    }
-
-    let fullUrl;
-    if (url.search.length > 0) {
-      url.search = `${url.search}&`;
-      fullUrl = url.href;
-    } else {
-      fullUrl = `${url.href}?`;
-    }
-    return fullUrl;
   }
 }
 

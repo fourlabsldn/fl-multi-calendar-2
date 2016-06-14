@@ -8,7 +8,6 @@ xController((xDivEl) => { //eslint-disable-line
     throw new Error('x-div multiCalendar: No configuration object provided.');
   }
 
-  // Create multiCalendar
   config.targetElement = xDivEl;
   const multiCalendar = new MultiCalendar(config);
 
