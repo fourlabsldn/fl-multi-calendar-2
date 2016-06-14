@@ -168,6 +168,7 @@ class MultiCalendar extends ModelView {
 
   setFilter(...args) {
     this.dataLoader.setFilter(...args);
+    this.refresh();
   }
 
   /**
