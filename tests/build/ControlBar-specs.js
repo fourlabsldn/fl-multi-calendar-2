@@ -4180,7 +4180,7 @@ var ControlBar = function (_ModelView) {
     babelHelpers.classCallCheck(this, ControlBar);
 
     var html = [{ name: 'datePicker', tag: 'input' }, { name: 'back', tag: 'button', content: '<i class=icon-chevron-left></i>' }, { name: 'forward', tag: 'button', content: '<i class=icon-chevron-right></i>' }, { name: 'today', tag: 'button', content: 'Today' }, { name: 'refresh', tag: 'button',
-      content: '<i class=icon-refresh></i><i class=icon-check></i><i class=icon-times></i>' }, { name: 'titleBar', tag: 'p' }, { name: 'show-weekend', tag: 'button', content: 'Show Weekend' }];
+      content: '<i class=icon-refresh></i><i class=icon-check></i><i class=icon-times></i>' }, { name: 'titleBar', tag: 'span' }, { name: 'show-weekend', tag: 'button', content: 'Show Weekend' }];
 
     var _this = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(ControlBar).call(this, html, CONTROL_CLASS, parentClass, 'nav'));
 

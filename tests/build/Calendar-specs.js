@@ -4931,7 +4931,7 @@ var Calendar = function (_ModelView) {
 
     if (typeof config.description === 'string') {
       _this.description = config.description;
-      _this.html.description = document.createElement('p');
+      _this.html.description = document.createElement('span');
       _this.html.description.classList.add(_this.class + '-description');
       _this.html.description.textContent = _this.description;
       _this.html.header.appendChild(_this.html.description);
