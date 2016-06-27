@@ -27,7 +27,7 @@ export default class ControlBar extends ModelView {
       { name: 'today', tag: 'button', content: 'Today' },
       { name: 'refresh', tag: 'button',
         content: '<i class=icon-refresh></i><i class=icon-check></i><i class=icon-times></i>' },
-      { name: 'titleBar', tag: 'p' },
+      { name: 'titleBar', tag: 'span' },
       { name: 'show-weekend', tag: 'button', content: 'Show Weekend' },
     ];
     super(html, CONTROL_CLASS, parentClass, 'nav');

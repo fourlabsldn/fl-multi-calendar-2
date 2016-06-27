@@ -31,7 +31,7 @@ export default class Calendar extends ModelView {
 
     if (typeof config.description === 'string') {
       this.description = config.description;
-      this.html.description = document.createElement('p');
+      this.html.description = document.createElement('span');
       this.html.description.classList.add(`${this.class}-description`);
       this.html.description.textContent = this.description;
       this.html.header.appendChild(this.html.description);

@@ -1,5 +1,5 @@
 // html = [
-//  {name: 'details', tag: 'p', content: 'asdf'}
+//  {name: 'details', tag: 'span', content: 'asdf'}
 // ]
 import assert from './utils/assert';
 
