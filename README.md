@@ -28,7 +28,7 @@ MultiCalendar.
 Example valid configuration object:
 
 ``` javascript
-// //Callbacks
+// Callbacks
 function dayHeaderClick(date, events) {
   console.log('Day header click.');
   console.dir(arguments);
