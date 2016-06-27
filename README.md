@@ -76,17 +76,21 @@ myConfigObject = {
 
 ## Event data
 
-Events sent from the server should follow this structure:
+Event data sent from the server should follow this structure:
 
 ``` javascript
 {
-   "title": "46 Hanover House,  London E14 8RH ",
-   "description": "Mum's birthday",
-   "start":"2016-04-25T09:00:00",
-   "end":"2016-04-25T10:00:00",
-   "classes": [                 // Optional. CSS classes to be attatched to the event object
-     "fl-mc-event-color-black"
-   ]
+  "12345": [
+    {
+      "title": "46 Hanover House,  London E14 8RH ",
+      "description": "Mum's birthday",
+      "start":"2016-04-25T09:00:00",
+      "end":"2016-04-25T10:00:00",
+      "classes": [                 // Optional. CSS classes to be attatched to the event object
+        "fl-mc-event-color-black"
+      ],
+    }
+  ],
 }
 ```
 
