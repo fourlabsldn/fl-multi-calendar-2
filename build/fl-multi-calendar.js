@@ -5901,9 +5901,8 @@ var MultiCalendar = function (_ModelView) {
 
     _this.dayConfig = { dayHeaderFormat: config.dayHeaderFormat };
 
-    // Dates will be initialised in this.setStartDate
-    _this.startDate = null;
-    _this.endDate = null;
+    _this.startDate = DateHandler.newDate();
+    _this.endDate = DateHandler.newDate();
     _this.calendars = [];
     _this.lastLoadedEvents = {};
     _this.currViewMode = null;
@@ -5916,8 +5915,6 @@ var MultiCalendar = function (_ModelView) {
     // ----------------------------------------------------------------
 
     _this._initControlBar(_this.controlBar);
-
-    _this.setStartDate(DateHandler.newDate());
 
     // Add Calendars
     assert(Array.isArray(config.calendars), 'No valid calendars array provided.');
