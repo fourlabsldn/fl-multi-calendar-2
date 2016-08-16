@@ -151,6 +151,61 @@ Example calendar markup:
 </main>
 ```
 
+# API
+
+You can control the calendar using the global object `mutliCalendar`, which contains the following methods:
+
+``` javascript
+/**
+ * Moves the multi-calendar date forward by a day or by a week
+ * depending on how many days are being shown.
+ * @method goForward
+ * @api public
+ * @return {void}
+ */
+mutliCalendar.goForward()
+
+/**
+ * Moves the multi-calendar date back by a day or by a week
+ * depending on how many days are being shown.
+ * @method goBack
+ * @api public
+ * @return {void}
+ */
+mutliCalendar.goBack()
+
+/**
+ * Fetches data from the server for the current showing days and updates
+ * the events.
+ * @api public
+ * @method refresh
+ * @return {void}
+ */
+mutliCalendar.refresh()
+
+mutliCalendar.setFilter(...args)
+
+/**
+ * Shows or hides Saturday and Sunday from the current calendar view.
+ * If calendar is in mobile mode (oneDay view) it does nothing.
+ * @api public
+ * @method showWeekends
+ * @param  {Boolean} show - Whether to show the weekends or not.
+ * @return {void}
+ */
+mutliCalendar.showWeekends(show)
+
+/**
+ * Moves all calendars to a view that shows the specified date.
+ * @api public
+ * @method goToDate
+ * @param  {String | Date} date       [description]
+ * @param  {ControlBar} controlBar [opitonal]
+ * @return {void}
+ */
+mutliCalendar.goToDate(date, controlBar = this.controlBar)
+```
+
 # Install
 
 ## Bower
