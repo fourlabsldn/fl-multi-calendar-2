@@ -153,7 +153,7 @@ Example calendar markup:
 
 # API
 
-You can control the calendar using the global object `mutliCalendar`, which contains the following methods:
+You can control the calendar using the global object `multiCalendar`, which contains the following methods:
 
 ``` javascript
 /**
@@ -163,7 +163,7 @@ You can control the calendar using the global object `mutliCalendar`, which cont
  * @api public
  * @return {void}
  */
-mutliCalendar.goForward()
+multiCalendar.goForward()
 
 /**
  * Moves the multi-calendar date back by a day or by a week
@@ -172,7 +172,7 @@ mutliCalendar.goForward()
  * @api public
  * @return {void}
  */
-mutliCalendar.goBack()
+multiCalendar.goBack()
 
 /**
  * Fetches data from the server for the current showing days and updates
@@ -181,9 +181,9 @@ mutliCalendar.goBack()
  * @method refresh
  * @return {void}
  */
-mutliCalendar.refresh()
+multiCalendar.refresh()
 
-mutliCalendar.setFilter(...args)
+multiCalendar.setFilter(...args)
 
 /**
  * Shows or hides Saturday and Sunday from the current calendar view.
@@ -193,7 +193,7 @@ mutliCalendar.setFilter(...args)
  * @param  {Boolean} show - Whether to show the weekends or not.
  * @return {void}
  */
-mutliCalendar.showWeekends(show)
+multiCalendar.showWeekends(show)
 
 /**
  * Moves all calendars to a view that shows the specified date.
@@ -203,7 +203,7 @@ mutliCalendar.showWeekends(show)
  * @param  {ControlBar} controlBar [opitonal]
  * @return {void}
  */
-mutliCalendar.goToDate(date, controlBar = this.controlBar)
+multiCalendar.goToDate(date, controlBar = this.controlBar)
 ```
 
 # Install
