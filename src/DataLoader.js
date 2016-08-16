@@ -5,9 +5,7 @@ export default class DataLoader {
   constructor(loadUrl) {
     assert(typeof loadUrl === 'string', `Invalid load URL: ${loadUrl}`);
     this.loadUrl = this.prepareLoadUrl(loadUrl);
-    this.filter = {
-      test: 123,
-    };
+    this.filter = {};
 
     // Tell last requests whether they were cancelled.
     this.lastRequest = { cancelled: false };
