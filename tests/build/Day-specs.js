@@ -1,60 +1,3 @@
-var babelHelpers = {};
-babelHelpers.typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
-};
-
-babelHelpers.classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-
-babelHelpers.createClass = function () {
-  function defineProperties(target, props) {
-    for (var i = 0; i < props.length; i++) {
-      var descriptor = props[i];
-      descriptor.enumerable = descriptor.enumerable || false;
-      descriptor.configurable = true;
-      if ("value" in descriptor) descriptor.writable = true;
-      Object.defineProperty(target, descriptor.key, descriptor);
-    }
-  }
-
-  return function (Constructor, protoProps, staticProps) {
-    if (protoProps) defineProperties(Constructor.prototype, protoProps);
-    if (staticProps) defineProperties(Constructor, staticProps);
-    return Constructor;
-  };
-}();
-
-babelHelpers.inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
-
-babelHelpers.possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
-
-babelHelpers;
-
 var hookCallback;
 
 function hooks() {
@@ -571,6 +514,60 @@ function normalizeObjectUnits(inputObject) {
     return normalizedInput;
 }
 
+var typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+  return typeof obj;
+} : function (obj) {
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+};
+
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+
+var createClass = function () {
+  function defineProperties(target, props) {
+    for (var i = 0; i < props.length; i++) {
+      var descriptor = props[i];
+      descriptor.enumerable = descriptor.enumerable || false;
+      descriptor.configurable = true;
+      if ("value" in descriptor) descriptor.writable = true;
+      Object.defineProperty(target, descriptor.key, descriptor);
+    }
+  }
+
+  return function (Constructor, protoProps, staticProps) {
+    if (protoProps) defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) defineProperties(Constructor, staticProps);
+    return Constructor;
+  };
+}();
+
+var inherits = function (subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }
+
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+};
+
+var possibleConstructorReturn = function (self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+};
+
 function makeGetSet(unit, keepTime) {
     return function (value) {
         if (value != null) {
@@ -597,7 +594,7 @@ function set$1(mom, unit, value) {
 
 function getSet(units, value) {
     var unit;
-    if ((typeof units === 'undefined' ? 'undefined' : babelHelpers.typeof(units)) === 'object') {
+    if ((typeof units === 'undefined' ? 'undefined' : typeof(units)) === 'object') {
         for (unit in units) {
             this.set(unit, units[unit]);
         }
@@ -1335,7 +1332,7 @@ function weeksInYear(year, dow, doy) {
 }
 
 // Pick the first defined of two or three arguments.
-function defaults(a, b, c) {
+function defaults$1(a, b, c) {
     if (a != null) {
         return a;
     }
@@ -1378,7 +1375,7 @@ function configFromArray(config) {
 
     //if the day of the year is set, figure out what it is
     if (config._dayOfYear) {
-        yearToUse = defaults(config._a[YEAR], currentDate[YEAR]);
+        yearToUse = defaults$1(config._a[YEAR], currentDate[YEAR]);
 
         if (config._dayOfYear > daysInYear(yearToUse)) {
             getParsingFlags(config)._overflowDayOfYear = true;
@@ -1433,9 +1430,9 @@ function dayOfYearFromWeekInfo(config) {
         // how we interpret now (local, utc, fixed offset). So create
         // a now version of current config (take local/utc/offset flags, and
         // create now).
-        weekYear = defaults(w.GG, config._a[YEAR], weekOfYear(createLocal(), 1, 4).year);
-        week = defaults(w.W, 1);
-        weekday = defaults(w.E, 1);
+        weekYear = defaults$1(w.GG, config._a[YEAR], weekOfYear(createLocal(), 1, 4).year);
+        week = defaults$1(w.W, 1);
+        weekday = defaults$1(w.E, 1);
         if (weekday < 1 || weekday > 7) {
             weekdayOverflow = true;
         }
@@ -1443,8 +1440,8 @@ function dayOfYearFromWeekInfo(config) {
         dow = config._locale._week.dow;
         doy = config._locale._week.doy;
 
-        weekYear = defaults(w.gg, config._a[YEAR], weekOfYear(createLocal(), dow, doy).year);
-        week = defaults(w.w, 1);
+        weekYear = defaults$1(w.gg, config._a[YEAR], weekOfYear(createLocal(), dow, doy).year);
+        week = defaults$1(w.w, 1);
 
         if (w.d != null) {
             // weekday -- low day numbers are considered next week
@@ -1681,7 +1678,7 @@ function configFromInput(config) {
             return parseInt(obj, 10);
         });
         configFromArray(config);
-    } else if ((typeof input === 'undefined' ? 'undefined' : babelHelpers.typeof(input)) === 'object') {
+    } else if ((typeof input === 'undefined' ? 'undefined' : typeof(input)) === 'object') {
         configFromObject(config);
     } else if (typeof input === 'number') {
         // from milliseconds
@@ -1816,7 +1813,7 @@ function offset(token, separator) {
             offset = -offset;
             sign = '-';
         }
-        return sign + zeroFill(~ ~(offset / 60), 2) + separator + zeroFill(~ ~offset % 60, 2);
+        return sign + zeroFill(~~(offset / 60), 2) + separator + zeroFill(~~offset % 60, 2);
     });
 }
 
@@ -2060,7 +2057,7 @@ function createDuration(input, key) {
     } else if (duration == null) {
         // checks for null or undefined
         duration = {};
-    } else if ((typeof duration === 'undefined' ? 'undefined' : babelHelpers.typeof(duration)) === 'object' && ('from' in duration || 'to' in duration)) {
+    } else if ((typeof duration === 'undefined' ? 'undefined' : typeof(duration)) === 'object' && ('from' in duration || 'to' in duration)) {
         diffRes = momentsDifference(createLocal(duration.from), createLocal(duration.to));
 
         duration = {};
@@ -2455,7 +2452,7 @@ function toDate() {
     return this._offset ? new Date(this.valueOf()) : this._d;
 }
 
-function toArray() {
+function toArray$1() {
     var m = this;
     return [m.year(), m.month(), m.date(), m.hour(), m.minute(), m.second(), m.millisecond()];
 }
@@ -3197,11 +3194,11 @@ var getSetSecond = makeGetSet('Seconds', false);
 // FORMATTING
 
 addFormatToken('S', 0, 0, function () {
-    return ~ ~(this.millisecond() / 100);
+    return ~~(this.millisecond() / 100);
 });
 
 addFormatToken(0, ['SS', 2], 0, function () {
-    return ~ ~(this.millisecond() / 10);
+    return ~~(this.millisecond() / 10);
 });
 
 addFormatToken(0, ['SSS', 3], 0, 'millisecond');
@@ -3295,7 +3292,7 @@ proto.parsingFlags = parsingFlags;
 proto.set = getSet;
 proto.startOf = startOf;
 proto.subtract = subtract;
-proto.toArray = toArray;
+proto.toArray = toArray$1;
 proto.toObject = toObject;
 proto.toDate = toDate;
 proto.toISOString = toISOString;
@@ -3496,7 +3493,7 @@ proto$1.isPM = localeIsPM;
 proto$1._meridiemParse = defaultLocaleMeridiemParse;
 proto$1.meridiem = localeMeridiem;
 
-function get$1(format, index, field, setter) {
+function get$2(format, index, field, setter) {
     var locale = getLocale();
     var utc = createUTC().set(setter, index);
     return locale[field](utc, format);
@@ -3511,13 +3508,13 @@ function listMonthsImpl(format, index, field) {
     format = format || '';
 
     if (index != null) {
-        return get$1(format, index, field, 'month');
+        return get$2(format, index, field, 'month');
     }
 
     var i;
     var out = [];
     for (i = 0; i < 12; i++) {
-        out[i] = get$1(format, i, field, 'month');
+        out[i] = get$2(format, i, field, 'month');
     }
     return out;
 }
@@ -3555,13 +3552,13 @@ function listWeekdaysImpl(localeSorted, format, index, field) {
         shift = localeSorted ? locale._week.dow : 0;
 
     if (index != null) {
-        return get$1(format, (index + shift) % 7, field, 'day');
+        return get$2(format, (index + shift) % 7, field, 'day');
     }
 
     var i;
     var out = [];
     for (i = 0; i < 7; i++) {
-        out[i] = get$1(format, (i + shift) % 7, field, 'day');
+        out[i] = get$2(format, (i + shift) % 7, field, 'day');
     }
     return out;
 }
@@ -3756,7 +3753,7 @@ var asWeeks = makeAs('w');
 var asMonths = makeAs('M');
 var asYears = makeAs('y');
 
-function get$2(units) {
+function get$3(units) {
     units = normalizeUnits(units);
     return this[units + 's']();
 }
@@ -3892,7 +3889,7 @@ proto$2.asMonths = asMonths;
 proto$2.asYears = asYears;
 proto$2.valueOf = valueOf$1;
 proto$2._bubble = bubble;
-proto$2.get = get$2;
+proto$2.get = get$3;
 proto$2.milliseconds = milliseconds;
 proto$2.seconds = seconds;
 proto$2.minutes = minutes;
@@ -4003,10 +4000,10 @@ assert.warn = function warn() {
 
 var DateHandler = function () {
   function DateHandler() {
-    babelHelpers.classCallCheck(this, DateHandler);
+    classCallCheck(this, DateHandler);
   }
 
-  babelHelpers.createClass(DateHandler, null, [{
+  createClass(DateHandler, null, [{
     key: 'add',
     value: function add(date, amount, unit) {
       return hooks(date).add(amount, unit);
@@ -4103,7 +4100,7 @@ var DateHandler = function () {
 var ModelView = function ModelView(html, instanceClass) {
   var parentClass = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
   var containerTag = arguments.length <= 3 || arguments[3] === undefined ? 'div' : arguments[3];
-  babelHelpers.classCallCheck(this, ModelView);
+  classCallCheck(this, ModelView);
 
   assert(instanceClass, 'No instance class provided.');
   this.class = parentClass + instanceClass;
@@ -4163,13 +4160,13 @@ var EVENT_CLASS = '-event';
  */
 
 var Event = function (_ModelView) {
-  babelHelpers.inherits(Event, _ModelView);
+  inherits(Event, _ModelView);
 
   function Event(eventConfig, parentClass, parentDate) {
     var callbacks = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
-    babelHelpers.classCallCheck(this, Event);
+    classCallCheck(this, Event);
 
-    assert((typeof eventConfig === 'undefined' ? 'undefined' : babelHelpers.typeof(eventConfig)) === 'object', 'Invalid event configuration object provided: ' + eventConfig);
+    assert((typeof eventConfig === 'undefined' ? 'undefined' : typeof(eventConfig)) === 'object', 'Invalid event configuration object provided: ' + eventConfig);
 
     // Create HTML part with SuperClass
     // The html elements to be created are 'time'
@@ -4204,7 +4201,7 @@ var Event = function (_ModelView) {
       }
     }
 
-    var _this = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Event).call(this, html, EVENT_CLASS, parentClass));
+    var _this = possibleConstructorReturn(this, Object.getPrototypeOf(Event).call(this, html, EVENT_CLASS, parentClass));
 
     _this.config = eventConfig;
 
@@ -4234,7 +4231,7 @@ var Event = function (_ModelView) {
     _this._attatchClasses(parentDate);
 
     if (_this.isPlaceholder) {
-      return babelHelpers.possibleConstructorReturn(_this);
+      return possibleConstructorReturn(_this);
     }
 
     // Setup eventClick callback
@@ -4246,7 +4243,7 @@ var Event = function (_ModelView) {
     return _this;
   }
 
-  babelHelpers.createClass(Event, [{
+  createClass(Event, [{
     key: 'getStartTime',
     value: function getStartTime() {
       return this.startDate;
@@ -4331,17 +4328,17 @@ var DEFAULT_HEADER_FORMAT = 'dddd, MMM DD';
  */
 
 var Day = function (_ModelView) {
-  babelHelpers.inherits(Day, _ModelView);
+  inherits(Day, _ModelView);
 
   function Day(date, parentClass) {
     var config = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
     var callbacks = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
-    babelHelpers.classCallCheck(this, Day);
+    classCallCheck(this, Day);
 
     // Create HTML part with SuperClass
     var html = [{ name: 'header', tag: 'header' }, { name: 'events' }];
 
-    var _this = babelHelpers.possibleConstructorReturn(this, Object.getPrototypeOf(Day).call(this, html, DAY_CLASS, parentClass));
+    var _this = possibleConstructorReturn(this, Object.getPrototypeOf(Day).call(this, html, DAY_CLASS, parentClass));
 
     _this.date = null;
     _this.start = null;
@@ -4371,7 +4368,7 @@ var Day = function (_ModelView) {
     return _this;
   }
 
-  babelHelpers.createClass(Day, [{
+  createClass(Day, [{
     key: 'updateHeader',
     value: function updateHeader() {
       this.html.header.textContent = DateHandler.format(this.date, this.headerFormat);
@@ -4440,7 +4437,7 @@ var Day = function (_ModelView) {
   }, {
     key: 'setDate',
     value: function setDate(newDate) {
-      assert((typeof newDate === 'undefined' ? 'undefined' : babelHelpers.typeof(newDate)) === 'object', 'No date object provided.');
+      assert((typeof newDate === 'undefined' ? 'undefined' : typeof(newDate)) === 'object', 'No date object provided.');
       this.date = newDate;
       this.start = DateHandler.startOf(this.date, 'day');
       this.end = DateHandler.endOf(this.date, 'day');
