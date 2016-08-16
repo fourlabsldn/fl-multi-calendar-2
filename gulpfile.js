@@ -32,9 +32,7 @@ gulp.task('sass', () => {
 });
 
 gulp.task('rollup-module', () => {
-  gulp.src([
-    './src/fl-multi-calendar.js',
-  ])
+  gulp.src('./src/fl-multi-calendar.js')
   .pipe(sourcemaps.init())
   .pipe(rollup({
     // Function names leak to the global namespace. To avoid that,
@@ -42,15 +40,16 @@ gulp.task('rollup-module', () => {
     // are all beautifully namespaced.
     banner: '(function () {',
     footer: '}());',
+    entry: './src/fl-multi-calendar.js',
+    allowRealFiles: true,
     plugins: [
       babel({
         exclude: 'node_modules/**',
+        babelrc: false,
         presets: ['es2015-rollup'],
-        plugins: ['lodash'],
       }),
     ],
   }))
-  .pipe(uglify())
   .pipe(sourcemaps.write('.'))
   .pipe(gulp.dest('./build'));
 });
@@ -88,22 +87,22 @@ gulp.task('docs', () => {
 // -------------------------------------------------------
 //            TESTS
 // -------------------------------------------------------
-gulp.task('rollup-tests', () => {
-  gulp.src([
-    './tests/src/*',
-  ])
-  .pipe(sourcemaps.init())
-  .pipe(rollup({
-    plugins: [
-      babel({
-        exclude: 'node_modules/**',
-        presets: ['es2015-rollup'],
-      }),
-    ],
-  }))
-  .pipe(sourcemaps.write('.'))
-  .pipe(gulp.dest('./tests/build'));
-});
+// gulp.task('rollup-tests', () => {
+//   gulp.src('./tests/src/*')
+//   .pipe(sourcemaps.init())
+//   .pipe(rollup({
+//     entry: './src/*',
+//     allowRealFiles: true,
+//     plugins: [
+//       babel({
+//         exclude: 'node_modules/**',
+//         presets: ['es2015-rollup'],
+//       }),
+//     ],
+//   }))
+//   .pipe(sourcemaps.write('.'))
+//   .pipe(gulp.dest('./tests/build'));
+// });
 
 gulp.task('jasmine', () => {
   return gulp.src([
@@ -141,7 +140,7 @@ gulp.task('test-debug', [
 ]);
 
 gulp.task('demo', ['webserver']);
-gulp.task('rollup', ['rollup-module', 'rollup-tests']);
+gulp.task('rollup', ['rollup-module']); //'rollup-tests'
 gulp.task('build', ['rollup', 'sass', 'assets']);
 
 gulp.task('dev', ['build', 'watch', 'webserver']);
