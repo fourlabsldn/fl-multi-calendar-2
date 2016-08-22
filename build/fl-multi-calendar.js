@@ -6252,7 +6252,7 @@ var MultiCalendar = function (_ModelView) {
       var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
 
       return calendars.find(function (cal) {
-        return cal.id === calId;
+        return cal.id == calId;
       });
     }
 

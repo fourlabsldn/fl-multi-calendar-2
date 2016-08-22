@@ -304,7 +304,7 @@ class MultiCalendar extends ModelView {
    * @return {Calendar}
    */
   _findCalendar(calId, calendars = this.calendars) {
-    return calendars.find((cal) => { return cal.id === calId; });
+    return calendars.find((cal) => { return cal.id == calId; });
   }
 
   /**
