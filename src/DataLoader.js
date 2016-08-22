@@ -32,10 +32,11 @@ export default class DataLoader {
    * @return {Promise} Resolved with events loaded or with null if request was cancelled
    */
   loadEvents(startDate, endDate, calendarIds) {
+
     const params = {
       ids: calendarIds,
-      start: DateHandler.format(this.startDate, 'X'),
-      end: DateHandler.format(this.endDate, 'X'),
+      start: startDate,
+      end: endDate,
     };
 
     // integrate filters to request

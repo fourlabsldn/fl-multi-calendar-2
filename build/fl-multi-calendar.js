@@ -5647,9 +5647,7 @@ var DataLoader = function () {
 
     assert(typeof loadUrl === 'string', 'Invalid load URL: ' + loadUrl);
     this.loadUrl = this.prepareLoadUrl(loadUrl);
-    this.filter = {
-      test: 123
-    };
+    this.filter = {};
 
     // Tell last requests whether they were cancelled.
     this.lastRequest = { cancelled: false };
@@ -5683,10 +5681,11 @@ var DataLoader = function () {
   }, {
     key: 'loadEvents',
     value: function loadEvents(startDate, endDate, calendarIds) {
+
       var params = {
         ids: calendarIds,
-        start: DateHandler.format(this.startDate, 'X'),
-        end: DateHandler.format(this.endDate, 'X')
+        start: startDate,
+        end: endDate
       };
 
       // integrate filters to request
