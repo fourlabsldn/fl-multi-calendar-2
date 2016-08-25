@@ -497,6 +497,12 @@ $events-container-padding: 2px;
   display: block;
 }
 
+.fl-mc-cal-day-event-time:last-child,
+.fl-mc-cal-day-event-title:last-child,
+.fl-mc-cal-day-event-description:last-child {
+  margin-bottom: 0;
+}
+
 // Show long text on hover?
 // .fl-mc-cal-day-event-description {
 //   text-overflow: ellipsis;

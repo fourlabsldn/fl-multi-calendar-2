@@ -563,6 +563,11 @@
   margin: inherit;
   display: block; }
 
+.fl-mc-cal-day-event-time:last-child,
+.fl-mc-cal-day-event-title:last-child,
+.fl-mc-cal-day-event-description:last-child {
+  margin-bottom: 0; }
+
 .fl-mc-cal-day-event-tooltip {
   display: block;
   margin: 0;
