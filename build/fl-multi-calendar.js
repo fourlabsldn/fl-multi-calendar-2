@@ -6309,7 +6309,8 @@ var MultiCalendar = function (_ModelView) {
       // Make sure endDate will never be negative.
       // even if there are 0 days in each calendar
       var daysToEnd = Math.max(daysInCalendar - 1, 0);
-      this.endDate = DateHandler.addDays(newDate, daysToEnd);
+      var endDay = DateHandler.addDays(newDate, daysToEnd);
+      this.endDate = DateHandler.endOf(endDay, 'day'); // 23:59:59 of endDay
 
       this.controlBar.setDate(newDate);
       this._loadEvents();
