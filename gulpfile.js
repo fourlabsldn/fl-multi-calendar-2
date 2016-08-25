@@ -12,7 +12,8 @@ const gulpDoxx = require('gulp-doxx');
 const jasmineBrowser = require('gulp-jasmine-browser');
 const open = require('gulp-open');
 const watch = require('gulp-watch');
-const uglify = require('gulp-uglify');
+// const uglify = require('gulp-uglify');
+const foreach = require('gulp-foreach');
 // -------------------------------------------------------
 //            SOURCE
 // -------------------------------------------------------
@@ -87,22 +88,26 @@ gulp.task('docs', () => {
 // -------------------------------------------------------
 //            TESTS
 // -------------------------------------------------------
-// gulp.task('rollup-tests', () => {
-//   gulp.src('./tests/src/*')
-//   .pipe(sourcemaps.init())
-//   .pipe(rollup({
-//     entry: './src/*',
-//     allowRealFiles: true,
-//     plugins: [
-//       babel({
-//         exclude: 'node_modules/**',
-//         presets: ['es2015-rollup'],
-//       }),
-//     ],
-//   }))
-//   .pipe(sourcemaps.write('.'))
-//   .pipe(gulp.dest('./tests/build'));
-// });
+gulp.task('rollup-tests', () => {
+  gulp.src('./tests/src/*')
+    .pipe(sourcemaps.init())
+    .pipe(foreach((stream, file) => { // eslint-disable-line no-unused-vars
+      const fileName = file.sourceMap.file;
+      return stream
+        .pipe(rollup({
+          entry: `./tests/src/${fileName}`,
+          allowRealFiles: true,
+          plugins: [
+            babel({
+              exclude: 'node_modules/**',
+              presets: ['es2015-rollup'],
+            }),
+          ],
+        }));
+    }))
+    .pipe(sourcemaps.write('.'))
+    .pipe(gulp.dest('./tests/build'));
+});
 
 gulp.task('jasmine', () => {
   return gulp.src([

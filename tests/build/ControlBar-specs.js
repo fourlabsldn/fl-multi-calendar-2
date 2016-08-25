@@ -40,7 +40,7 @@ assert.warn = function warn() {
   }
 };
 
-var typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
   return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
@@ -94,6 +94,9 @@ var possibleConstructorReturn = function (self, call) {
   return call && (typeof call === "object" || typeof call === "function") ? call : self;
 };
 
+// html = [
+//  {name: 'details', tag: 'span', content: 'asdf'}
+// ]
 /**
  * @class ModelView
  * @abstract
@@ -697,7 +700,7 @@ function set$2(mom, unit, value) {
 
 function getSet(units, value) {
     var unit;
-    if ((typeof units === 'undefined' ? 'undefined' : typeof(units)) === 'object') {
+    if ((typeof units === 'undefined' ? 'undefined' : _typeof(units)) === 'object') {
         for (unit in units) {
             this.set(unit, units[unit]);
         }
@@ -1781,7 +1784,7 @@ function configFromInput(config) {
             return parseInt(obj, 10);
         });
         configFromArray(config);
-    } else if ((typeof input === 'undefined' ? 'undefined' : typeof(input)) === 'object') {
+    } else if ((typeof input === 'undefined' ? 'undefined' : _typeof(input)) === 'object') {
         configFromObject(config);
     } else if (typeof input === 'number') {
         // from milliseconds
@@ -2160,7 +2163,7 @@ function createDuration(input, key) {
     } else if (duration == null) {
         // checks for null or undefined
         duration = {};
-    } else if ((typeof duration === 'undefined' ? 'undefined' : typeof(duration)) === 'object' && ('from' in duration || 'to' in duration)) {
+    } else if ((typeof duration === 'undefined' ? 'undefined' : _typeof(duration)) === 'object' && ('from' in duration || 'to' in duration)) {
         diffRes = momentsDifference(createLocal(duration.from), createLocal(duration.to));
 
         duration = {};
@@ -3405,36 +3408,47 @@ proto.unix = unix;
 proto.valueOf = valueOf;
 proto.creationData = creationData;
 
+// Year
 proto.year = getSetYear;
 proto.isLeapYear = getIsLeapYear;
 
+// Week Year
 proto.weekYear = getSetWeekYear;
 proto.isoWeekYear = getSetISOWeekYear;
 
+// Quarter
 proto.quarter = proto.quarters = getSetQuarter;
 
+// Month
 proto.month = getSetMonth;
 proto.daysInMonth = getDaysInMonth;
 
+// Week
 proto.week = proto.weeks = getSetWeek;
 proto.isoWeek = proto.isoWeeks = getSetISOWeek;
 proto.weeksInYear = getWeeksInYear;
 proto.isoWeeksInYear = getISOWeeksInYear;
 
+// Day
 proto.date = getSetDayOfMonth;
 proto.day = proto.days = getSetDayOfWeek;
 proto.weekday = getSetLocaleDayOfWeek;
 proto.isoWeekday = getSetISODayOfWeek;
 proto.dayOfYear = getSetDayOfYear;
 
+// Hour
 proto.hour = proto.hours = getSetHour;
 
+// Minute
 proto.minute = proto.minutes = getSetMinute;
 
+// Second
 proto.second = proto.seconds = getSetSecond;
 
+// Millisecond
 proto.millisecond = proto.milliseconds = getSetMillisecond;
 
+// Offset
 proto.utcOffset = getSetOffset;
 proto.utc = setOffsetToUTC;
 proto.local = setOffsetToLocal;
@@ -3447,9 +3461,11 @@ proto.isUtcOffset = isUtcOffset;
 proto.isUtc = isUtc;
 proto.isUTC = isUtc;
 
+// Timezone
 proto.zoneAbbr = getZoneAbbr;
 proto.zoneName = getZoneName;
 
+// Deprecations
 proto.dates = deprecate('dates accessor is deprecated. Use date instead.', getSetDayOfMonth);
 proto.months = deprecate('months accessor is deprecated. Use month instead', getSetMonth);
 proto.years = deprecate('years accessor is deprecated. Use year instead', getSetYear);
@@ -3562,6 +3578,7 @@ proto$1.relativeTime = relativeTime;
 proto$1.pastFuture = pastFuture;
 proto$1.set = set$1;
 
+// Month
 proto$1.months = localeMonths;
 proto$1._months = defaultLocaleMonths;
 proto$1.monthsShort = localeMonthsShort;
@@ -3572,11 +3589,13 @@ proto$1.monthsRegex = monthsRegex;
 proto$1._monthsShortRegex = defaultMonthsShortRegex;
 proto$1.monthsShortRegex = monthsShortRegex;
 
+// Week
 proto$1.week = localeWeek;
 proto$1._week = defaultLocaleWeek;
 proto$1.firstDayOfYear = localeFirstDayOfYear;
 proto$1.firstDayOfWeek = localeFirstDayOfWeek;
 
+// Day of Week
 proto$1.weekdays = localeWeekdays;
 proto$1._weekdays = defaultLocaleWeekdays;
 proto$1.weekdaysMin = localeWeekdaysMin;
@@ -3592,6 +3611,7 @@ proto$1.weekdaysShortRegex = weekdaysShortRegex;
 proto$1._weekdaysMinRegex = defaultWeekdaysMinRegex;
 proto$1.weekdaysMinRegex = weekdaysMinRegex;
 
+// Hours
 proto$1.isPM = localeIsPM;
 proto$1._meridiemParse = defaultLocaleMeridiemParse;
 proto$1.meridiem = localeMeridiem;
@@ -3695,6 +3715,7 @@ getSetGlobalLocale('en', {
     }
 });
 
+// Side effect imports
 hooks.lang = deprecate('moment.lang is deprecated. Use moment.locale instead.', getSetGlobalLocale);
 hooks.langData = deprecate('moment.langData is deprecated. Use moment.localeData instead.', getLocale);
 
@@ -4008,8 +4029,11 @@ proto$2.toJSON = toISOString$1;
 proto$2.locale = locale;
 proto$2.localeData = localeData;
 
+// Deprecations
 proto$2.toIsoString = deprecate('toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)', toISOString$1);
 proto$2.lang = lang;
+
+// Side effect imports
 
 // FORMATTING
 
@@ -4026,6 +4050,14 @@ addParseToken('X', function (input, array, config) {
 addParseToken('x', function (input, array, config) {
     config._d = new Date(toInt(input));
 });
+
+// Side effect imports
+
+//! moment.js
+//! version : 2.13.0
+//! authors : Tim Wood, Iskren Chernev, Moment.js contributors
+//! license : MIT
+//! momentjs.com
 
 hooks.version = '2.13.0';
 
@@ -4579,6 +4611,7 @@ var ButtonLoadingController = function () {
   return ButtonLoadingController;
 }();
 
+/* eslint-env jasmine */
 describe('A ControlBar class\'s instance should', function () {
   // ===================
   // Presentation
