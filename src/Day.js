@@ -72,13 +72,13 @@ export default class Day extends ModelView {
       `Invalid array of configuration events,
       clearing all events from day ${this.date.toString()}.`);
 
-    const sameAmountOfEvents = newEventsConfig.length === this.events.length;
-    const allEventsAreSame = newEventsConfig.reduce((outcome, newEvent, newEventIdx) => {
-      const areSameEvents = Event.areSame(newEvent, this.events[newEventIdx]);
-      return outcome && areSameEvents;
-    }, true);
-
-    if (sameAmountOfEvents && allEventsAreSame) { return; }
+    // const sameAmountOfEvents = newEventsConfig.length === this.events.length;
+    // const allEventsAreSame = newEventsConfig.reduce((outcome, newEvent, newEventIdx) => {
+    //   const areSameEvents = Event.areSame(newEvent, this.events[newEventIdx]);
+    //   return outcome && areSameEvents;
+    // }, true);
+    //
+    // if (sameAmountOfEvents && allEventsAreSame) { return; }
 
     this.clearEvents();
     newEventsConfig.forEach(newEvent => {
