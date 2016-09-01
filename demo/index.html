@@ -146,6 +146,13 @@
     </script>
     <h1>Multi Calendar</h1>
     <x-div data-controller="/build/fl-multi-calendar" data-config="multiCalendarConfig"></x-div>
+
+
+    <script>
+      setTimeout(function gotodate() {
+        multiCalendar.goToDate(new Date('05/05/2016'));
+      }, 500);
+    </script>
 </body>
 
 </html>

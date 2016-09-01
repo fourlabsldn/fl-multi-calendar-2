@@ -4126,7 +4126,7 @@ var DateHandler = function () {
   }, {
     key: 'isValid',
     value: function isValid(date) {
-      return date.isValid();
+      return hooks(date).isValid();
     }
   }, {
     key: 'max',
@@ -4903,15 +4903,13 @@ var Day = function (_ModelView) {
 
       assert.warn(Array.isArray(newEventsConfig), 'Invalid array of configuration events,\n      clearing all events from day ' + this.date.toString() + '.');
 
-      var sameAmountOfEvents = newEventsConfig.length === this.events.length;
-      var allEventsAreSame = newEventsConfig.reduce(function (outcome, newEvent, newEventIdx) {
-        var areSameEvents = Event.areSame(newEvent, _this2.events[newEventIdx]);
-        return outcome && areSameEvents;
-      }, true);
-
-      if (sameAmountOfEvents && allEventsAreSame) {
-        return;
-      }
+      // const sameAmountOfEvents = newEventsConfig.length === this.events.length;
+      // const allEventsAreSame = newEventsConfig.reduce((outcome, newEvent, newEventIdx) => {
+      //   const areSameEvents = Event.areSame(newEvent, this.events[newEventIdx]);
+      //   return outcome && areSameEvents;
+      // }, true);
+      //
+      // if (sameAmountOfEvents && allEventsAreSame) { return; }
 
       this.clearEvents();
       newEventsConfig.forEach(function (newEvent) {
