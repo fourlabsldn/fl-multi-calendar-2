@@ -47,7 +47,7 @@ export default class DateHandler {
   }
 
   static isValid(date) {
-    return date.isValid();
+    return moment(date).isValid();
   }
 
   static max(date1, date2, criterion) {
