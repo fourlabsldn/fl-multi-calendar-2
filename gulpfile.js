@@ -16,6 +16,7 @@ const open = require('gulp-open');
 const watch = require('gulp-watch');
 // const uglify = require('gulp-uglify');
 const foreach = require('gulp-foreach');
+const depLinker = require('dep-linker');
 // -------------------------------------------------------
 //            SOURCE
 // -------------------------------------------------------
@@ -80,6 +81,10 @@ gulp.task('webserver', () => {
     }));
 });
 
+
+gulp.task('copy-dependencies', () => {
+  depLinker.linkDependenciesTo('demo/dependencies');
+});
 // -------------------------------------------------------
 //            DOCS
 // -------------------------------------------------------
@@ -159,7 +164,7 @@ gulp.task('test-debug', [
 
 gulp.task('demo', ['webserver']);
 gulp.task('rollup', ['rollup-module']); //'rollup-tests'
-gulp.task('build', ['rollup', 'sass', 'assets']);
+gulp.task('build', ['rollup', 'sass', 'assets', 'copy-dependencies']);
 
 gulp.task('dev', ['build', 'watch', 'webserver']);
 

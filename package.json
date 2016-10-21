@@ -25,6 +25,7 @@
     "babel-preset-es2015-rollup": "^1.1.1",
     "babel-preset-stage-0": "^6.5.0",
     "bower": "^1.7.9",
+    "dep-linker": "^1.0.24",
     "git-directory-deploy": "^1.5.0",
     "gulp": "^3.9.1",
     "gulp-css2js": "^1.0.2",
@@ -51,7 +52,10 @@
   "directories": {
     "test": "tests"
   },
-  "dependencies": {},
+  "dependencies": {
+    "webcomponents.js": "^0.7.22",
+    "x-div": "^1.0.44"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/fourlabsldn/fl-multi-calendar-2.git"
