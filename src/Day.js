@@ -72,6 +72,11 @@ export default class Day extends ModelView {
       `Invalid array of configuration events,
       clearing all events from day ${this.date.toString()}.`);
 
+    // NOTE: So, here is the thing. This commented out piece of code here
+    // compares current events in the Day object with new ones and applies
+    // the necessary changes. This is not good enough, we usually miss something
+    // so now it is just erasing whatever is in there and adding it all again.
+    // 
     // const sameAmountOfEvents = newEventsConfig.length === this.events.length;
     // const allEventsAreSame = newEventsConfig.reduce((outcome, newEvent, newEventIdx) => {
     //   const areSameEvents = Event.areSame(newEvent, this.events[newEventIdx]);
