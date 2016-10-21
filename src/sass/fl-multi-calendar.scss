@@ -1,7 +1,7 @@
 // scss-lint:disable SelectorFormat
 
 @import './_icons'; // scss-lint:disable ImportPath
-@import '../../bower_components/modular-scale/stylesheets/_modular-scale'; // scss-lint:disable ImportPath
+@import '../../node_modules/modularscale-sass/stylesheets/modular-scale';
 
 // Modular Scale variables
 $ms-ratio: $fourth;
