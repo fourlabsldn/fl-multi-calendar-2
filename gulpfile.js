@@ -4,6 +4,8 @@ const gulp = require('gulp');
 const sourcemaps = require('gulp-sourcemaps');
 const babel = require('rollup-plugin-babel');
 const rollup = require('gulp-rollup');
+const commonjs = require('rollup-plugin-commonjs');
+const nodeResolve = require('rollup-plugin-node-resolve');
 const server = require('gulp-server-livereload');
 const sass = require('gulp-sass');
 const postcss = require('gulp-postcss');
@@ -42,8 +44,14 @@ gulp.task('rollup-module', () => {
     banner: '(function () {',
     footer: '}());',
     entry: './src/fl-multi-calendar.js',
+    format: 'umd',
+    moduleName: 'flMultiCalendar',
     allowRealFiles: true,
     plugins: [
+      // Import modules with jsnext:main
+      nodeResolve({	jsnext: true, main: true }),
+      // Import node modules
+      commonjs(),
       babel({
         exclude: 'node_modules/**',
         babelrc: false,
@@ -97,7 +105,12 @@ gulp.task('rollup-tests', () => {
         .pipe(rollup({
           entry: `./tests/src/${fileName}`,
           allowRealFiles: true,
+          format: 'umd',
+          moduleName: 'flMultiCalendar',
           plugins: [
+            // Import modules with jsnext:main
+            nodeResolve({	jsnext: true, main: true }),
+            commonjs(),
             babel({
               exclude: 'node_modules/**',
               presets: ['es2015-rollup'],

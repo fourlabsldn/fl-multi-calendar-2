@@ -40,9 +40,12 @@
     "gulp-uglify": "^1.5.3",
     "gulp-watch": "^4.3.5",
     "modularscale-sass": "^2.1.1",
+    "moment": "^2.15.1",
     "phantomjs-prebuilt": "^2.1.7",
     "rollup": "^0.34.9",
     "rollup-plugin-babel": "^2.4.0",
+    "rollup-plugin-commonjs": "^5.0.5",
+    "rollup-plugin-node-resolve": "^2.0.0",
     "url-search-params": "^0.5.0"
   },
   "directories": {
