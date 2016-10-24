@@ -17,12 +17,12 @@ export default class EventView {
       return;
     }
 
-    // How many days the Event object created with this event config will take
+    // How many days the CalEvent object created with this event config will take
     // given the current calendar start and end date
     this.length = Math.ceil(decimalDiff);
 
     // NOTE: This is altering the config object iself.
-    // This will be used by the Event class afterwards.
+    // This will be used by the CalEvent class afterwards.
     this.config.ordering = this.config.ordering || {};
     this.config.ordering.span = this.length;
     this.config.ordering.isPlaceholder = false;

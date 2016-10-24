@@ -1,8 +1,10 @@
 /* eslint-env jasmine */
 
-import moment from '../../bower_components/moment/src/moment.js';
+import moment from 'moment';
+import CalEvent from '../../src/CalEvent';
 
-describe('An instance of the Event class should', () => {
+
+describe('An instance of the CalEvent class should', () => {
   let event;
   let eventClickSpy;
   const eventStartDate = moment().format('DD/MM/YYYY');
@@ -31,7 +33,7 @@ describe('An instance of the Event class should', () => {
       },
     };
 
-    event = new Event(eventConfig, parentClass, parentDate, callbacks);
+    event = new CalEvent(eventConfig, parentClass, parentDate, callbacks);
   });
   // ===================
   // Presentation

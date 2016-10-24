@@ -4956,16 +4956,16 @@ var ButtonLoadingController = function () {
 var EVENT_CLASS = '-event';
 
 /**
- * @class Event
+ * @class CalEvent
  * @private
  */
 
-var Event = function (_ModelView) {
-  inherits(Event, _ModelView);
+var CalEvent = function (_ModelView) {
+  inherits(CalEvent, _ModelView);
 
-  function Event(eventConfig, parentClass, parentDate) {
+  function CalEvent(eventConfig, parentClass, parentDate) {
     var callbacks = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
-    classCallCheck(this, Event);
+    classCallCheck(this, CalEvent);
 
     assert((typeof eventConfig === 'undefined' ? 'undefined' : _typeof(eventConfig)) === 'object', 'Invalid event configuration object provided: ' + eventConfig);
 
@@ -5002,7 +5002,7 @@ var Event = function (_ModelView) {
       }
     }
 
-    var _this = possibleConstructorReturn(this, Object.getPrototypeOf(Event).call(this, html, EVENT_CLASS, parentClass));
+    var _this = possibleConstructorReturn(this, Object.getPrototypeOf(CalEvent).call(this, html, EVENT_CLASS, parentClass));
 
     _this.config = eventConfig;
 
@@ -5022,7 +5022,7 @@ var Event = function (_ModelView) {
 
     _this.updateTime();
 
-    assert(eventConfig.ordering && typeof eventConfig.ordering.isPlaceholder === 'boolean', 'Event ordering not initialised');
+    assert(eventConfig.ordering && typeof eventConfig.ordering.isPlaceholder === 'boolean', 'CalEvent ordering not initialised');
     _this.isPlaceholder = eventConfig.ordering.isPlaceholder;
 
     Object.preventExtensions(_this);
@@ -5044,7 +5044,7 @@ var Event = function (_ModelView) {
     return _this;
   }
 
-  createClass(Event, [{
+  createClass(CalEvent, [{
     key: 'getStartTime',
     value: function getStartTime() {
       return this.startDate;
@@ -5072,7 +5072,7 @@ var Event = function (_ModelView) {
       var eventConfig = arguments.length <= 1 || arguments[1] === undefined ? this.config : arguments[1];
 
       var span = eventConfig.ordering.span;
-      assert(typeof span === 'number', 'Event configuration object not propperly handled. No "span" property found.');
+      assert(typeof span === 'number', 'CalEvent configuration object not propperly handled. No "span" property found.');
       assert(span > 0, 'Invalid span value for event configuration: ' + span);
 
       if (this.isPlaceholder) {
@@ -5101,7 +5101,7 @@ var Event = function (_ModelView) {
      * @static
      * @method areSame
      * @api private
-     * @param  {Object} e1 Event object or event configuration object
+     * @param  {Object} e1 CalEvent object or event configuration object
      * @param  {Object} e2
      * @return {Boolean}
      */
@@ -5112,12 +5112,12 @@ var Event = function (_ModelView) {
       if (!e1 || !e2) {
         return false;
       }
-      var event1 = e1 instanceof Event ? e1.getConfig() : e1;
-      var event2 = e2 instanceof Event ? e2.getConfig() : e2;
+      var event1 = e1 instanceof CalEvent ? e1.getConfig() : e1;
+      var event2 = e2 instanceof CalEvent ? e2.getConfig() : e2;
       return JSON.stringify(event1) === JSON.stringify(event2);
     }
   }]);
-  return Event;
+  return CalEvent;
 }(ModelView);
 
 var DAY_CLASS = '-day';
@@ -5177,8 +5177,8 @@ var Day = function (_ModelView) {
   }, {
     key: 'addEvent',
     value: function addEvent(eventInfo) {
-      var newEvent = new Event(eventInfo, this.class, this.date, this.callbacks);
-      assert(newEvent && newEvent.html && newEvent.html.container, 'New Event instance initialised without an HTML container.');
+      var newEvent = new CalEvent(eventInfo, this.class, this.date, this.callbacks);
+      assert(newEvent && newEvent.html && newEvent.html.container, 'New CalEvent instance initialised without an HTML container.');
 
       // TODO: Check on adding new events when other events are
       // already there. This is what the commented out code is for.
@@ -5209,7 +5209,7 @@ var Day = function (_ModelView) {
       // 
       // const sameAmountOfEvents = newEventsConfig.length === this.events.length;
       // const allEventsAreSame = newEventsConfig.reduce((outcome, newEvent, newEventIdx) => {
-      //   const areSameEvents = Event.areSame(newEvent, this.events[newEventIdx]);
+      //   const areSameEvents = CalEvent.areSame(newEvent, this.events[newEventIdx]);
       //   return outcome && areSameEvents;
       // }, true);
       //
@@ -5268,7 +5268,7 @@ var Day = function (_ModelView) {
       if (idx >= 0) {
         this.events.splice(idx, 1);
       } else {
-        assert.warn('Trying to remove an event that was not in day.\n                  Event starting ' + event.start + ' for id ' + event.id + '.');
+        assert.warn('Trying to remove an event that was not in day.\n                  CalEvent starting ' + event.start + ' for id ' + event.id + '.');
         return;
       }
       event.html.container.remove(); // Remove DOM reference
@@ -5326,7 +5326,7 @@ function permute(inp) {
 var Ordering = function () {
   /**
    * @constructor
-   * @param {Array<EventView>} eventViews - Event views in the order they should
+   * @param {Array<EventView>} eventViews - CalEvent views in the order they should
    *                                      	be inserted into days.
    * @param {int} dayCount - Amount of days in the week all these events will
    *                       		be inserted.
@@ -5376,7 +5376,7 @@ var Ordering = function () {
 
         // NOTE: This is a very important part of this algorythym.
         // This creates the eventConfig object of the event that will be visible
-        // spanning through more than one day. The Event class only know that
+        // spanning through more than one day. The CalEvent class only know that
         // the event will be visible because of the isPlaceholder value.
         var visibleEventConfig = Object.create(view.config);
         visibleEventConfig.ordering = Object.create(view.config.ordering);
@@ -5391,7 +5391,7 @@ var Ordering = function () {
         days[eventStartIdx][level] = visibleEventConfig;
 
         // Fill the days where this event will be with its config. all
-        // of this will yield placeholder events when the Event class creates them.
+        // of this will yield placeholder events when the CalEvent class creates them.
         for (var dayNum = eventStartIdx + 1; dayNum <= eventEndIdx; dayNum++) {
           days[dayNum][level] = view.config;
         }
@@ -5503,12 +5503,12 @@ var EventView = function () {
       return;
     }
 
-    // How many days the Event object created with this event config will take
+    // How many days the CalEvent object created with this event config will take
     // given the current calendar start and end date
     this.length = Math.ceil(decimalDiff);
 
     // NOTE: This is altering the config object iself.
-    // This will be used by the Event class afterwards.
+    // This will be used by the CalEvent class afterwards.
     this.config.ordering = this.config.ordering || {};
     this.config.ordering.span = this.length;
     this.config.ordering.isPlaceholder = false;
@@ -5542,7 +5542,7 @@ var EventView = function () {
  * @param  {Array<Object>} eventsConfig - Array of event configuration objects
  * @param  {DateHandler} startDate - Calendar start date
  * @param  {Int} dayCount - Amount of days in calendar. Minimum value = 1
- * @return {Array<Array<Event>>} Array containing one array of events for each day.
+ * @return {Array<Array<CalEvent>>} Array containing one array of events for each day.
  */
 function organiseEventsConfig(eventsConfig, calStartDate, dayCount) {
   // We don't want to do unnecessary work.

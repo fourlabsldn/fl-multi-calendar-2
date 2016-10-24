@@ -1,3 +1,10 @@
+(function () {
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (factory());
+}(this, (function () { 'use strict';
+
 /* eslint-env jasmine */
 
 describe('A DateHandler class\'s instance should', function () {
@@ -7,4 +14,7 @@ describe('A DateHandler class\'s instance should', function () {
   // ===================
   xit('Take timezones into consideration, please.');
 });
+
+})));
+}());
 //# sourceMappingURL=DateHandler-specs.js.map

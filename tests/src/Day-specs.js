@@ -1,5 +1,5 @@
 /* eslint-env jasmine */
-import moment from '../../bower_components/moment/src/moment.js';
+import moment from 'moment';
 import Day from '../../src/Day';
 
 describe('A Day class\'s instance should', () => {
@@ -164,7 +164,7 @@ describe('A Day class\'s instance should', () => {
     expect(eventElBefore2).toEqual(eventElAfter2);
   });
 
-  it('add new Event without deleting other ones that should stay.', () => {
+  it('add new CalEvent without deleting other ones that should stay.', () => {
     const eventGroup1 = [event1];
     day.setEvents(eventGroup1);
     const eventElBefore1 = day.html.events.children[0];

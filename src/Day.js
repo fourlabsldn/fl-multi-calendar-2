@@ -1,7 +1,7 @@
 import assert from './utils/assert.js';
 import DateHandler from './utils/DateHandler';
 import ModelView from './ModelView';
-import Event from './Event';
+import CalEvent from './CalEvent';
 
 const DAY_CLASS = '-day';
 const DEFAULT_HEADER_FORMAT = 'dddd, MMM DD';
@@ -51,9 +51,9 @@ export default class Day extends ModelView {
   }
 
   addEvent(eventInfo) {
-    const newEvent = new Event(eventInfo, this.class, this.date, this.callbacks);
+    const newEvent = new CalEvent(eventInfo, this.class, this.date, this.callbacks);
     assert(newEvent && newEvent.html && newEvent.html.container,
-      'New Event instance initialised without an HTML container.');
+      'New CalEvent instance initialised without an HTML container.');
 
     // TODO: Check on adding new events when other events are
     // already there. This is what the commented out code is for.
@@ -79,7 +79,7 @@ export default class Day extends ModelView {
     // 
     // const sameAmountOfEvents = newEventsConfig.length === this.events.length;
     // const allEventsAreSame = newEventsConfig.reduce((outcome, newEvent, newEventIdx) => {
-    //   const areSameEvents = Event.areSame(newEvent, this.events[newEventIdx]);
+    //   const areSameEvents = CalEvent.areSame(newEvent, this.events[newEventIdx]);
     //   return outcome && areSameEvents;
     // }, true);
     //
@@ -129,7 +129,7 @@ export default class Day extends ModelView {
       this.events.splice(idx, 1);
     } else {
       assert.warn(`Trying to remove an event that was not in day.
-                  Event starting ${event.start} for id ${event.id}.`);
+                  CalEvent starting ${event.start} for id ${event.id}.`);
       return;
     }
     event.html.container.remove(); // Remove DOM reference

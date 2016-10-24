@@ -1,5 +1,5 @@
 /* eslint-env jasmine */
-import moment from '../../bower_components/moment/src/moment.js';
+import moment from 'moment';
 
 import Calendar from '../../src/Calendar';
 

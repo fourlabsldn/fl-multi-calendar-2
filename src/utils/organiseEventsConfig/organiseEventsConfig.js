@@ -13,7 +13,7 @@ import EventView from './EventView';
  * @param  {Array<Object>} eventsConfig - Array of event configuration objects
  * @param  {DateHandler} startDate - Calendar start date
  * @param  {Int} dayCount - Amount of days in calendar. Minimum value = 1
- * @return {Array<Array<Event>>} Array containing one array of events for each day.
+ * @return {Array<Array<CalEvent>>} Array containing one array of events for each day.
  */
 export default function organiseEventsConfig(eventsConfig, calStartDate, dayCount) {
   // We don't want to do unnecessary work.

@@ -108,6 +108,11 @@ gulp.task('rollup-tests', () => {
       const fileName = file.sourceMap.file;
       return stream
         .pipe(rollup({
+          // Function names leak to the global namespace. To avoid that,
+          // let's just put everything within an immediate function, this way variables
+          // are all beautifully namespaced.
+          banner: '(function () {',
+          footer: '}());',
           entry: `./tests/src/${fileName}`,
           allowRealFiles: true,
           format: 'umd',
@@ -115,6 +120,7 @@ gulp.task('rollup-tests', () => {
           plugins: [
             // Import modules with jsnext:main
             nodeResolve({	jsnext: true, main: true }),
+            // Import node modules
             commonjs(),
             babel({
               exclude: 'node_modules/**',

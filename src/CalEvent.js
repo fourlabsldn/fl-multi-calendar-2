@@ -5,10 +5,10 @@ import ModelView from './ModelView';
 const EVENT_CLASS = '-event';
 
 /**
- * @class Event
+ * @class CalEvent
  * @private
  */
-class Event extends ModelView {
+class CalEvent extends ModelView {
   constructor(eventConfig, parentClass, parentDate, callbacks = {}) {
     assert(typeof eventConfig === 'object',
       `Invalid event configuration object provided: ${eventConfig}`);
@@ -51,7 +51,7 @@ class Event extends ModelView {
 
     assert(eventConfig.ordering &&
         typeof eventConfig.ordering.isPlaceholder === 'boolean',
-        'Event ordering not initialised');
+        'CalEvent ordering not initialised');
     this.isPlaceholder = eventConfig.ordering.isPlaceholder;
 
     Object.preventExtensions(this);
@@ -92,7 +92,7 @@ class Event extends ModelView {
   _setPlaceHolderStatus(parentDate, eventConfig = this.config) {
     const span = eventConfig.ordering.span;
     assert(typeof span === 'number',
-      'Event configuration object not propperly handled. No "span" property found.');
+      'CalEvent configuration object not propperly handled. No "span" property found.');
     assert(span > 0, `Invalid span value for event configuration: ${span}`);
 
     if (this.isPlaceholder) {
@@ -120,16 +120,16 @@ class Event extends ModelView {
    * @static
    * @method areSame
    * @api private
-   * @param  {Object} e1 Event object or event configuration object
+   * @param  {Object} e1 CalEvent object or event configuration object
    * @param  {Object} e2
    * @return {Boolean}
    */
   static areSame(e1, e2) {
     if (!e1 || !e2) { return false; }
-    const event1 = (e1 instanceof Event) ? e1.getConfig() : e1;
-    const event2 = (e2 instanceof Event) ? e2.getConfig() : e2;
+    const event1 = (e1 instanceof CalEvent) ? e1.getConfig() : e1;
+    const event2 = (e2 instanceof CalEvent) ? e2.getConfig() : e2;
     return JSON.stringify(event1) === JSON.stringify(event2);
   }
 }
 
-export default Event;
+export default CalEvent;

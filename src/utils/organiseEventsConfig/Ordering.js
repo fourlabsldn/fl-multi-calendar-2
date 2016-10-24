@@ -1,7 +1,7 @@
 export default class Ordering {
   /**
    * @constructor
-   * @param {Array<EventView>} eventViews - Event views in the order they should
+   * @param {Array<EventView>} eventViews - CalEvent views in the order they should
    *                                      	be inserted into days.
    * @param {int} dayCount - Amount of days in the week all these events will
    *                       		be inserted.
@@ -38,7 +38,7 @@ export default class Ordering {
 
       // NOTE: This is a very important part of this algorythym.
       // This creates the eventConfig object of the event that will be visible
-      // spanning through more than one day. The Event class only know that
+      // spanning through more than one day. The CalEvent class only know that
       // the event will be visible because of the isPlaceholder value.
       const visibleEventConfig = Object.create(view.config);
       visibleEventConfig.ordering = Object.create(view.config.ordering);
@@ -53,7 +53,7 @@ export default class Ordering {
       days[eventStartIdx][level] = visibleEventConfig;
 
       // Fill the days where this event will be with its config. all
-      // of this will yield placeholder events when the Event class creates them.
+      // of this will yield placeholder events when the CalEvent class creates them.
       for (let dayNum = eventStartIdx + 1; dayNum <= eventEndIdx; dayNum++) {
         days[dayNum][level] = view.config;
       }
