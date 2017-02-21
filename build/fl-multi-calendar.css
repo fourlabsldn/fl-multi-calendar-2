@@ -138,6 +138,8 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
   -webkit-flex-flow: row nowrap;
       -ms-flex-flow: row nowrap;
           flex-flow: row nowrap;
@@ -291,6 +293,8 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
   -webkit-flex-flow: row nowrap;
       -ms-flex-flow: row nowrap;
           flex-flow: row nowrap;
@@ -307,6 +311,8 @@
     border-top-width: 0; }
 
 .fl-mc-view-oneDay .fl-mc-cal {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
   -webkit-flex-flow: column nowrap;
       -ms-flex-flow: column nowrap;
           flex-flow: column nowrap; }
@@ -361,6 +367,8 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
   -webkit-flex-flow: row nowrap;
       -ms-flex-flow: row nowrap;
           flex-flow: row nowrap; }
@@ -403,6 +411,8 @@
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
   -webkit-flex-flow: column nowrap;
       -ms-flex-flow: column nowrap;
           flex-flow: column nowrap;
@@ -423,6 +433,7 @@
   overflow: hidden;
   background-color: #d45240;
   color: #fafafa;
+  cursor: pointer;
   -webkit-transition: all .1s ease;
   transition: all .1s ease;
   -webkit-animation: fadeInUp;
@@ -462,8 +473,7 @@
             animation-delay: 0.66667s; }
   .fl-mc-cal-day-event:hover {
     -webkit-filter: brightness(110%);
-            filter: brightness(110%);
-    cursor: pointer; }
+            filter: brightness(110%); }
   .fl-mc-cal-day-event:active {
     -webkit-filter: brightness(95%);
             filter: brightness(95%); }
