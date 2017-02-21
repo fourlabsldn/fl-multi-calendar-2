@@ -1,6 +1,6 @@
 {
   "name": "fl-multi-calendar-2",
-  "version": "0.0.40",
+  "version": "0.1.0",
   "description": "Multiple calendars at one",
   "main": "index.js",
   "scripts": {
