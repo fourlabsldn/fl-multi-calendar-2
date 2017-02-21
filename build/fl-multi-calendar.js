@@ -1,8 +1,8 @@
 (function () {
 (function (global, factory) {
-  typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
-  typeof define === 'function' && define.amd ? define(factory) :
-  (factory());
+	typeof exports === 'object' && typeof module !== 'undefined' ? factory() :
+	typeof define === 'function' && define.amd ? define(factory) :
+	(factory());
 }(this, (function () { 'use strict';
 
 // Bug checking function that will throw an error whenever
@@ -99,6 +99,10 @@ function isObjectEmpty(obj) {
     return true;
 }
 
+function isNumber(input) {
+    return typeof input === 'number' || Object.prototype.toString.call(input) === '[object Number]';
+}
+
 function isDate(input) {
     return input instanceof Date || Object.prototype.toString.call(input) === '[object Date]';
 }
@@ -180,7 +184,7 @@ if (Array.prototype.some) {
     };
 }
 
-function _isValid(m) {
+function isValid(m) {
     if (m._isValid == null) {
         var flags = getParsingFlags(m);
         var parsedParts = some.call(flags.parsedDateParts, function (i) {
@@ -286,6 +290,9 @@ var updateInProgress = false;
 function Moment(config) {
     copyConfig(this, config);
     this._d = new Date(config._d != null ? config._d.getTime() : NaN);
+    if (!this.isValid()) {
+        this._d = new Date(NaN);
+    }
     // Prevent infinite loop in case updateOffset creates new moment
     // objects.
     if (updateInProgress === false) {
@@ -785,7 +792,7 @@ function addParseToken (token, callback) {
     if (typeof token === 'string') {
         token = [token];
     }
-    if (typeof callback === 'number') {
+    if (isNumber(callback)) {
         func = function (input, array) {
             array[callback] = toInt(input);
         };
@@ -888,7 +895,7 @@ addParseToken(['MMM', 'MMMM'], function (input, array, config, token) {
 
 // LOCALES
 
-var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s+)+MMMM?/;
+var MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/;
 var defaultLocaleMonths = 'January_February_March_April_May_June_July_August_September_October_November_December'.split('_');
 function localeMonths (m, format) {
     if (!m) {
@@ -1002,7 +1009,7 @@ function setMonth (mom, value) {
         } else {
             value = mom.localeData().monthsParse(value);
             // TODO: Another silent failure?
-            if (typeof value !== 'number') {
+            if (!isNumber(value)) {
                 return mom;
             }
         }
@@ -1816,6 +1823,7 @@ var baseConfig = {
 
 // internal storage for locale config files
 var locales = {};
+var localeFamilies = {};
 var globalLocale;
 
 function normalizeLocale(key) {
@@ -1902,15 +1910,29 @@ function defineLocale (name, config) {
             if (locales[config.parentLocale] != null) {
                 parentConfig = locales[config.parentLocale]._config;
             } else {
-                // treat as if there is no base config
-                deprecateSimple('parentLocaleUndefined',
-                        'specified parentLocale is not defined yet. See http://momentjs.com/guides/#/warnings/parent-locale/');
+                if (!localeFamilies[config.parentLocale]) {
+                    localeFamilies[config.parentLocale] = [];
+                }
+                localeFamilies[config.parentLocale].push({
+                    name: name,
+                    config: config
+                });
+                return null;
             }
         }
         locales[name] = new Locale(mergeConfigs(parentConfig, config));
 
+        if (localeFamilies[name]) {
+            localeFamilies[name].forEach(function (x) {
+                defineLocale(x.name, x.config);
+            });
+        }
+
         // backwards compat for now: also set the locale
+        // make sure we set the locale AFTER all child locales have been
+        // created, so we won't end up with the child locale set.
         getSetGlobalLocale(name);
+
 
         return locales[name];
     } else {
@@ -2007,8 +2029,8 @@ function checkOverflow (m) {
 
 // iso 8601 regex
 // 0000-00-00 0000-W00 or 0000-W00-0 + T + 00 or 00:00 or 00:00:00 or 00:00:00.000 + +00:00 or +0000 or +00)
-var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
-var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?/;
+var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
+var basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([\+\-]\d\d(?::?\d\d)?|\s*Z)?)?$/;
 
 var tzRegex = /Z|[+-]\d\d(?::?\d\d)?/;
 
@@ -2229,8 +2251,12 @@ function dayOfYearFromWeekInfo(config) {
         dow = config._locale._week.dow;
         doy = config._locale._week.doy;
 
-        weekYear = defaults(w.gg, config._a[YEAR], weekOfYear(createLocal(), dow, doy).year);
-        week = defaults(w.w, 1);
+        var curWeek = weekOfYear(createLocal(), dow, doy);
+
+        weekYear = defaults(w.gg, config._a[YEAR], curWeek.year);
+
+        // Default to current week.
+        week = defaults(w.w, curWeek.week);
 
         if (w.d != null) {
             // weekday -- low day numbers are considered next week
@@ -2382,7 +2408,7 @@ function configFromStringAndArray(config) {
         tempConfig._f = config._f[i];
         configFromStringAndFormat(tempConfig);
 
-        if (!_isValid(tempConfig)) {
+        if (!isValid(tempConfig)) {
             continue;
         }
 
@@ -2443,17 +2469,17 @@ function prepareConfig (config) {
 
     if (isMoment(input)) {
         return new Moment(checkOverflow(input));
-    } else if (isArray(format)) {
-        configFromStringAndArray(config);
     } else if (isDate(input)) {
         config._d = input;
+    } else if (isArray(format)) {
+        configFromStringAndArray(config);
     } else if (format) {
         configFromStringAndFormat(config);
     }  else {
         configFromInput(config);
     }
 
-    if (!_isValid(config)) {
+    if (!isValid(config)) {
         config._d = null;
     }
 
@@ -2475,7 +2501,7 @@ function configFromInput(config) {
         configFromArray(config);
     } else if (typeof(input) === 'object') {
         configFromObject(config);
-    } else if (typeof(input) === 'number') {
+    } else if (isNumber(input)) {
         // from milliseconds
         config._d = new Date(input);
     } else {
@@ -2486,7 +2512,7 @@ function configFromInput(config) {
 function createLocalOrUTC (input, format, locale, strict, isUTC) {
     var c = {};
 
-    if (typeof(locale) === 'boolean') {
+    if (locale === true || locale === false) {
         strict = locale;
         locale = undefined;
     }
@@ -2655,12 +2681,19 @@ addParseToken(['Z', 'ZZ'], function (input, array, config) {
 var chunkOffset = /([\+\-]|\d\d)/gi;
 
 function offsetFromString(matcher, string) {
-    var matches = ((string || '').match(matcher) || []);
+    var matches = (string || '').match(matcher);
+
+    if (matches === null) {
+        return null;
+    }
+
     var chunk   = matches[matches.length - 1] || [];
     var parts   = (chunk + '').match(chunkOffset) || ['-', 0, 0];
     var minutes = +(parts[1] * 60) + toInt(parts[2]);
 
-    return parts[0] === '+' ? minutes : -minutes;
+    return minutes === 0 ?
+      0 :
+      parts[0] === '+' ? minutes : -minutes;
 }
 
 // Return a moment from input, that is local/utc/zone equivalent to model.
@@ -2711,6 +2744,9 @@ function getSetOffset (input, keepLocalTime) {
     if (input != null) {
         if (typeof input === 'string') {
             input = offsetFromString(matchShortOffset, input);
+            if (input === null) {
+                return this;
+            }
         } else if (Math.abs(input) < 16) {
             input = input * 60;
         }
@@ -2768,15 +2804,15 @@ function setOffsetToLocal (keepLocalTime) {
 }
 
 function setOffsetToParsedOffset () {
-    if (this._tzm) {
+    if (this._tzm != null) {
         this.utcOffset(this._tzm);
     } else if (typeof this._i === 'string') {
         var tZone = offsetFromString(matchOffset, this._i);
-
-        if (tZone === 0) {
+        if (tZone != null) {
+            this.utcOffset(tZone);
+        }
+        else {
             this.utcOffset(0, true);
-        } else {
-            this.utcOffset(offsetFromString(matchOffset, this._i));
         }
     }
     return this;
@@ -2853,7 +2889,7 @@ function createDuration (input, key) {
             d  : input._days,
             M  : input._months
         };
-    } else if (typeof input === 'number') {
+    } else if (isNumber(input)) {
         duration = {};
         if (key) {
             duration[key] = input;
@@ -3151,6 +3187,30 @@ function toISOString () {
     }
 }
 
+/**
+ * Return a human readable representation of a moment that can
+ * also be evaluated to get a new moment which is the same
+ *
+ * @link https://nodejs.org/dist/latest/docs/api/util.html#util_custom_inspect_function_on_objects
+ */
+function inspect () {
+    if (!this.isValid()) {
+        return 'moment.invalid(/* ' + this._i + ' */)';
+    }
+    var func = 'moment';
+    var zone = '';
+    if (!this.isLocal()) {
+        func = this.utcOffset() === 0 ? 'moment.utc' : 'moment.parseZone';
+        zone = 'Z';
+    }
+    var prefix = '[' + func + '("]';
+    var year = (0 < this.year() && this.year() <= 9999) ? 'YYYY' : 'YYYYYY';
+    var datetime = '-MM-DD[T]HH:mm:ss.SSS';
+    var suffix = zone + '[")]';
+
+    return this.format(prefix + year + datetime + suffix);
+}
+
 function format (inputString) {
     if (!inputString) {
         inputString = this.isUtc() ? hooks.defaultFormatUtc : hooks.defaultFormat;
@@ -3312,8 +3372,8 @@ function toJSON () {
     return this.isValid() ? this.toISOString() : null;
 }
 
-function isValid () {
-    return _isValid(this);
+function isValid$1 () {
+    return isValid(this);
 }
 
 function parsingFlags () {
@@ -3652,7 +3712,7 @@ proto.isBetween         = isBetween;
 proto.isSame            = isSame;
 proto.isSameOrAfter     = isSameOrAfter;
 proto.isSameOrBefore    = isSameOrBefore;
-proto.isValid           = isValid;
+proto.isValid           = isValid$1;
 proto.lang              = lang;
 proto.locale            = locale;
 proto.localeData        = localeData;
@@ -3666,6 +3726,7 @@ proto.toArray           = toArray;
 proto.toObject          = toObject;
 proto.toDate            = toDate;
 proto.toISOString       = toISOString;
+proto.inspect           = inspect;
 proto.toJSON            = toJSON;
 proto.toString          = toString;
 proto.unix              = unix;
@@ -3792,7 +3853,7 @@ function get$1 (format, index, field, setter) {
 }
 
 function listMonthsImpl (format, index, field) {
-    if (typeof format === 'number') {
+    if (isNumber(format)) {
         index = format;
         format = undefined;
     }
@@ -3821,7 +3882,7 @@ function listMonthsImpl (format, index, field) {
 // (true, fmt)
 function listWeekdaysImpl (localeSorted, format, index, field) {
     if (typeof localeSorted === 'boolean') {
-        if (typeof format === 'number') {
+        if (isNumber(format)) {
             index = format;
             format = undefined;
         }
@@ -3832,7 +3893,7 @@ function listWeekdaysImpl (localeSorted, format, index, field) {
         index = format;
         localeSorted = false;
 
-        if (typeof format === 'number') {
+        if (isNumber(format)) {
             index = format;
             format = undefined;
         }
@@ -4255,12 +4316,12 @@ addParseToken('x', function (input, array, config) {
 // Side effect imports
 
 //! moment.js
-//! version : 2.15.1
+//! version : 2.17.1
 //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
 //! license : MIT
 //! momentjs.com
 
-hooks.version = '2.15.1';
+hooks.version = '2.17.1';
 
 setHookCallback(createLocal);
 
@@ -4295,8 +4356,18 @@ hooks.prototype             = proto;
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
   return typeof obj;
 } : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol ? "symbol" : typeof obj;
+  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
+
+
+
+
+
+
+
+
+
+
 
 var classCallCheck = function (instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -4322,6 +4393,14 @@ var createClass = function () {
   };
 }();
 
+
+
+
+
+
+
+
+
 var inherits = function (subClass, superClass) {
   if (typeof superClass !== "function" && superClass !== null) {
     throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
@@ -4337,6 +4416,16 @@ var inherits = function (subClass, superClass) {
   });
   if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
 };
+
+
+
+
+
+
+
+
+
+
 
 var possibleConstructorReturn = function (self, call) {
   if (!self) {
@@ -4374,14 +4463,14 @@ var DateHandler = function () {
   }, {
     key: 'format',
     value: function format(date) {
-      var formatOptions = arguments.length <= 1 || arguments[1] === undefined ? 'dddd, MMM DD' : arguments[1];
+      var formatOptions = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'dddd, MMM DD';
 
       return hooks(date).format(formatOptions);
     }
   }, {
     key: 'getTime',
     value: function getTime(date) {
-      var format = arguments.length <= 1 || arguments[1] === undefined ? 'HH:mm' : arguments[1];
+      var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'HH:mm';
 
       return hooks(date).format(format);
     }
@@ -4391,8 +4480,8 @@ var DateHandler = function () {
   }, {
     key: 'diff',
     value: function diff(date1, date2) {
-      var criterion = arguments.length <= 2 || arguments[2] === undefined ? 'minutes' : arguments[2];
-      var floatingPoint = arguments.length <= 3 || arguments[3] === undefined ? false : arguments[3];
+      var criterion = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 'minutes';
+      var floatingPoint = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : false;
 
       return hooks(date1).diff(hooks(date2), criterion, floatingPoint);
     }
@@ -4450,8 +4539,8 @@ var DateHandler = function () {
  * @return {void}
  */
 function triggerEvent(eventName) {
-  var target = arguments.length <= 1 || arguments[1] === undefined ? document.body : arguments[1];
-  var data = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
+  var target = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : document.body;
+  var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
 
   var ev = new CustomEvent(eventName, {
     detail: data,
@@ -4472,8 +4561,8 @@ function triggerEvent(eventName) {
  */
 
 var ModelView = function ModelView(html, instanceClass) {
-  var parentClass = arguments.length <= 2 || arguments[2] === undefined ? '' : arguments[2];
-  var containerTag = arguments.length <= 3 || arguments[3] === undefined ? 'div' : arguments[3];
+  var parentClass = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : '';
+  var containerTag = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 'div';
   classCallCheck(this, ModelView);
 
   assert(instanceClass, 'No instance class provided.');
@@ -4552,7 +4641,7 @@ var ControlBar = function (_ModelView) {
     var html = [{ name: 'datePicker', tag: 'input' }, { name: 'back', tag: 'button', content: '<i class=icon-chevron-left></i>' }, { name: 'forward', tag: 'button', content: '<i class=icon-chevron-right></i>' }, { name: 'today', tag: 'button', content: 'Today' }, { name: 'refresh', tag: 'button',
       content: '<i class=icon-refresh></i><i class=icon-check></i><i class=icon-times></i>' }, { name: 'titleBar', tag: 'span' }, { name: 'show-weekend', tag: 'button', content: 'Show Weekend' }];
 
-    var _this = possibleConstructorReturn(this, Object.getPrototypeOf(ControlBar).call(this, html, CONTROL_CLASS, parentClass, 'nav'));
+    var _this = possibleConstructorReturn(this, (ControlBar.__proto__ || Object.getPrototypeOf(ControlBar)).call(this, html, CONTROL_CLASS, parentClass, 'nav'));
 
     _this.refreshLoadingController = new ButtonLoadingController(_this.html.refresh, 'fl-mc-loading', 'fl-mc-loading-complete', 'fl-mc-loading-error');
     _this.eventListeners = {};
@@ -4748,7 +4837,7 @@ var ControlBar = function (_ModelView) {
   }, {
     key: '_setTitleBarDate',
     value: function _setTitleBarDate(date) {
-      var format = arguments.length <= 1 || arguments[1] === undefined ? this.titleBarFormat : arguments[1];
+      var format = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.titleBarFormat;
 
       this.html.titleBar.innerHTML = DateHandler.format(date, format);
     }
@@ -4941,9 +5030,9 @@ var ButtonLoadingController = function () {
   }, {
     key: '_timeToAnimationTimeoutEnd',
     value: function _timeToAnimationTimeoutEnd() {
-      var timeoutStart = arguments.length <= 0 || arguments[0] === undefined ? this.loadingStartTime : arguments[0];
-      var minTimeout = arguments.length <= 1 || arguments[1] === undefined ? this.minAnimationTime : arguments[1];
-      var now = arguments.length <= 2 || arguments[2] === undefined ? DateHandler.newDate() : arguments[2];
+      var timeoutStart = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.loadingStartTime;
+      var minTimeout = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.minAnimationTime;
+      var now = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : DateHandler.newDate();
 
       var delayEndTime = DateHandler.add(timeoutStart, minTimeout, 'milliseconds');
       var remainingDelay = DateHandler.diff(delayEndTime, now, 'milliseconds');
@@ -4964,7 +5053,7 @@ var CalEvent = function (_ModelView) {
   inherits(CalEvent, _ModelView);
 
   function CalEvent(eventConfig, parentClass, parentDate) {
-    var callbacks = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+    var callbacks = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
     classCallCheck(this, CalEvent);
 
     assert((typeof eventConfig === 'undefined' ? 'undefined' : _typeof(eventConfig)) === 'object', 'Invalid event configuration object provided: ' + eventConfig);
@@ -5002,7 +5091,7 @@ var CalEvent = function (_ModelView) {
       }
     }
 
-    var _this = possibleConstructorReturn(this, Object.getPrototypeOf(CalEvent).call(this, html, EVENT_CLASS, parentClass));
+    var _this = possibleConstructorReturn(this, (CalEvent.__proto__ || Object.getPrototypeOf(CalEvent)).call(this, html, EVENT_CLASS, parentClass));
 
     _this.config = eventConfig;
 
@@ -5069,7 +5158,7 @@ var CalEvent = function (_ModelView) {
   }, {
     key: '_setPlaceHolderStatus',
     value: function _setPlaceHolderStatus(parentDate) {
-      var eventConfig = arguments.length <= 1 || arguments[1] === undefined ? this.config : arguments[1];
+      var eventConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.config;
 
       var span = eventConfig.ordering.span;
       assert(typeof span === 'number', 'CalEvent configuration object not propperly handled. No "span" property found.');
@@ -5086,7 +5175,7 @@ var CalEvent = function (_ModelView) {
     value: function _attatchClasses(parentDate) {
       var _this2 = this;
 
-      var eventConfig = arguments.length <= 1 || arguments[1] === undefined ? this.config : arguments[1];
+      var eventConfig = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.config;
 
       // Add classes specified in config
       if (Array.isArray(eventConfig.classes)) {
@@ -5132,14 +5221,14 @@ var Day = function (_ModelView) {
   inherits(Day, _ModelView);
 
   function Day(date, parentClass) {
-    var config = arguments.length <= 2 || arguments[2] === undefined ? {} : arguments[2];
-    var callbacks = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+    var config = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : {};
+    var callbacks = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
     classCallCheck(this, Day);
 
     // Create HTML part with SuperClass
     var html = [{ name: 'header', tag: 'header' }, { name: 'events' }];
 
-    var _this = possibleConstructorReturn(this, Object.getPrototypeOf(Day).call(this, html, DAY_CLASS, parentClass));
+    var _this = possibleConstructorReturn(this, (Day.__proto__ || Object.getPrototypeOf(Day)).call(this, html, DAY_CLASS, parentClass));
 
     _this.date = null;
     _this.start = null;
@@ -5198,7 +5287,7 @@ var Day = function (_ModelView) {
     value: function setEvents() {
       var _this2 = this;
 
-      var newEventsConfig = arguments.length <= 0 || arguments[0] === undefined ? [] : arguments[0];
+      var newEventsConfig = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
 
       assert.warn(Array.isArray(newEventsConfig), 'Invalid array of configuration events,\n      clearing all events from day ' + this.date.toString() + '.');
 
@@ -5252,7 +5341,7 @@ var Day = function (_ModelView) {
   }, {
     key: 'clearEvents',
     value: function clearEvents() {
-      var events = arguments.length <= 0 || arguments[0] === undefined ? this.events : arguments[0];
+      var events = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.events;
 
       var eventsNo = events.length;
       for (var i = 0; i < eventsNo; i++) {
@@ -5287,7 +5376,7 @@ var Day = function (_ModelView) {
   }, {
     key: '_todayColor',
     value: function _todayColor() {
-      var date = arguments.length <= 0 || arguments[0] === undefined ? this.date : arguments[0];
+      var date = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.date;
 
       if (DateHandler.sameDay(date, DateHandler.newDate())) {
         this.html.container.classList.add(this.class + '-today');
@@ -5362,8 +5451,8 @@ var Ordering = function () {
     value: function _layOut() {
       var _this = this;
 
-      var eventViews = arguments.length <= 0 || arguments[0] === undefined ? this.eventViews : arguments[0];
-      var dayCount = arguments.length <= 1 || arguments[1] === undefined ? this.dayCount : arguments[1];
+      var eventViews = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.eventViews;
+      var dayCount = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.dayCount;
 
       // Create days as an Array of arrays of length dayCount.
       var days = new Array(dayCount);
@@ -5403,7 +5492,7 @@ var Ordering = function () {
     value: function _addPadding() {
       var _this2 = this;
 
-      var nonPaddedLaidOutEvents = arguments.length <= 0 || arguments[0] === undefined ? this._nonPaddedLaidOutEvents : arguments[0];
+      var nonPaddedLaidOutEvents = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._nonPaddedLaidOutEvents;
 
       var days = nonPaddedLaidOutEvents.slice(0);
       days.forEach(function (day) {
@@ -5465,7 +5554,7 @@ var Ordering = function () {
   }, {
     key: "_calcScore",
     value: function _calcScore() {
-      var nonPaddedLaidOutEvents = arguments.length <= 0 || arguments[0] === undefined ? this._nonPaddedLaidOutEvents : arguments[0];
+      var nonPaddedLaidOutEvents = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this._nonPaddedLaidOutEvents;
 
       var days = nonPaddedLaidOutEvents;
       var score = 0;
@@ -5525,7 +5614,7 @@ var EventView = function () {
   }, {
     key: 'diff',
     value: function diff(otherView) {
-      var criterion = arguments.length <= 1 || arguments[1] === undefined ? 'minutes' : arguments[1];
+      var criterion = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'minutes';
 
       return DateHandler.diff(this.startDate, otherView.startDate, criterion);
     }
@@ -5709,7 +5798,7 @@ var Calendar = function (_ModelView) {
   inherits(Calendar, _ModelView);
 
   function Calendar(config, startDate, parentClass) {
-    var callbacks = arguments.length <= 3 || arguments[3] === undefined ? {} : arguments[3];
+    var callbacks = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : {};
     classCallCheck(this, Calendar);
 
     assert(config, 'No calendar configuration object provided.');
@@ -5718,7 +5807,7 @@ var Calendar = function (_ModelView) {
     var html = [{ name: 'header', tag: 'header' }, { name: 'days' }];
 
     // Inside the header we need some stuff.
-    var _this = possibleConstructorReturn(this, Object.getPrototypeOf(Calendar).call(this, html, CALENDAR_CLASS, parentClass, 'section'));
+    var _this = possibleConstructorReturn(this, (Calendar.__proto__ || Object.getPrototypeOf(Calendar)).call(this, html, CALENDAR_CLASS, parentClass, 'section'));
 
     assert(config.name, 'No calendar name provided for one of the calendars.');
     _this.title = config.name;
@@ -5795,7 +5884,7 @@ var Calendar = function (_ModelView) {
   }, {
     key: 'getDayCount',
     value: function getDayCount() {
-      var days = arguments.length <= 0 || arguments[0] === undefined ? this.days : arguments[0];
+      var days = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.days;
 
       return days.length;
     }
@@ -5820,7 +5909,7 @@ var Calendar = function (_ModelView) {
   }, {
     key: 'clearEvents',
     value: function clearEvents() {
-      var days = arguments.length <= 0 || arguments[0] === undefined ? this.days : arguments[0];
+      var days = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.days;
       var _iteratorNormalCompletion = true;
       var _didIteratorError = false;
       var _iteratorError = undefined;
@@ -5859,7 +5948,7 @@ var Calendar = function (_ModelView) {
   }, {
     key: 'findDaysInRange',
     value: function findDaysInRange(start, end) {
-      var days = arguments.length <= 2 || arguments[2] === undefined ? this.days : arguments[2];
+      var days = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.days;
 
       var foundDays = [];
 
@@ -5908,7 +5997,7 @@ var Calendar = function (_ModelView) {
   }, {
     key: 'setStartDate',
     value: function setStartDate(date) {
-      var days = arguments.length <= 1 || arguments[1] === undefined ? this.days : arguments[1];
+      var days = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.days;
 
       var counter = 0;
       var _iteratorNormalCompletion3 = true;
@@ -6061,7 +6150,7 @@ var DataLoader = function () {
   }, {
     key: 'addParametersToUrl',
     value: function addParametersToUrl(params) {
-      var loadUrl = arguments.length <= 1 || arguments[1] === undefined ? this.loadUrl : arguments[1];
+      var loadUrl = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.loadUrl;
 
       var getParams = [];
       var keys = Object.keys(params);
@@ -6189,7 +6278,7 @@ var MultiCalendar = function (_ModelView) {
 
     // Create HTML part with SuperClass
 
-    var _this = possibleConstructorReturn(this, Object.getPrototypeOf(MultiCalendar).call(this, null, MULTI_CALENDAR_CLASS, '', 'main'));
+    var _this = possibleConstructorReturn(this, (MultiCalendar.__proto__ || Object.getPrototypeOf(MultiCalendar)).call(this, null, MULTI_CALENDAR_CLASS, '', 'main'));
 
     assert(_typeof(config.targetElement) === 'object', 'No valid targetElement provided.');
     _this.targetElement = config.targetElement;
@@ -6264,7 +6353,7 @@ var MultiCalendar = function (_ModelView) {
     value: function _initControlBar() {
       var _this2 = this;
 
-      var controlBar = arguments.length <= 0 || arguments[0] === undefined ? this.controlBar : arguments[0];
+      var controlBar = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.controlBar;
 
       this._makeControlBarSticky(controlBar);
 
@@ -6381,7 +6470,7 @@ var MultiCalendar = function (_ModelView) {
   }, {
     key: 'goToDate',
     value: function goToDate(date) {
-      var controlBar = arguments.length <= 1 || arguments[1] === undefined ? this.controlBar : arguments[1];
+      var controlBar = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.controlBar;
 
       if (DateHandler.isValid(date)) {
         this.setStartDate(date);
@@ -6403,7 +6492,7 @@ var MultiCalendar = function (_ModelView) {
   }, {
     key: '_addCalendar',
     value: function _addCalendar(config) {
-      var startDate = arguments.length <= 1 || arguments[1] === undefined ? this.startDate : arguments[1];
+      var startDate = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.startDate;
 
       // TODO: Add calendar when other calendars already have days
       var calendarCallbacks = {
@@ -6430,7 +6519,7 @@ var MultiCalendar = function (_ModelView) {
   }, {
     key: 'getDayCount',
     value: function getDayCount() {
-      var calendars = arguments.length <= 0 || arguments[0] === undefined ? this.calendars : arguments[0];
+      var calendars = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.calendars;
 
       if (calendars.length === 0) {
         return 0;
@@ -6452,12 +6541,12 @@ var MultiCalendar = function (_ModelView) {
   }, {
     key: '_loadEvents',
     value: function _loadEvents() {
-      var loadUrl = arguments.length <= 0 || arguments[0] === undefined ? this.loadUrl : arguments[0];
+      var loadUrl = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.loadUrl;
 
       var _this3 = this;
 
-      var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
-      var controlBar = arguments.length <= 2 || arguments[2] === undefined ? this.controlBar : arguments[2];
+      var calendars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.calendars;
+      var controlBar = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : this.controlBar;
 
       triggerEvent(multiCalendarEvents.loadingStart, this.html.container);
 
@@ -6498,8 +6587,8 @@ var MultiCalendar = function (_ModelView) {
   }, {
     key: '_setEvents',
     value: function _setEvents() {
-      var calEvents = arguments.length <= 0 || arguments[0] === undefined ? this.lastLoadedEvents : arguments[0];
-      var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
+      var calEvents = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.lastLoadedEvents;
+      var calendars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.calendars;
 
       if ((typeof calEvents === 'undefined' ? 'undefined' : _typeof(calEvents)) !== 'object') {
         assert.warn(false, 'Trying to set events with invalid object');
@@ -6551,7 +6640,7 @@ var MultiCalendar = function (_ModelView) {
   }, {
     key: '_findCalendar',
     value: function _findCalendar(calId) {
-      var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
+      var calendars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.calendars;
 
       return calendars.find(function (cal) {
         return cal.id == calId;
@@ -6568,7 +6657,7 @@ var MultiCalendar = function (_ModelView) {
   }, {
     key: 'setStartDate',
     value: function setStartDate(date) {
-      var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
+      var calendars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.calendars;
 
       // This function may be called before a view mode is set. In this clase
       // the only acceptable start date is Today.
@@ -6629,7 +6718,7 @@ var MultiCalendar = function (_ModelView) {
   }, {
     key: '_setViewMode',
     value: function _setViewMode(modeName) {
-      var calendars = arguments.length <= 1 || arguments[1] === undefined ? this.calendars : arguments[1];
+      var calendars = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : this.calendars;
 
       var newMode = viewModes[modeName];
       if (newMode === undefined) {
@@ -6749,7 +6838,7 @@ var MultiCalendar = function (_ModelView) {
   }, {
     key: '_makeControlBarSticky',
     value: function _makeControlBarSticky() {
-      var controlBar = arguments.length <= 0 || arguments[0] === undefined ? this.controlBar : arguments[0];
+      var controlBar = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : this.controlBar;
 
       var container = this.html.container;
       var bar = controlBar.html.container;
@@ -6830,4 +6919,5 @@ xController(function (xDivEl) {
 
 })));
 }());
+
 //# sourceMappingURL=fl-multi-calendar.js.map
