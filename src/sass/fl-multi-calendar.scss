@@ -395,6 +395,8 @@ $events-container-padding: 2px;
   background-color: $c-main;
   color: $c-main-text;
 
+  cursor: pointer;
+
   transition: all .1s ease;
   animation: fadeInUp;
   animation-duration: .5s;
@@ -408,7 +410,6 @@ $events-container-padding: 2px;
 
   &:hover {
     filter: brightness(110%);
-    cursor: pointer;
   }
 
   &:active {

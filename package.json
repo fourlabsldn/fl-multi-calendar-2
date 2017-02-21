@@ -1,6 +1,6 @@
 {
   "name": "fl-multi-calendar-2",
-  "version": "0.0.40",
+  "version": "0.1.0",
   "description": "Multiple calendars at one",
   "main": "index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "babel-preset-es2015-rollup": "^3.0.0",
     "babel-preset-es2017": "^6.22.0",
     "babel-preset-stage-0": "^6.5.0",
+    "caniuse-db": "^1.0.30000624",
     "dep-linker": "^1.0.24",
     "git-directory-deploy": "^1.5.0",
     "gulp": "^3.9.1",

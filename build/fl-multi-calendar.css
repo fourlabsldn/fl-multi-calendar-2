@@ -433,6 +433,7 @@
   overflow: hidden;
   background-color: #d45240;
   color: #fafafa;
+  cursor: pointer;
   -webkit-transition: all .1s ease;
   transition: all .1s ease;
   -webkit-animation: fadeInUp;
@@ -472,8 +473,7 @@
             animation-delay: 0.66667s; }
   .fl-mc-cal-day-event:hover {
     -webkit-filter: brightness(110%);
-            filter: brightness(110%);
-    cursor: pointer; }
+            filter: brightness(110%); }
   .fl-mc-cal-day-event:active {
     -webkit-filter: brightness(95%);
             filter: brightness(95%); }
